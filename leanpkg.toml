@@ -1,0 +1,8 @@
+[package]
+name = "salsa20"
+version = "0.1"
+lean_version = "leanprover-community/lean:3.48.0"
+path = "src"
+
+[dependencies]
+mathlib = {git = "https://github.com/leanprover-community/mathlib", rev = "d240ffbda9e1d0c751dfa03e4fe499403f85e31c"}
