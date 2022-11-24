@@ -13,12 +13,12 @@ open rowround
 -/
 
 -- example 1
-def input1 : rowType := (0x00000001, 0x00000000, 0x00000000, 0x00000000)
-def input2 : rowType := (0x00000000, 0x00000000, 0x00000000, 0x00000001)
-def input3 : rowType := (0x00000000, 0x00000000, 0x00000001, 0x00000000)
-def input4 : rowType := (0x00000000, 0x00000001, 0x00000000, 0x00000000)
+def input1 : vecType := (0x00000001, 0x00000000, 0x00000000, 0x00000000)
+def input2 : vecType := (0x00000000, 0x00000000, 0x00000000, 0x00000001)
+def input3 : vecType := (0x00000000, 0x00000000, 0x00000001, 0x00000000)
+def input4 : vecType := (0x00000000, 0x00000001, 0x00000000, 0x00000000)
 
-def output : rowType × rowType × rowType × rowType :=
+def output : matrixType :=
   (
     (0x08008145, 0x00000080, 0x00010200, 0x20500000),
     (0x00048044, 0x00000080, 0x00010000, 0x20100001),
@@ -30,12 +30,12 @@ def output : rowType × rowType × rowType × rowType :=
   rowround input1 input2 input3 input4 = output then "pass" else "fail"
 
 -- example 2
-def input1' : rowType := (0x08521bd6, 0x1fe88837, 0xbb2aa576, 0x3aa26365)
-def input2' : rowType := (0x2fc74c2f, 0x6dd39cc3, 0xda0a64f6, 0xc54c6a5b)
-def input3' : rowType := (0x06b35f61, 0x41e4732e, 0x90a2f23d, 0x067f95a6)
-def input4' : rowType := (0xbc6e965a, 0xe859c100, 0xea4d84b7, 0x0f619bff)
+def input1' : vecType := (0x08521bd6, 0x1fe88837, 0xbb2aa576, 0x3aa26365)
+def input2' : vecType := (0x2fc74c2f, 0x6dd39cc3, 0xda0a64f6, 0xc54c6a5b)
+def input3' : vecType := (0x06b35f61, 0x41e4732e, 0x90a2f23d, 0x067f95a6)
+def input4' : vecType := (0xbc6e965a, 0xe859c100, 0xea4d84b7, 0x0f619bff)
 
-def output' : rowType × rowType × rowType × rowType :=
+def output' : matrixType :=
   (
     (0xa890d39d, 0x65d71596, 0xe9487daa, 0xc8ca6a86),
     (0x764b7754, 0xe408d9b9, 0x7a41b4d1, 0x949d2192),
@@ -47,7 +47,7 @@ def output' : rowType × rowType × rowType × rowType :=
   rowround input1' input2' input3' input4' = output' then "pass" else "fail"
 
 /- 
-  Inverse exampples using the same numbers as the spec. 
+  Inverse examples using the same numbers as the spec ones. 
   Just as with `rowround` we have to give the right order to the inputs:
 
   (y₀, y₁, y₂, y₃) = quarterround_inv(z₀, z₁, z₂, z₃)
@@ -55,3 +55,5 @@ def output' : rowType × rowType × rowType × rowType :=
   (y₁₀, y₁₁, y₈, y₉) = quarterround_inv(z₁₀, z₁₁, z₈, z₉)
   (y₁₅, y₁₂, y₁₃, y₁₄) = quarterround_inv(z₁₅, z₁₂, z₁₃, z₁₄)
 -/
+
+-- TODO: add inverse examples

@@ -13,9 +13,9 @@ variables a b c d : bitvec word_len
 -- a new set of random elements that might or might not be the same than the ones above
 variables a' b' c' d' : bitvec word_len
 
--- We define a row to be a tuple of 4 bit vectors.
+-- We define a row or a column to be a tuple of 4 bit vectors.
 -- This is the input and output of the `quarterround` function. 
-notation `rowType` := (bitvec word_len) × (bitvec word_len) × (bitvec word_len) × (bitvec word_len) 
+notation `vecType` := (bitvec word_len) × (bitvec word_len) × (bitvec word_len) × (bitvec word_len) 
 
 -- Quarter round definitions
 
@@ -29,7 +29,7 @@ def qr3 (a b c d : bitvec word_len) := d OP (OP_RHS (qr2 a b c d) (qr1 a b c d) 
 def qr0 (a b c d : bitvec word_len) := a OP (OP_RHS (qr3 a b c d) (qr2 a b c d) 18)
 
 -- Puts the 4 elements that form a quarterround all together
-def quarterround (seq : rowType) : rowType :=
+def quarterround (seq : vecType) : vecType :=
   (
     qr0 seq.fst seq.snd.fst seq.snd.snd.fst seq.snd.snd.snd,
     qr1 seq.fst seq.snd.fst seq.snd.snd.fst seq.snd.snd.snd,
@@ -49,7 +49,7 @@ def qr2_inv (a' b' c' d' : bitvec word_len) := c' OP (operation_rhs b' (qr0_inv 
 def qr1_inv (a' b' c' d' : bitvec word_len) := b' OP (operation_rhs (qr0_inv a' b' c' d') (qr3_inv a' b' c' d') 7)
 
 -- Puts the 4 elements that forms a quarterround inverse all together.
-def quarterround_inv (seq : rowType) := (
+def quarterround_inv (seq : vecType) := (
   qr0_inv seq.fst seq.snd.fst seq.snd.snd.fst seq.snd.snd.snd,
   qr1_inv seq.fst seq.snd.fst seq.snd.snd.fst seq.snd.snd.snd,
   qr2_inv seq.fst seq.snd.fst seq.snd.snd.fst seq.snd.snd.snd,
