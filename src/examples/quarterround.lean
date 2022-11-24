@@ -50,7 +50,25 @@ open quarterround
   quarterround_inv (0x00000000, 0x00000000, 0x00000000, 0x00000000) =  
     (0x000000000, 0x00000000, 0x00000000, 0x00000000) then "pass" else "fail"
 
--- ..
+-- example 2
+#eval if 
+  quarterround_inv (0x08008145, 0x00000080, 0x00010200, 0x20500000) =  
+    (0x00000001, 0x00000000, 0x00000000, 0x00000000) then "pass" else "fail"
+
+-- example 3
+#eval if 
+  quarterround_inv (0x88000100, 0x00000001, 0x00000200, 0x00402000) =  
+    (0x00000000, 0x00000001, 0x00000000, 0x00000000) then "pass" else "fail"
+
+-- example 4
+#eval if 
+  quarterround_inv (0x80040000, 0x00000000, 0x00000001, 0x00002000) =  
+    (0x00000000, 0x00000000, 0x00000001, 0x00000000) then "pass" else "fail"
+
+-- example 5
+#eval if 
+  quarterround_inv (0x00048044, 0x00000080, 0x00010000, 0x20100001) =  
+    (0x00000000, 0x00000000, 0x00000000, 0x00000001) then "pass" else "fail"
 
 -- example 6
 #eval if 
