@@ -15,15 +15,15 @@ namespace operations
 def rotl : bitvec word_len → ℕ → bitvec word_len
 | a shift := (a.shl shift).or (a.ushr (word_len - shift))
 
--- Inverse of rotl
+-- Inverse of `rotl`
 def rotl_inv : bitvec word_len → ℕ → bitvec word_len
-| a shift := (a.ushr shift).or (a.shl (32 - shift))
+| a shift := (a.ushr shift).or (a.shl (word_len - shift))
 
--- Bitwise modulo : https://stackoverflow.com/a/19760152
+-- Bitwise modulo addition: https://stackoverflow.com/a/19760152
 def mod : bitvec word_len → bitvec word_len → bitvec word_len
 | a b := (bitvec.and (a + b) (max_bitvec))
 
--- The inverse of mod operation.
+-- The inverse of the `mod` operation.
 def mod_inv : bitvec word_len → bitvec word_len → bitvec word_len
 | a b := (bitvec.and (a - b) (max_bitvec))
 
@@ -92,27 +92,22 @@ variables a' b' c' : bitvec word_len
 variable shift' : ℕ
 
 -- Two operations are equal if both sides of the XOR are equal.
-lemma op_eq (h : a = a' ∧ b = b') : 
-  a OP b = a' OP b' :=
+lemma op_eq (h : a = a' ∧ b = b') :  a OP b = a' OP b' :=
 begin
   finish,
 end
 
 -- Two operations are different if any side of the XOR is different.
-lemma op_neq 
-  (h : a OP b ≠ a' OP b') : a ≠ a' ∨ b ≠ b' :=
+lemma op_neq (h : a OP b ≠ a' OP b') : a ≠ a' ∨ b ≠ b' :=
 begin
   finish,
 end
 
 -- OP is just XOR, so each operation is its own inverse.
-lemma operation_inverse (d : bitvec word_len) : 
-  (a OP b) OP b = a :=
+lemma operation_inverse (d : bitvec word_len) : (a OP b) OP b = a :=
 begin
   unfold operation,
-  rw xor_assoc,
-  rw xor_inv,
-  rw xor_zero,
+  rw [xor_assoc, xor_inv, xor_zero],
 end
 
 end operations

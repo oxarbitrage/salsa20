@@ -1,4 +1,6 @@
-
+/-
+  The `rowround` function and its inverse
+-/
 import data.matrix.basic
 
 import params
@@ -9,9 +11,6 @@ open operations
 open quarterround
 
 namespace rowround
-
--- We define a row to be a tuple of 4 bit vectors.
-notation `rowType` := (bitvec word_len) × (bitvec word_len) × (bitvec word_len) × (bitvec word_len) 
 
 -- Have some random rows to use in proofs and definitions.
 variable R : rowType
@@ -62,8 +61,7 @@ end
   in the order (y₁₀, y₁₁, y₈, y₉), then the output will be (z₁₀, z₁₁, z₈, z₉) as the second row of 
   the response, in that order. 
 -/
-def rowround :
-  rowType × rowType × rowType × rowType :=
+def rowround : rowType × rowType × rowType × rowType :=
   (
     rowround_single R1,
     rowround_single R2,
