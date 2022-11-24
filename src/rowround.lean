@@ -11,12 +11,14 @@ open quarterround
 
 namespace rowround
 
--- We define a row or a column to be a tuple of 4 bit vectors.
--- This is the input and output of the `quarterround` function. 
+-- A random row or column of a matrix
+variable R : vecType
+
+-- A 16 elements matrix type used as `rowround` and `rowround_inv` input and output.
 notation `matrixType` := vecType × vecType × vecType × vecType
 
--- Have some random rows to use in proofs and definitions.
-variables R R1 R2 R3 R4 : vecType
+-- A random input matrix
+variable M : matrixType
 
 -- The row round of a single row. Complete `rowround` function will use 4 of this.
 def rowround_single : vecType :=
@@ -56,10 +58,10 @@ end
 -/
 def rowround : matrixType :=
   (
-    rowround_single R1,
-    rowround_single R2,
-    rowround_single R3,
-    rowround_single R4
+    rowround_single M.fst,
+    rowround_single M.snd.fst,
+    rowround_single M.snd.snd.fst,
+    rowround_single M.snd.snd.snd
   )
 
 /-
@@ -73,21 +75,21 @@ def rowround : matrixType :=
 -/
 def rowround_inv : matrixType :=
   (
-    rowround_single_inv R1,
-    rowround_single_inv R2,
-    rowround_single_inv R3,
-    rowround_single_inv R4
+    rowround_single_inv M.fst,
+    rowround_single_inv M.snd.fst,
+    rowround_single_inv M.snd.snd.fst,
+    rowround_single_inv M.snd.snd.snd
   )
 
 -- For any `rowround` output, we can get back to original values using the defined inverse.
-lemma rowround_is_inv : rowround_inv (rowround R1 R2 R3 R4).fst
-  (rowround R1 R2 R3 R4).snd.fst (rowround R1 R2 R3 R4).snd.snd.fst (rowround R1 R2 R3 R4).snd.snd.snd =
-  (R1, R2, R3, R4) :=
+lemma rowround_is_inv : rowround_inv (rowround M) = M :=
 begin
   unfold rowround_inv,
   unfold rowround,
 
   repeat { rw rowround_single_is_inv },
+
+  simp only [prod.mk.eta],
 end
 
 end rowround

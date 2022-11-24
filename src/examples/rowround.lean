@@ -13,10 +13,14 @@ open rowround
 -/
 
 -- example 1
-def input1 : vecType := (0x00000001, 0x00000000, 0x00000000, 0x00000000)
-def input2 : vecType := (0x00000000, 0x00000000, 0x00000000, 0x00000001)
-def input3 : vecType := (0x00000000, 0x00000000, 0x00000001, 0x00000000)
-def input4 : vecType := (0x00000000, 0x00000001, 0x00000000, 0x00000000)
+
+def input : matrixType :=
+  (
+    (0x00000001, 0x00000000, 0x00000000, 0x00000000),
+    (0x00000000, 0x00000000, 0x00000000, 0x00000001),
+    (0x00000000, 0x00000000, 0x00000001, 0x00000000),
+    (0x00000000, 0x00000001, 0x00000000, 0x00000000)
+  )
 
 def output : matrixType :=
   (
@@ -26,14 +30,17 @@ def output : matrixType :=
     (0x88000100, 0x00000001, 0x00000200, 0x00402000)
   )
 
-#eval if 
-  rowround input1 input2 input3 input4 = output then "pass" else "fail"
+#eval if rowround input = output then "pass" else "fail"
 
 -- example 2
-def input1' : vecType := (0x08521bd6, 0x1fe88837, 0xbb2aa576, 0x3aa26365)
-def input2' : vecType := (0x2fc74c2f, 0x6dd39cc3, 0xda0a64f6, 0xc54c6a5b)
-def input3' : vecType := (0x06b35f61, 0x41e4732e, 0x90a2f23d, 0x067f95a6)
-def input4' : vecType := (0xbc6e965a, 0xe859c100, 0xea4d84b7, 0x0f619bff)
+
+def input' : matrixType :=
+  (
+    (0x08521bd6, 0x1fe88837, 0xbb2aa576, 0x3aa26365),
+    (0x2fc74c2f, 0x6dd39cc3, 0xda0a64f6, 0xc54c6a5b),
+    (0x06b35f61, 0x41e4732e, 0x90a2f23d, 0x067f95a6),
+    (0xbc6e965a, 0xe859c100, 0xea4d84b7, 0x0f619bff)
+  )
 
 def output' : matrixType :=
   (
@@ -43,8 +50,7 @@ def output' : matrixType :=
     (0x1818882d, 0x0040ede5, 0xb545fbce, 0xd257ed4f)
   )
 
-#eval if 
-  rowround input1' input2' input3' input4' = output' then "pass" else "fail"
+#eval if rowround input' = output' then "pass" else "fail"
 
 /- 
   Inverse examples using the same numbers as the spec ones. 

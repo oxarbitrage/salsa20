@@ -13,10 +13,14 @@ open columnround
 -/
 
 -- example 1
-def input1 : vecType := (0x00000001, 0x00000001, 0x00000001, 0x00000001)
-def input2 : vecType := (0x00000000, 0x00000000, 0x00000000, 0x00000000)
-def input3 : vecType := (0x00000000, 0x00000000, 0x00000000, 0x00000000)
-def input4 : vecType := (0x00000000, 0x00000000, 0x00000000, 0x00000000)
+
+def input : matrixType :=
+  (
+    (0x00000001, 0x00000001, 0x00000001, 0x00000001),
+    (0x00000000, 0x00000000, 0x00000000, 0x00000000),
+    (0x00000000, 0x00000000, 0x00000000, 0x00000000),
+    (0x00000000, 0x00000000, 0x00000000, 0x00000000)
+  )
 
 def output : matrixType :=
   (
@@ -26,14 +30,17 @@ def output : matrixType :=
     (0x00000000, 0x00000000, 0x00000000, 0x00000000)
   )
 
-#eval if 
-  columnround input1 input2 input3 input4 = output then "pass" else "fail"
+#eval if columnround input = output then "pass" else "fail"
 
 -- example 2
-def input1' : vecType := (0x08521bd6, 0xc54c6a5b, 0x90a2f23d, 0xe859c100)
-def input2' : vecType := (0x2fc74c2f, 0x067f95a6, 0xea4d84b7, 0x1fe88837)
-def input3' : vecType := (0x06b35f61, 0x0f619bff, 0xbb2aa576, 0x6dd39cc3)
-def input4' : vecType := (0xbc6e965a, 0x3aa26365, 0xda0a64f6, 0x41e4732e)
+
+def input' : matrixType :=
+  (
+    (0x08521bd6, 0xc54c6a5b, 0x90a2f23d, 0xe859c100),
+    (0x2fc74c2f, 0x067f95a6, 0xea4d84b7, 0x1fe88837),
+    (0x06b35f61, 0x0f619bff, 0xbb2aa576, 0x6dd39cc3),
+    (0xbc6e965a, 0x3aa26365, 0xda0a64f6, 0x41e4732e)
+  )
 
 def output' : matrixType :=
   (
@@ -43,9 +50,7 @@ def output' : matrixType :=
     (0x3f78c9c8, 0x1326a71a, 0xf0708d69, 0xa774135c)
   )
 
-#eval if 
-  columnround input1' input2' input3' input4' = output' then "pass" else "fail"
-
+#eval if columnround input' = output' then "pass" else "fail"
 
 /- 
   Inverse examples using the same numbers as the spec ones. 
@@ -55,7 +60,6 @@ def output' : matrixType :=
   (y₅, y₉, y₁₃, y₁) = quarterround(x₅, x₉, x₁₃, x₁)
   (y₁₀, y₁₄, y₂, y₆) = quarterround(x₁₀, x₁₄, x₂, x₆)
   (y₁₅, y₃, y₇, y₁₁) = quarterround(x₁₅, x₃, x₇, x₁₁)
-
 -/
 
 -- TODO: add inverse examples

@@ -11,8 +11,8 @@ open rowround
 
 namespace columnround
 
--- Have some random columns to use in proofs and definitions.
-variables C1 C2 C3 C4 : vecType
+-- An random input matrix to be used as inputs and outputs of `columnround` and `columnround_inv`.
+variable M : matrixType
 
 /-
   Apply 4 single column rounds with a 16 byte input sequence separated in 4 columns.
@@ -23,7 +23,7 @@ variables C1 C2 C3 C4 : vecType
   (y₁₀, y₁₄, y₂, y₆) = quarterround(x₁₀, x₁₄, x₂, x₆)
   (y₁₅, y₃, y₇, y₁₁) = quarterround(x₁₅, x₃, x₇, x₁₁)
 -/
-def columnround : matrixType := rowround C1 C2 C3 C4
+def columnround : matrixType := rowround M
 
 /-
   Apply 4 single column rounds with a 16 byte input sequence separated in 4 columns.
@@ -34,12 +34,10 @@ def columnround : matrixType := rowround C1 C2 C3 C4
   (y₁₀, y₁₄, y₂, y₆) = quarterround(x₁₀, x₁₄, x₂, x₆)
   (y₁₅, y₃, y₇, y₁₁) = quarterround(x₁₅, x₃, x₇, x₁₁)
 -/
-def columnround_inv : matrixType := rowround_inv C1 C2 C3 C4
+def columnround_inv : matrixType := rowround_inv M
 
 -- For any `columnround` output, we can get back to original values using the defined inverse.
-lemma columnround_is_inv : columnround_inv (columnround C1 C2 C3 C4).fst
-  (columnround C1 C2 C3 C4).snd.fst (columnround C1 C2 C3 C4).snd.snd.fst (columnround C1 C2 C3 C4).snd.snd.snd =
-  (C1, C2, C3, C4) :=
+lemma columnround_is_inv : columnround_inv (columnround M) = M :=
 begin
   unfold columnround_inv,
   unfold columnround,
