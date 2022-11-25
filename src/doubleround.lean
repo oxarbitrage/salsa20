@@ -20,12 +20,12 @@ variable M : matrixType
 
 -- doubleround(x) = rowround(columnround(x))
 def doubleround : matrixType := 
-  rowround_output (rowround (rowround_input (columnround_output (columnround (columnround_input M)))))
+  rowround_output $ rowround $ rowround_input $ columnround_output $ columnround $ columnround_input M
 
 
 --  doubleround_inv(x) = columnround_inv(rowround_inv(x))
 def doubleround_inv : matrixType := 
-  columnround_output (columnround_inv (columnround_input (rowround_output (rowround_inv (rowround_input M)))))
+  columnround_output $ columnround_inv $ columnround_input $ rowround_output $ rowround_inv $ rowround_input M
 
 -- For any `doubleround` output, we can get back to original values using the defined inverse.
 lemma doubleround_is_inv : doubleround_inv (doubleround M) = M :=
