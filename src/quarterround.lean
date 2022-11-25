@@ -2,9 +2,11 @@
   The `quarterround` function and its inverse
 -/
 import operations
+import utils
 
 open operations
 open params
+open utils
 
 namespace quarterround
 
@@ -12,10 +14,6 @@ namespace quarterround
 variables a b c d : bitvec word_len
 -- a new set of random elements that might or might not be the same than the ones above
 variables a' b' c' d' : bitvec word_len
-
--- We define a row or a column to be a tuple of 4 bit vectors.
--- This is the input and output of the `quarterround` function. 
-notation `vecType` := (bitvec word_len) × (bitvec word_len) × (bitvec word_len) × (bitvec word_len) 
 
 -- Quarter round definitions
 

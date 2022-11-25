@@ -1,15 +1,10 @@
 import rowround
 
 open rowround
+open utils
 
 /- 
-  Examples from the spec. Note the order of the numbers used here is not the same as the spec. 
-  We use this order for calls:
-
-  (z₀, z₁, z₂, z₃) = quarterround(y₀, y₁, y₂, y₃)
-  (z₅, z₆, z₇, z₄) = quarterround(y₅, y₆, y₇, y₄)
-  (z₁₀, z₁₁, z₈, z₉) = quarterround(y₁₀, y₁₁, y₈, y₉)
-  (z₁₅, z₁₂, z₁₃, z₁₄) = quarterround(y₁₅, y₁₂, y₁₃, y₁₄)
+  Examples from the spec.
 -/
 
 -- example 1
@@ -17,20 +12,20 @@ open rowround
 def input : matrixType :=
   (
     (0x00000001, 0x00000000, 0x00000000, 0x00000000),
-    (0x00000000, 0x00000000, 0x00000000, 0x00000001),
-    (0x00000000, 0x00000000, 0x00000001, 0x00000000),
-    (0x00000000, 0x00000001, 0x00000000, 0x00000000)
+    (0x00000001, 0x00000000, 0x00000000, 0x00000000),
+    (0x00000001, 0x00000000, 0x00000000, 0x00000000),
+    (0x00000001, 0x00000000, 0x00000000, 0x00000000)
   )
 
 def output : matrixType :=
   (
     (0x08008145, 0x00000080, 0x00010200, 0x20500000),
-    (0x00048044, 0x00000080, 0x00010000, 0x20100001),
-    (0x80040000, 0x00000000, 0x00000001, 0x00002000),
-    (0x88000100, 0x00000001, 0x00000200, 0x00402000)
+    (0x20100001, 0x00048044, 0x00000080, 0x00010000),
+    (0x00000001, 0x00002000, 0x80040000, 0x00000000),
+    (0x00000001, 0x00000200, 0x00402000, 0x88000100)
   )
 
-#eval if rowround input = output then "pass" else "fail"
+#eval if rowround_output (rowround (rowround_input input)) = output then "pass" else "fail"
 
 -- example 2
 
@@ -52,14 +47,4 @@ def output' : matrixType :=
 
 #eval if rowround input' = output' then "pass" else "fail"
 
-/- 
-  Inverse examples using the same numbers as the spec ones. 
-  Just as with `rowround` we have to give the right order to the inputs:
-
-  (y₀, y₁, y₂, y₃) = quarterround_inv(z₀, z₁, z₂, z₃)
-  (y₅, y₆, y₇, y₄) = quarterround_inv(z₅, z₆, z₇, z₄)
-  (y₁₀, y₁₁, y₈, y₉) = quarterround_inv(z₁₀, z₁₁, z₈, z₉)
-  (y₁₅, y₁₂, y₁₃, y₁₄) = quarterround_inv(z₁₅, z₁₂, z₁₃, z₁₄)
--/
-
--- TODO: add inverse examples
+-- TODO: inverse examples
