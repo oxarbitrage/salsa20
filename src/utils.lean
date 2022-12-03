@@ -1,5 +1,5 @@
 /-
-  
+  Utility types and functions
 -/
 
 import params
@@ -14,6 +14,9 @@ notation `vecType` := (bitvec word_len) × (bitvec word_len) × (bitvec word_len
 
 -- A 16 elements matrix type used as `rowround` and `rowround_inv` input and output.
 notation `matrixType` := vecType × vecType × vecType × vecType
+
+-- 
+notation `matrix64Type` := matrixType × matrixType × matrixType × matrixType
 
 variable M : matrixType
 

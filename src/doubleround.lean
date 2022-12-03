@@ -17,7 +17,6 @@ namespace doubleround
 -- An random input matrix to be used as inputs and outputs of `doubleround` and `doubleround_inv`.
 variable M : matrixType
 
-
 -- doubleround(x) = rowround(columnround(x))
 def doubleround : matrixType := 
   rowround_output $ rowround $ rowround_input $ columnround_output $ columnround $ columnround_input M

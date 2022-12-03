@@ -9,7 +9,7 @@ open utils
 
 namespace littleendian
 
--- An random ...
+-- An random sequence of 4 words.
 variable b : vecType
 
 -- If b = (b₀, b₁, b₂, b₃) then 
@@ -37,6 +37,71 @@ def littleendian_inv (w : bitvec word_len) : vecType :=
 
 -- The `littleendian` function is invertible and its inverse is `littleendian_inv`.
 axiom littleendian_is_inv : littleendian_inv (littleendian b) = b
+
+
+
+-- An random input 64 bytes matrix to be used as inputs and outputs of `hash` and `hash_inv`.
+variable X : matrix64Type
+
+--
+variable Y : matrixType
+
+-- Reduce the 64 bytes sequence to a 16 bytes one by using little endian.
+def reduce : matrixType :=
+  (
+    (
+      littleendian (((X.fst).fst).fst,          ((X.fst).fst).snd.fst,          ((X.fst).fst).snd.snd.fst,          ((X.fst).fst).snd.snd.snd), 
+      littleendian (((X.fst).snd.fst).fst,      ((X.fst).snd.fst).snd.fst,      ((X.fst).snd.fst).snd.snd.fst,      ((X.fst).snd.fst).snd.snd.snd),
+      littleendian (((X.fst).snd.snd.fst).fst,  ((X.fst).snd.snd.fst).snd.fst,  ((X.fst).snd.snd.fst).snd.snd.fst,  ((X.fst).snd.snd.fst).snd.snd.snd),
+      littleendian (((X.fst).snd.snd.snd).fst,  ((X.fst).snd.snd.snd).snd.fst,  ((X.fst).snd.snd.snd).snd.snd.fst,  ((X.fst).snd.snd.snd).snd.snd.snd)
+    ),
+    (
+      littleendian (((X.snd.fst).fst).fst,          ((X.snd.fst).fst).snd.fst,          ((X.snd.fst).fst).snd.snd.fst,          ((X.snd.fst).fst).snd.snd.snd), 
+      littleendian (((X.snd.fst).snd.fst).fst,      ((X.snd.fst).snd.fst).snd.fst,      ((X.snd.fst).snd.fst).snd.snd.fst,      ((X.snd.fst).snd.fst).snd.snd.snd),
+      littleendian (((X.snd.fst).snd.snd.fst).fst,  ((X.snd.fst).snd.snd.fst).snd.fst,  ((X.snd.fst).snd.snd.fst).snd.snd.fst,  ((X.snd.fst).snd.snd.fst).snd.snd.snd),
+      littleendian (((X.snd.fst).snd.snd.snd).fst,  ((X.snd.fst).snd.snd.snd).snd.fst,  ((X.snd.fst).snd.snd.snd).snd.snd.fst,  ((X.snd.fst).snd.snd.snd).snd.snd.snd)
+    ),
+    (
+      littleendian (((X.snd.snd.fst).fst).fst,          ((X.snd.snd.fst).fst).snd.fst,          ((X.snd.snd.fst).fst).snd.snd.fst,          ((X.snd.snd.fst).fst).snd.snd.snd), 
+      littleendian (((X.snd.snd.fst).snd.fst).fst,      ((X.snd.snd.fst).snd.fst).snd.fst,      ((X.snd.snd.fst).snd.fst).snd.snd.fst,      ((X.snd.snd.fst).snd.fst).snd.snd.snd),
+      littleendian (((X.snd.snd.fst).snd.snd.fst).fst,  ((X.snd.snd.fst).snd.snd.fst).snd.fst,  ((X.snd.snd.fst).snd.snd.fst).snd.snd.fst,  ((X.snd.snd.fst).snd.snd.fst).snd.snd.snd),
+      littleendian (((X.snd.snd.fst).snd.snd.snd).fst,  ((X.snd.snd.fst).snd.snd.snd).snd.fst,  ((X.snd.snd.fst).snd.snd.snd).snd.snd.fst,  ((X.snd.snd.fst).snd.snd.snd).snd.snd.snd)
+    ),
+    (
+      littleendian (((X.snd.snd.snd).fst).fst,          ((X.snd.snd.snd).fst).snd.fst,          ((X.snd.snd.snd).fst).snd.snd.fst,          ((X.snd.snd.snd).fst).snd.snd.snd), 
+      littleendian (((X.snd.snd.snd).snd.fst).fst,      ((X.snd.snd.snd).snd.fst).snd.fst,      ((X.snd.snd.snd).snd.fst).snd.snd.fst,      ((X.snd.snd.snd).snd.fst).snd.snd.snd),
+      littleendian (((X.snd.snd.snd).snd.snd.fst).fst,  ((X.snd.snd.snd).snd.snd.fst).snd.fst,  ((X.snd.snd.snd).snd.snd.fst).snd.snd.fst,  ((X.snd.snd.snd).snd.snd.fst).snd.snd.snd),
+      littleendian (((X.snd.snd.snd).snd.snd.snd).fst,  ((X.snd.snd.snd).snd.snd.snd).snd.fst,  ((X.snd.snd.snd).snd.snd.snd).snd.snd.fst,  ((X.snd.snd.snd).snd.snd.snd).snd.snd.snd)
+    )
+  )
+
+-- 
+def aument : matrix64Type := (
+  (
+    littleendian_inv Y.fst.fst,
+    littleendian_inv Y.fst.snd.fst,
+    littleendian_inv Y.fst.snd.snd.fst,
+    littleendian_inv Y.fst.snd.snd.snd
+  ),
+  (
+    littleendian_inv Y.snd.fst.fst,
+    littleendian_inv Y.snd.fst.snd.fst,
+    littleendian_inv Y.snd.fst.snd.snd.fst,
+    littleendian_inv Y.snd.fst.snd.snd.snd
+  ),
+  (
+    littleendian_inv Y.snd.snd.fst.fst,
+    littleendian_inv Y.snd.snd.fst.snd.fst,
+    littleendian_inv Y.snd.snd.fst.snd.snd.fst,
+    littleendian_inv Y.snd.snd.fst.snd.snd.snd
+  ),
+  (
+    littleendian_inv Y.snd.snd.snd.fst,
+    littleendian_inv Y.snd.snd.snd.snd.fst,
+    littleendian_inv Y.snd.snd.snd.snd.snd.fst,
+    littleendian_inv Y.snd.snd.snd.snd.snd.snd
+  )
+)
 
 
 end littleendian

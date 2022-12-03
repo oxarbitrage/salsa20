@@ -11,7 +11,7 @@ open rowround
 
 namespace columnround
 
--- An random input matrix to be used as inputs and outputs of `columnround` and `columnround_inv`.
+-- A random input matrix to be used as inputs and outputs of `columnround` and `columnround_inv`.
 variable M : matrixType
 
 --  Without ordering for inputs, a `columnround` is exactly the same as a `rowround`.
