@@ -141,4 +141,91 @@ begin
     rw [xor_assoc, xor_inv, xor_zero],
 end
 
+/-
+  Left invariance of the quarterround function: https://www.iacr.org/archive/fse2008/50860470/50860470.pdf
+
+  We prove each single `qr{0..3}` is invariant to the left and derive that the full quarterround
+  function is left invariant.
+-/
+
+--
+variables A : bitvec word_len
+
+--
+lemma qr1_is_left_invariant (h : A MOD -A = bitvec.zero word_len) : qr1 A (-A) A (-A) = -A := 
+begin
+  unfold qr1,
+  unfold operation_rhs,
+  rw h,
+  rw zero_rotl,
+  unfold operation,
+  rw xor_zero,
+end
+
+--
+lemma qr2_is_left_invariant (h1 : A MOD -A = bitvec.zero word_len) 
+  (h2 : (-A) MOD A = bitvec.zero word_len) : qr2 A (-A) A (-A) = A := 
+begin
+  unfold qr2,
+  rw qr1_is_left_invariant,
+  {
+    unfold operation_rhs,
+    rw h2,
+    unfold operation,
+    rw [zero_rotl, xor_zero],
+  },
+  { exact h1 }
+end
+
+--
+lemma qr3_is_left_invariant (h1 : A MOD (-A) = bitvec.zero word_len) 
+  (h2 : (-A) MOD A = bitvec.zero word_len) : qr3 A (-A) A (-A) = -A := 
+begin
+  unfold qr3,
+  rw [qr1_is_left_invariant, qr2_is_left_invariant],
+  {
+    unfold operation_rhs,
+    rw h1,
+    unfold operation,
+    rw [zero_rotl, xor_zero],
+  },
+  { exact h1 },
+  { exact h2 },
+  { exact h1 }
+end
+
+--
+lemma qr0_is_left_invariant (h1 : A MOD (-A) = bitvec.zero word_len) 
+  (h2 : (-A) MOD A = bitvec.zero word_len) : qr0 A (-A) A (-A) = A := 
+begin
+  unfold qr0,
+  rw [qr3_is_left_invariant, qr2_is_left_invariant],
+  {
+    unfold operation_rhs,
+    rw h2,
+    unfold operation,
+    rw zero_rotl,
+    rw xor_zero,
+  },
+  { exact h1 },
+  { exact h2 },
+  { exact h1 },
+  { exact h2 }
+end
+
+--
+theorem quarterround_is_left_invariant (h1 : A MOD (-A) = bitvec.zero word_len) 
+  (h2 : (-A) MOD A = bitvec.zero word_len) : quarterround (A, -A, A, -A) = (A, -A, A, -A) :=
+begin
+  unfold quarterround,
+  rw [qr0_is_left_invariant, qr1_is_left_invariant, qr2_is_left_invariant, qr3_is_left_invariant],
+  { exact h1 },
+  { exact h2 },
+  { exact h1 },
+  { exact h2 },
+  { exact h1 },
+  { exact h1 },
+  { exact h2 },
+end
+
 end quarterround
