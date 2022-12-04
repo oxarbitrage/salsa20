@@ -64,7 +64,6 @@ def rowround_inv : matrixType :=
     rowround_single_inv M.snd.snd.snd
   )
 
-
 -- For any `rowround` output, we can get back to original values using the defined inverse.
 lemma rowround_is_inv : rowround_inv (rowround M) = M :=
 begin
@@ -74,6 +73,50 @@ begin
   repeat { rw rowround_single_is_inv },
 
   simp only [prod.mk.eta],
+end
+
+/-
+  Left invariance of the rowround function: https://www.iacr.org/archive/fse2008/50860470/50860470.pdf
+
+-/
+
+--
+variables A B C D : bitvec word_len
+
+--
+def input : matrixType := (
+  (A, -A, A, -A),
+  (B, -B, B, -B),
+  (C, -C, C, -C),
+  (D, -D, D, -D)
+)
+
+--
+variable X : bitvec word_len
+
+-- TODO: move this to operations axioms and use them in `quarterround` and here.
+def mod_neg : Prop := ∀ X, X MOD (-X) = ZERO
+def neg_mod : Prop := ∀ X, (-X) MOD X = ZERO
+
+-- `rowround` is left invariant. 
+theorem rowround_is_left_invariant (h1 : mod_neg) (h2 : neg_mod) : rowround (input A B C D) = input A B C D :=
+begin
+  unfold rowround,
+  unfold rowround_single,
+  unfold input,
+  rw [quarterround_is_left_invariant, quarterround_is_left_invariant, quarterround_is_left_invariant, quarterround_is_left_invariant],
+
+  unfold mod_neg at h1,
+  unfold neg_mod at h2,
+
+  { apply h1 },
+  { apply h2 },
+  { apply h1 },
+  { apply h2 },
+  { apply h1 },
+  { apply h2 },
+  { apply h1 },
+  { apply h2 },
 end
 
 end rowround
