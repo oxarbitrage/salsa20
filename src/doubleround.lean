@@ -56,4 +56,56 @@ begin
   simp only [prod.mk.eta],
 end
 
+/-
+  Left invariance of the doubleround function: https://www.iacr.org/archive/fse2008/50860470/50860470.pdf
+
+-/
+
+--
+variable A : bitvec word_len
+
+--
+def input : matrixType := (
+  (A, -A, A, -A),
+  (-A, A, -A, A),
+  (A, -A, A, -A),
+  (-A, A, -A, A)
+)
+
+--
+variable X : bitvec word_len
+
+-- TODO: move this to operations axioms and use them in `quarterround`, `rowround`, `columnround` and here.
+def mod_neg : Prop := ∀ X, X MOD (-X) = ZERO
+def neg_mod : Prop := ∀ X, (-X) MOD X = ZERO
+
+-- `doubleround` is left invariant. 
+theorem doubleround_is_left_invariant (h1 : mod_neg) (h2 : neg_mod) : 
+  doubleround (input A) = input A :=
+begin
+  unfold doubleround,
+
+  unfold columnround,
+  unfold input,
+  unfold utils.columnround_input,
+  unfold utils.columnround_output,
+  unfold utils.rowround_input,
+  unfold utils.rowround_output,
+  unfold mod_neg at h1,
+  unfold neg_mod at h2,
+  unfold rowround,
+  unfold rowround_single,
+
+  -- same proof as `columnround_is_left_invariant`
+  simp only [prod.mk.inj_iff],
+
+  repeat { rw quarterround_is_left_invariant },
+
+  simp only [eq_self_iff_true, and_self],
+
+  any_goals { apply h1 },
+  any_goals { apply h2 },
+end
+
+
 end doubleround
