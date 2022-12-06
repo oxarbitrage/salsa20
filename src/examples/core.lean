@@ -64,5 +64,61 @@ def output'' : matrix64Type := (
 #eval if hash input'' = output'' then "pass" else "fail"
 
 /-
-  Collisions, from appendix https://www.iacr.org/archive/fse2008/50860470/50860470.pdf
+  Test collisions, from appendix https://www.iacr.org/archive/fse2008/50860470/50860470.pdf
 -/
+
+-- test vector 1
+
+def Z : matrixType :=
+  (
+    (0xAAAAAAAA, 0x55555556, 0xAAAAAAAA, 0x55555556),
+    (0x55555556, 0xAAAAAAAA, 0x55555556, 0xAAAAAAAA),
+    (0xAAAAAAAA, 0x55555556, 0xAAAAAAAA, 0x55555556),
+    (0x55555556, 0xAAAAAAAA, 0x55555556, 0xAAAAAAAA)
+  )
+
+def Z' : matrixType :=
+  (
+    (0x2AAAAAAA, 0xD5555556, 0x2AAAAAAA, 0xD5555556),
+    (0xD5555556, 0x2AAAAAAA, 0xD5555556, 0x2AAAAAAA),
+    (0x2AAAAAAA, 0xD5555556, 0x2AAAAAAA, 0xD5555556),
+    (0xD5555556, 0x2AAAAAAA, 0xD5555556, 0x2AAAAAAA)
+  )
+
+def result : matrixType :=
+  (
+    (0x55555554, 0xAAAAAAAC, 0x55555554, 0xAAAAAAAC),
+    (0xAAAAAAAC, 0x55555554, 0xAAAAAAAC, 0x55555554),
+    (0x55555554, 0xAAAAAAAC, 0x55555554, 0xAAAAAAAC),
+    (0xAAAAAAAC, 0x55555554, 0xAAAAAAAC, 0x55555554)
+  )
+
+#eval if (core Z = core Z' ∧ core Z = result) then "pass" else "fail"
+
+-- test vector 2
+
+def W : matrixType :=
+  (
+    (0xFFFFFFFF, 0x00000001, 0xFFFFFFFF, 0x00000001),
+    (0x00000001, 0xFFFFFFFF, 0x00000001, 0xFFFFFFFF),
+    (0xFFFFFFFF, 0x00000001, 0xFFFFFFFF, 0x00000001),
+    (0x00000001, 0xFFFFFFFF, 0x00000001, 0xFFFFFFFF)
+  )
+
+def W' : matrixType :=
+  (
+    (0x7FFFFFFF, 0x80000001, 0x7FFFFFFF, 0x80000001),
+    (0x80000001, 0x7FFFFFFF, 0x80000001, 0x7FFFFFFF),
+    (0x7FFFFFFF, 0x80000001, 0x7FFFFFFF, 0x80000001),
+    (0x80000001, 0x7FFFFFFF, 0x80000001, 0x7FFFFFFF)
+  )
+
+def result' : matrixType :=
+  (
+    (0xFFFFFFFE, 0x00000002, 0xFFFFFFFE, 0x00000002),
+    (0x00000002, 0xFFFFFFFE, 0x00000002, 0xFFFFFFFE),
+    (0xFFFFFFFE, 0x00000002, 0xFFFFFFFE, 0x00000002),
+    (0x00000002, 0xFFFFFFFE, 0x00000002, 0xFFFFFFFE)
+  )
+
+#eval if (core W = core W' ∧ core W = result') then "pass" else "fail"

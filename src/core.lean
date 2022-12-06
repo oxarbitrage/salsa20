@@ -97,7 +97,7 @@ def input : matrixType := (
 --
 variable X : bitvec params.word_len
 
--- TODO: move this to operations axioms and use them in `quarterround`, `rowround`, `columnround` and here.
+-- TODO: move this to operations axioms and use them in `quarterround`, `rowround`, `columnround`, `doubleround` and here.
 def mod_neg : Prop := ∀ X, X MOD (-X) = ZERO
 def neg_mod : Prop := ∀ X, (-X) MOD X = ZERO
 
@@ -115,7 +115,7 @@ begin
   repeat { rw doubleround_is_left_invariant },
   unfold doubleround.input,
   {
-    simp,
+    simp only,
     unfold double_mod at h3,
     unfold double_neg_mod at h4,
     rw h3,
