@@ -12,9 +12,9 @@ open utils
 namespace core
 
 -- Apply double round 10 times to a reduced input.
-def doubleround_10 (X : matrix64Type): matrixType := 
+def doubleround_10 (X : matrixType): matrixType := 
   doubleround $ doubleround $ doubleround $ doubleround $ doubleround $ doubleround $ doubleround 
-    $ doubleround $ doubleround $ doubleround $ reduce X 
+    $ doubleround $ doubleround $ doubleround $ X 
 
 -- Modular 2^32 addition of 4x4 matrices by doing Aᵢⱼ + Bᵢⱼ
 -- The `MOD` operation (modulo 2^32 addition) is the key to make the hash function irreversible.
@@ -47,10 +47,10 @@ def mod_matrix (A B : matrixType) : matrixType := (
 )
 
 -- Do addition modulo 2^32 of the reduced input and the doubleround of the reduced input.
-def hash_inner (X : matrix64Type) : matrixType := mod_matrix (doubleround_10 X) (reduce X)
+def core (X : matrixType) : matrixType := mod_matrix (doubleround_10 X) X
 
 -- Do the hash.
-def hash (X : matrix64Type) : matrix64Type := aument (hash_inner X)
+def hash (X : matrix64Type) : matrix64Type := aument (core (reduce X))
 
 
 /-
@@ -76,6 +76,55 @@ variable hash_inv : matrix64Type → matrix64Type
 -- TODO: prove hash is not bijective.
 -- TODO: prove a non bijective function does not have an inverse.
 axiom hash_has_no_inverse (A : matrix64Type) : ¬ hash'.bijective → ¬hash_inv (hash' A) = A  
+
+
+/-
+  Salsa20 core function can behave as a linear transformation: https://www.iacr.org/archive/fse2008/50860470/50860470.pdf
+
+-/
+
+--
+variable A : bitvec params.word_len
+
+--
+def input : matrixType := (
+  (A, -A, A, -A),
+  (-A, A, -A, A),
+  (A, -A, A, -A),
+  (-A, A, -A, A)
+)
+
+--
+variable X : bitvec params.word_len
+
+-- TODO: move this to operations axioms and use them in `quarterround`, `rowround`, `columnround` and here.
+def mod_neg : Prop := ∀ X, X MOD (-X) = ZERO
+def neg_mod : Prop := ∀ X, (-X) MOD X = ZERO
+
+-- TODO: make this axioms
+def double_mod : Prop := ∀ X, X MOD X = 2 * X
+def double_neg_mod : Prop := ∀ X, (-X) MOD -X = 2 * (-X)
+
+-- `core` behaves as a linear transformation of the form 2 * A. 
+theorem salsa20_core_linear_transformation (h1 : mod_neg) (h2 : neg_mod) (h3 : double_mod) (h4 : double_neg_mod) : 
+  core (doubleround.input A) = 2 * (doubleround.input A) :=
+begin
+  unfold core,
+  unfold doubleround_10,
+  unfold mod_matrix,
+  repeat { rw doubleround_is_left_invariant },
+  unfold doubleround.input,
+  {
+    simp,
+    unfold double_mod at h3,
+    unfold double_neg_mod at h4,
+    rw h3,
+    rw h4,
+    refl,
+  },
+  any_goals { apply h1 },
+  any_goals { apply h2 },
+end
 
 
 end core
