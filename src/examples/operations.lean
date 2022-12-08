@@ -16,4 +16,13 @@ open operations
 -- example rotl
 #eval if (rotl (bitvec.of_nat 32 0xc0a8787e) 5).to_nat = 0x150f0fd8 then "pass" else "fail"
 
--- TODO: inverse examples
+-- Inverse examples
+
+-- example xor:
+#eval if bitvec.xor (bitvec.of_nat 32 0x5f796e63) (bitvec.of_nat 32 0x9fd1161d) = 0xc0a8787e
+  then "pass" else "fail"
+
+-- mod does not have an inverse
+
+-- example rotl
+#eval if (rotl_inv (bitvec.of_nat 32 0x150f0fd8) 5).to_nat = 0xc0a8787e then "pass" else "fail"

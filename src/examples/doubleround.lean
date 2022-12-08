@@ -46,4 +46,11 @@ def output' : matrixType :=
 
 #eval if doubleround input' = output' then "pass" else "fail"
 
--- TODO : inverse examples
+-- Inverse examples, we use the same test vectors as the spec but going backwards.
+
+-- example 1
+#eval if doubleround_inv output = input then "pass" else "fail"
+
+-- example 2
+#eval if doubleround_inv output' = input' then "pass" else "fail"
+

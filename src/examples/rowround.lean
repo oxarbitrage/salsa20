@@ -32,19 +32,25 @@ def output : matrixType :=
 def input' : matrixType :=
   (
     (0x08521bd6, 0x1fe88837, 0xbb2aa576, 0x3aa26365),
-    (0x2fc74c2f, 0x6dd39cc3, 0xda0a64f6, 0xc54c6a5b),
-    (0x06b35f61, 0x41e4732e, 0x90a2f23d, 0x067f95a6),
-    (0xbc6e965a, 0xe859c100, 0xea4d84b7, 0x0f619bff)
+    (0xc54c6a5b, 0x2fc74c2f, 0x6dd39cc3, 0xda0a64f6),
+    (0x90a2f23d, 0x067f95a6, 0x06b35f61, 0x41e4732e),
+    (0xe859c100, 0xea4d84b7, 0x0f619bff, 0xbc6e965a)
   )
 
 def output' : matrixType :=
   (
     (0xa890d39d, 0x65d71596, 0xe9487daa, 0xc8ca6a86),
-    (0x764b7754, 0xe408d9b9, 0x7a41b4d1, 0x949d2192),
-    (0x50669f96, 0xd89ef0a8, 0x3402e183, 0x3c3af432),
-    (0x1818882d, 0x0040ede5, 0xb545fbce, 0xd257ed4f)
+    (0x949d2192, 0x764b7754, 0xe408d9b9, 0x7a41b4d1),
+    (0x3402e183, 0x3c3af432, 0x50669f96, 0xd89ef0a8),
+    (0x0040ede5, 0xb545fbce, 0xd257ed4f, 0x1818882d)
   )
 
-#eval if rowround input' = output' then "pass" else "fail"
+#eval if rowround_output (rowround (rowround_input input')) = output' then "pass" else "fail"
 
--- TODO: inverse examples
+-- Inverse examples, using the same test vectors as the spec but going backwards.
+
+-- example1
+#eval if rowround_output (rowround_inv (rowround_input output)) = input then "pass" else "fail"
+
+-- example2
+#eval if rowround_output (rowround_inv (rowround_input output')) = input' then "pass" else "fail"

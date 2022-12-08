@@ -47,4 +47,11 @@ def output' : matrixType :=
 
 #eval if columnround_output (columnround (columnround_input input')) = output' then "pass" else "fail"
 
--- TODO: inverse examples
+-- Inverse examples, we use the same test vectors as the spec but going backwards.
+
+-- example 1
+#eval if columnround_output (columnround_inv (columnround_input output)) = input then "pass" else "fail"
+
+-- example 2
+#eval if columnround_output (columnround_inv (columnround_input output')) = input' then "pass" else "fail"
+
