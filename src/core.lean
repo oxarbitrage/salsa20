@@ -212,20 +212,18 @@ begin
 
       unfold output,
 
-      have h7 : 2 * (Z' z) = 2 * (Z z) := 
-      begin
+      have h7 : 2 * (Z' z) = 2 * (Z z),
+      {
         rw modular_magic,
         { exact h1 },
-        { exact h2 }
-      end
-      ,
-      have h8 : 2 * (-Z' z) = 2 * (-Z z) := 
-      begin
+        { exact h2 },
+      },
+      have h8 : 2 * (-Z' z) = 2 * (-Z z),
+      {
         rw modular_magic,
         { exact h3 },
         { exact h4 },
-      end,
-      
+      },
       rw h7,
       rw h8,
     },
