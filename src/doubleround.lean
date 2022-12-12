@@ -21,7 +21,6 @@ variable M : matrixType
 def doubleround : matrixType := 
   rowround_output $ rowround $ rowround_input $ columnround_output $ columnround $ columnround_input M
 
-
 --  doubleround_inv(x) = columnround_inv(rowround_inv(x))
 def doubleround_inv : matrixType := 
   columnround_output $ columnround_inv $ columnround_input $ rowround_output $ rowround_inv $ rowround_input M
@@ -84,7 +83,6 @@ theorem doubleround_is_left_invariant (h1 : mod_neg) (h2 : neg_mod) :
   doubleround (input A) = input A :=
 begin
   unfold doubleround,
-
   unfold columnround,
   unfold input,
   unfold utils.columnround_input,
