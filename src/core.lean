@@ -157,15 +157,14 @@ axiom mod_mul (A : bitvec 32) : A MOD A = 2 * A
 variables A₀ A₁ A₂ A₃ A₄ A₅ A₆ A₇ A₈ A₉ A₁₀ A₁₁ A₁₂ A₁₃ A₁₄ A₁₅ : bitvec 32 
 
 -- Distribute 2 * Matrix.
--- TODO: looks like it should be easy enough to be proved instead.
-axiom matrix_distribute_two :
+lemma matrix_distribute_two :
   2 * ((A₀, A₁, A₂, A₃), (A₄, A₅, A₆, A₇), (A₈, A₉, A₁₀, A₁₁), (A₁₂, A₁₃, A₁₄, A₁₅)) = 
-(
-  (2 * A₀, 2 * A₁, 2 * A₂, 2 * A₃),
-  (2 * A₄, 2 * A₅, 2 * A₆, 2 * A₇),
-  (2 * A₈, 2 * A₉, 2 * A₁₀, 2 * A₁₁),
-  (2 * A₁₂, 2 * A₁₃, 2 * A₁₄, 2 * A₁₅)
-)
+  (
+    (2 * A₀, 2 * A₁, 2 * A₂, 2 * A₃),
+    (2 * A₄, 2 * A₅, 2 * A₆, 2 * A₇),
+    (2 * A₈, 2 * A₉, 2 * A₁₀, 2 * A₁₁),
+    (2 * A₁₂, 2 * A₁₃, 2 * A₁₄, 2 * A₁₅)
+  ) := rfl
 
 -- The MOD sum of two equal matrices X is 2 times X. 
 lemma mod_matrix_double : mod_matrix X X = 2 * X :=
@@ -182,12 +181,14 @@ begin
 end
 
 -- An output of a `core` function where the inputs were collision inputs.
-def output : matrixType := (
-  (2 * Z z, 2 *-Z z, 2 * Z z, 2 * -Z z),
-  (2 *-Z z, 2 * Z z, 2 *-Z z, 2 * Z z),
-  (2 * Z z, 2 *-Z z, 2 * Z z, 2 * -Z z),
-  (2 *-Z z, 2 * Z z, 2 *-Z z, 2 * Z z)
-)
+def output : matrixType := do 
+  let x := Z z,
+  (
+    (2 * x, 2 *-x, 2 * x, 2 * -x),
+    (2 *-x, 2 * x, 2 *-x, 2 * x),
+    (2 * x, 2 *-x, 2 * x, 2 * -x),
+    (2 *-x, 2 * x, 2 *-x, 2 * x)
+  )
 
 --
 theorem collision 
@@ -204,11 +205,15 @@ begin
       rw mod_matrix_double,
       unfold doubleround.input,
 
+      -- aliases for `Z' z` and `-(Z' z)`
+      let x' := Z' z,
+      let neg_x' := -(Z' z),
+
       rw matrix_distribute_two 
-        (Z' z)  (-Z' z) (Z' z)  (-Z' z)
-        (-Z' z) (Z' z)  (-Z' z) (Z' z)
-        (Z' z)  (-Z' z) (Z' z)  (-Z' z)
-        (-Z' z) (Z' z)  (-Z' z) (Z' z),
+        x'      neg_x'    x'      neg_x'
+        neg_x'  x'        neg_x'  x'
+        x'      neg_x'    x'      neg_x'
+        neg_x'  x'        neg_x'  x',
 
       unfold output,
 
@@ -236,11 +241,15 @@ begin
       rw mod_matrix_double,
       unfold doubleround.input,
 
+      -- aliases for `Z z` and `-(Z z)`
+      let x := Z z,
+      let neg_x := -(Z z),
+
       rw matrix_distribute_two 
-        (Z z)  (-Z z) (Z z)  (-Z z)
-        (-Z z) (Z z)  (-Z z) (Z z)
-        (Z z)  (-Z z) (Z z)  (-Z z)
-        (-Z z) (Z z)  (-Z z) (Z z),
+        x     neg_x   x     neg_x
+        neg_x x       neg_x x
+        x     neg_x   x     neg_x
+        neg_x x       neg_x x,
 
       unfold output,
     },
