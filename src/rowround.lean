@@ -34,7 +34,7 @@ def rowround_single_inv : vecType :=
   )
 
 -- Each row is invertible.
-lemma rowround_single_is_inv : rowround_single_inv (rowround_single R) = R :=
+@[simp] lemma rowround_single_is_inv : rowround_single_inv (rowround_single R) = R :=
 begin
   unfold rowround_single_inv,
   unfold rowround_single,
@@ -65,7 +65,7 @@ def rowround_inv : matrixType :=
   )
 
 -- For any `rowround` output, we can get back to original values using the defined inverse.
-lemma rowround_is_inv : rowround_inv (rowround M) = M :=
+@[simp] lemma rowround_is_inv : rowround_inv (rowround M) = M :=
 begin
   unfold rowround_inv,
   unfold rowround,
@@ -94,29 +94,16 @@ def input : matrixType := (
 --
 variable X : bitvec word_len
 
--- TODO: move this to operations axioms and use them in `quarterround` and here.
-def mod_neg : Prop := ∀ X, X MOD (-X) = ZERO
-def neg_mod : Prop := ∀ X, (-X) MOD X = ZERO
-
 -- `rowround` is left invariant. 
-theorem rowround_is_left_invariant (h1 : mod_neg) (h2 : neg_mod) : rowround (input A B C D) = input A B C D :=
+@[simp] theorem rowround_is_left_invariant : rowround (input A B C D) = input A B C D :=
 begin
   unfold rowround,
   unfold rowround_single,
   unfold input,
-  rw [quarterround_is_left_invariant, quarterround_is_left_invariant, quarterround_is_left_invariant, quarterround_is_left_invariant],
-
-  unfold mod_neg at h1,
-  unfold neg_mod at h2,
-
-  { apply h1 },
-  { apply h2 },
-  { apply h1 },
-  { apply h2 },
-  { apply h1 },
-  { apply h2 },
-  { apply h1 },
-  { apply h2 },
+  simp only [
+    quarterround_is_left_invariant, quarterround_is_left_invariant, 
+    quarterround_is_left_invariant, quarterround_is_left_invariant
+  ],
 end
 
 end rowround

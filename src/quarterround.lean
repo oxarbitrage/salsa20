@@ -55,7 +55,7 @@ def quarterround_inv (seq : vecType) := (
 )
 
 -- The quarterround operation is fully invertible.
-lemma quarterround_is_invertible : 
+@[simp] lemma quarterround_is_invertible : 
   qr0_inv (qr0 a b c d) (qr1 a b c d) (qr2 a b c d) (qr3 a b c d) = a ∧
   qr3_inv (qr0 a b c d) (qr1 a b c d) (qr2 a b c d) (qr3 a b c d) = d ∧ 
   qr2_inv (qr0 a b c d) (qr1 a b c d) (qr2 a b c d) (qr3 a b c d) = c ∧
@@ -66,32 +66,32 @@ begin
   {
     rw [qr0, qr1, qr2, qr3, qr0_inv],
     unfold operation,
-    rw [xor_assoc, xor_inv, xor_zero],
+    simp only [xor_assoc, xor_inv, xor_zero],
   },
   {
     split,
     {
-      rw [qr0, qr3, qr2, qr1, qr3_inv], -- order of rewrites is important here
+      rw [qr0, qr3, qr2, qr1, qr3_inv],
       unfold operation,
-      rw [xor_assoc, xor_inv, xor_zero],
+      simp only [xor_assoc, xor_inv, xor_zero],
     },
     {
       split,
       {
         rw [qr0, qr3, qr2, qr1, qr2_inv, qr0_inv],
         unfold operation,
-        rw [xor_assoc, xor_assoc, xor_inv, xor_zero, xor_inv, xor_zero],
+        simp only [xor_assoc, xor_assoc, xor_inv, xor_zero, xor_inv, xor_zero],
       },
 
       rw [qr0, qr3, qr2, qr1, qr1_inv, qr0_inv, qr3_inv],
       unfold operation,
-      rw [xor_assoc, xor_assoc, xor_inv, xor_zero, xor_assoc, xor_inv, xor_zero, xor_inv, xor_zero],
+      simp only [xor_assoc, xor_assoc, xor_inv, xor_zero, xor_assoc, xor_inv, xor_zero, xor_inv, xor_zero],
     }
   }
 end
 
 -- Inverse of quarterround exists.
-lemma inverse_exists : ∀ (a b c d : bitvec word_len), ∃ (a' b' c' d' : bitvec word_len), 
+@[simp] lemma inverse_exists : ∀ (a b c d : bitvec word_len), ∃ (a' b' c' d' : bitvec word_len), 
   quarterround_inv (a', b', c', d') = (a, b, c, d) :=
 begin
   intros h1 h2 h3 h4,
@@ -102,43 +102,39 @@ begin
   unfold quarterround_inv,
   rw [qr0, qr1, qr2, qr3, qr0_inv, qr1_inv, qr2_inv, qr3_inv, qr1, qr2, qr0_inv, qr1],
   unfold operation,
-  repeat { rw xor_assoc },
-  repeat { rw xor_inv, rw xor_zero },
+  simp only [xor_assoc, xor_inv, xor_zero],
 end
 
-lemma qr0_is_inv : 
+@[simp] lemma qr0_is_inv : 
   qr0_inv (qr0 a b c d) (qr1 a b c d) (qr2 a b c d) (qr3 a b c d) = a :=
 begin
-  
     rw [qr0, qr1, qr2, qr3, qr0_inv],
     unfold operation,
-    rw [xor_assoc, xor_inv, xor_zero],
+    simp only [xor_assoc, xor_inv, xor_zero],
 end
 
-lemma qr1_is_inv : 
+@[simp] lemma qr1_is_inv : 
   qr1_inv (qr0 a b c d) (qr1 a b c d) (qr2 a b c d) (qr3 a b c d) = b :=
-begin
-  
+begin  
     rw [qr0, qr1, qr2, qr3, qr1_inv, qr0_inv, qr2, qr1, qr3_inv],
     unfold operation,
-    rw [xor_assoc, xor_assoc, xor_assoc, xor_inv, xor_inv, xor_zero, xor_zero, xor_inv, xor_zero]
+    simp only [xor_assoc, xor_assoc, xor_assoc, xor_inv, xor_inv, xor_zero, xor_zero, xor_inv, xor_zero]
 end
 
-lemma qr2_is_inv : 
+@[simp] lemma qr2_is_inv : 
   qr2_inv (qr0 a b c d) (qr1 a b c d) (qr2 a b c d) (qr3 a b c d) = c :=
 begin
-  
     rw [qr0, qr1, qr2, qr3, qr2_inv, qr0_inv, qr2, qr1],
     unfold operation,
-    rw [xor_assoc, xor_assoc, xor_inv, xor_zero, xor_inv, xor_zero],
+    simp only [xor_assoc, xor_assoc, xor_inv, xor_zero, xor_inv, xor_zero],
 end
 
-lemma qr3_is_inv : 
+@[simp] lemma qr3_is_inv : 
   qr3_inv (qr0 a b c d) (qr1 a b c d) (qr2 a b c d) (qr3 a b c d) = d :=
 begin
     rw [qr0, qr1, qr2, qr3, qr3_inv, qr2, qr1],
     unfold operation,
-    rw [xor_assoc, xor_inv, xor_zero],
+    simp only [xor_assoc, xor_inv, xor_zero],
 end
 
 /-
@@ -152,80 +148,53 @@ end
 variables A : bitvec word_len
 
 --
-lemma qr1_is_left_invariant (h : A MOD -A = bitvec.zero word_len) : qr1 A (-A) A (-A) = -A := 
+@[simp] lemma qr1_is_left_invariant : qr1 A (-A) A (-A) = -A := 
 begin
   unfold qr1,
   unfold operation_rhs,
-  rw h,
-  rw zero_rotl,
   unfold operation,
-  rw xor_zero,
+  simp only [mod_neg, zero_rotl, xor_zero],
 end
 
 --
-lemma qr2_is_left_invariant (h1 : A MOD -A = bitvec.zero word_len) 
-  (h2 : (-A) MOD A = bitvec.zero word_len) : qr2 A (-A) A (-A) = A := 
+@[simp] lemma qr2_is_left_invariant : qr2 A (-A) A (-A) = A := 
 begin
   unfold qr2,
   rw qr1_is_left_invariant,
-  {
-    unfold operation_rhs,
-    rw h2,
-    unfold operation,
-    rw [zero_rotl, xor_zero],
-  },
-  { exact h1 }
+  unfold operation_rhs,
+  unfold operation,
+  simp only [neg_mod, zero_rotl, xor_zero],
 end
 
 --
-lemma qr3_is_left_invariant (h1 : A MOD (-A) = bitvec.zero word_len) 
-  (h2 : (-A) MOD A = bitvec.zero word_len) : qr3 A (-A) A (-A) = -A := 
+@[simp] lemma qr3_is_left_invariant : qr3 A (-A) A (-A) = -A := 
 begin
   unfold qr3,
   rw [qr1_is_left_invariant, qr2_is_left_invariant],
-  {
-    unfold operation_rhs,
-    rw h1,
-    unfold operation,
-    rw [zero_rotl, xor_zero],
-  },
-  { exact h1 },
-  { exact h2 },
-  { exact h1 }
+  
+  unfold operation_rhs,
+  unfold operation,
+    
+  rw [mod_neg, zero_rotl, xor_zero],
 end
 
 --
-lemma qr0_is_left_invariant (h1 : A MOD (-A) = bitvec.zero word_len) 
-  (h2 : (-A) MOD A = bitvec.zero word_len) : qr0 A (-A) A (-A) = A := 
+@[simp] lemma qr0_is_left_invariant : qr0 A (-A) A (-A) = A := 
 begin
   unfold qr0,
   rw [qr3_is_left_invariant, qr2_is_left_invariant],
-  {
-    unfold operation_rhs,
-    rw h2,
-    unfold operation,
-    rw zero_rotl,
-    rw xor_zero,
-  },
-  { exact h1 },
-  { exact h2 },
-  { exact h1 },
-  { exact h2 }
+  
+  unfold operation_rhs,
+  unfold operation,
+    
+  simp only [neg_mod, zero_rotl, xor_zero],
 end
 
 --
-theorem quarterround_is_left_invariant (h1 : A MOD (-A) = bitvec.zero word_len) 
-  (h2 : (-A) MOD A = bitvec.zero word_len) : quarterround (A, -A, A, -A) = (A, -A, A, -A) :=
+@[simp] theorem quarterround_is_left_invariant : quarterround (A, -A, A, -A) = (A, -A, A, -A) :=
 begin
   unfold quarterround,
-  rw [qr0_is_left_invariant, qr1_is_left_invariant, qr2_is_left_invariant, qr3_is_left_invariant],
-  { exact h1 },
-  { exact h2 },
-  { exact h1 },
-  { exact h2 },
-  { exact h1 },
-  { exact h1 },
-  { exact h2 },
+  simp only [qr0_is_left_invariant, qr1_is_left_invariant, qr2_is_left_invariant, qr3_is_left_invariant],
 end
 
 end quarterround

@@ -60,14 +60,10 @@ axiom hash_has_no_inverse (A : matrix64Type) : ¬ hash'.bijective → ¬hash_inv
 variable A : bitvec params.word_len
 
 -- `doubleround_10` is left invariant. 
-theorem doubleround_10_is_left_invariant (h1 : mod_neg) (h2 : neg_mod) : 
-  doubleround_10 (doubleround.input A) = doubleround.input A :=
+@[simp] theorem doubleround_10_is_left_invariant : doubleround_10 (doubleround.input A) = doubleround.input A :=
 begin
   unfold doubleround_10,
-  repeat { rw doubleround_is_left_invariant },
-
-  any_goals { apply h1 },
-  any_goals { apply h2 },
+  simp only [doubleround_is_left_invariant],
 end
 
 
@@ -76,33 +72,16 @@ end
 
 -/
 
--- TODO: move this to operations axioms and use them in `quarterround`, `rowround`, `columnround`, `doubleround` and here.
-def mod_neg : Prop := ∀ A, A MOD (-A) = ZERO
-def neg_mod : Prop := ∀ A, (-A) MOD A = ZERO
-
--- TODO: make this axioms
-def double_mod : Prop := ∀ A, A MOD A = 2 * A
-def double_neg_mod : Prop := ∀ A, (-A) MOD -A = 2 * (-A)
-
 -- `core` behaves as a linear transformation of the form 2 * A. 
-theorem salsa20_core_linear_transformation (h1 : mod_neg) (h2 : neg_mod) (h3 : double_mod) (h4 : double_neg_mod) : 
-  core (doubleround.input A) = 2 * (doubleround.input A) :=
+@[simp] theorem salsa20_core_linear_transformation : core (doubleround.input A) = 2 * (doubleround.input A) :=
 begin
   unfold core,
   unfold doubleround_10,
   unfold mod_matrix,
   repeat { rw doubleround_is_left_invariant },
   unfold doubleround.input,
-  {
-    simp only,
-    unfold double_mod at h3,
-    unfold double_neg_mod at h4,
-    rw h3,
-    rw h4,
-    refl,
-  },
-  any_goals { apply h1 },
-  any_goals { apply h2 },
+  simp only [double_mod],
+  refl,
 end
 
 /-
@@ -117,17 +96,11 @@ def Z' : bitvec 32 := (Z z) MOD bitvec.of_nat 32 (2^31)
 
 variable X : matrixType
 
-variables a b : bitvec 32
-def two_31 := bitvec.of_nat 32 (2^31)
-
-axiom modular_magic (h1 : a < two_31) (h2 : b = a MOD two_31) : 2 * a = 2 * b
-axiom mod_mul (A : bitvec 32) : A MOD A = 2 * A
-
 -- Have 16 random numbers.
 variables A₀ A₁ A₂ A₃ A₄ A₅ A₆ A₇ A₈ A₉ A₁₀ A₁₁ A₁₂ A₁₃ A₁₄ A₁₅ : bitvec 32 
 
 -- Distribute 2 * Matrix.
-lemma matrix_distribute_two :
+@[simp] lemma matrix_distribute_two :
   2 * ((A₀, A₁, A₂, A₃), (A₄, A₅, A₆, A₇), (A₈, A₉, A₁₀, A₁₁), (A₁₂, A₁₃, A₁₄, A₁₅)) = 
   (
     (2 * A₀, 2 * A₁, 2 * A₂, 2 * A₃),
@@ -137,10 +110,10 @@ lemma matrix_distribute_two :
   ) := rfl
 
 -- The MOD sum of two equal matrices X is 2 times X. 
-lemma mod_matrix_double : mod_matrix X X = 2 * X :=
+@[simp] lemma mod_matrix_double : mod_matrix X X = 2 * X :=
 begin
   unfold mod_matrix,
-  repeat { rw mod_mul },
+  simp only [mod_self],
 
   rw ← matrix_distribute_two 
     X.fst.fst         X.fst.snd.fst         X.fst.snd.snd.fst         X.fst.snd.snd.snd
@@ -161,10 +134,8 @@ def output : matrixType := do
   )
 
 --
-theorem collision 
-  (h1 : Z' z < two_31) (h2 : Z z = Z' z MOD two_31) (h3 : -Z' z < two_31) (h4 : -Z z = (-Z' z) MOD two_31)
-  (h5 : doubleround.mod_neg) (h6 : doubleround.neg_mod) : 
-  
+@[simp] theorem collision 
+  (h1 : Z' z < two_31) (h2 : Z z = Z' z MOD two_31) (h3 : -Z' z < two_31) (h4 : -Z z = (-Z' z) MOD two_31) :
   core (doubleround.input (Z' z)) = output z ∧ core (doubleround.input (Z z)) = output z :=
 begin
   unfold core,
@@ -187,23 +158,21 @@ begin
 
       unfold output,
 
-      have h7 : 2 * (Z' z) = 2 * (Z z),
+      have h5 : 2 * (Z' z) = 2 * (Z z),
       {
         rw modular_magic,
         { exact h1 },
         { exact h2 },
       },
-      have h8 : 2 * (-Z' z) = 2 * (-Z z),
+      have h6 : 2 * (-Z' z) = 2 * (-Z z),
       {
         rw modular_magic,
         { exact h3 },
         { exact h4 },
       },
-      rw h7,
-      rw h8,
+      rw h5,
+      rw h6,
     },
-    { exact h5 },
-    { exact h6 }
   },
   {
     rw doubleround_10_is_left_invariant,
@@ -223,10 +192,8 @@ begin
 
       unfold output,
     },
-    { exact h5 },
-    { exact h6 },
   }
-
 end
+
 
 end core

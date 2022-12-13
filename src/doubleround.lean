@@ -26,7 +26,7 @@ def doubleround_inv : matrixType :=
   columnround_output $ columnround_inv $ columnround_input $ rowround_output $ rowround_inv $ rowround_input M
 
 -- For any `doubleround` output, we can get back to original values using the defined inverse.
-lemma doubleround_is_inv : doubleround_inv (doubleround M) = M :=
+@[simp] lemma doubleround_is_inv : doubleround_inv (doubleround M) = M :=
 begin
   unfold doubleround_inv,
   unfold doubleround,
@@ -74,13 +74,8 @@ def input : matrixType := (
 --
 variable X : bitvec word_len
 
--- TODO: move this to operations axioms and use them in `quarterround`, `rowround`, `columnround` and here.
-def mod_neg : Prop := ∀ X, X MOD (-X) = ZERO
-def neg_mod : Prop := ∀ X, (-X) MOD X = ZERO
-
 -- `doubleround` is left invariant. 
-theorem doubleround_is_left_invariant (h1 : mod_neg) (h2 : neg_mod) : 
-  doubleround (input A) = input A :=
+@[simp] theorem doubleround_is_left_invariant : doubleround (input A) = input A :=
 begin
   unfold doubleround,
   unfold columnround,
@@ -89,8 +84,6 @@ begin
   unfold utils.columnround_output,
   unfold utils.rowround_input,
   unfold utils.rowround_output,
-  unfold mod_neg at h1,
-  unfold neg_mod at h2,
   unfold rowround,
   unfold rowround_single,
 
@@ -100,9 +93,6 @@ begin
   repeat { rw quarterround_is_left_invariant },
 
   simp only [eq_self_iff_true, and_self],
-
-  any_goals { apply h1 },
-  any_goals { apply h2 },
 end
 
 

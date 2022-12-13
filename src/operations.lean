@@ -49,6 +49,14 @@ axiom inv_rotl_self : a ROTL⁻¹ shift = a
 -- MOD axioms
 
 axiom zero_mod : ZERO MOD a = a
+axiom mod_neg : a MOD -a = bitvec.zero word_len
+axiom neg_mod : (-a) MOD a = bitvec.zero word_len
+axiom double_mod : ∀ a, a MOD a = 2 * a
+axiom double_neg_mod : ∀ a, (-a) MOD -a = 2 * (-a)
+
+def two_31 := bitvec.of_nat word_len (2^31)
+axiom modular_magic (h1 : a < two_31) (h2 : b = a MOD two_31) : 2 * a = 2 * b
+axiom mod_self : a MOD a = 2 * a
 
 -- XOR axioms
 
@@ -56,6 +64,10 @@ axiom zero_xor : ZERO XOR a = a
 axiom xor_zero : a XOR ZERO = a
 axiom xor_inv : a XOR a  = ZERO
 axiom xor_assoc : (a XOR b) XOR c = a XOR (b XOR c)
+
+-- Tag all axioms with simp
+attribute [simp] zero_rotl inv_rotl_self zero_mod mod_neg neg_mod double_mod 
+  double_neg_mod modular_magic mod_self zero_xor xor_zero xor_inv xor_assoc
 
 -- We split the operation in 2 terms, one at each side of the XOR. This is the left hand side.
 def operation_rhs : bitvec word_len := (b MOD c) ROTL shift
@@ -74,13 +86,13 @@ variables a' b' c' : bitvec word_len
 variable shift' : ℕ
 
 -- Two operations are equal if both sides of the XOR are equal.
-lemma op_eq (h : a = a' ∧ b = b') :  a OP b = a' OP b' :=
+@[simp] lemma op_eq (h : a = a' ∧ b = b') :  a OP b = a' OP b' :=
 begin
   finish,
 end
 
 -- Two operations are different if any side of the XOR is different.
-lemma op_neq (h : a OP b ≠ a' OP b') : a ≠ a' ∨ b ≠ b' :=
+@[simp] lemma op_neq (h : a OP b ≠ a' OP b') : a ≠ a' ∨ b ≠ b' :=
 begin
   finish,
 end
@@ -89,7 +101,7 @@ end
 lemma operation_inverse (d : bitvec word_len) : (a OP b) OP b = a :=
 begin
   unfold operation,
-  rw [xor_assoc, xor_inv, xor_zero],
+  simp only [xor_assoc, xor_inv, xor_zero],
 end
 
 end operations
