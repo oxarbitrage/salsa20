@@ -23,10 +23,6 @@ def rotl_inv : bitvec word_len → ℕ → bitvec word_len
 def mod : bitvec word_len → bitvec word_len → bitvec word_len
 | a b := (bitvec.and (a + b) (max_bitvec))
 
--- The inverse of the `mod` operation.
-def mod_inv : bitvec word_len → bitvec word_len → bitvec word_len
-| a b := (bitvec.and (a - b) (max_bitvec))
-
 -- Just bitwise xor.
 def xor : bitvec word_len → bitvec word_len → bitvec word_len
 | a b := a.xor b
@@ -38,7 +34,6 @@ infix     ` ROTL `  : 90  := rotl
 infix     ` ROTL⁻¹ `: 90  := rotl_inv
 
 infix     ` MOD `   : 90  := mod
-infix     ` MOD⁻¹ ` : 90  := mod_inv
 
 infix     ` XOR `   : 90  := xor
 
@@ -54,7 +49,6 @@ axiom inv_rotl_self : a ROTL⁻¹ shift = a
 -- MOD axioms
 
 axiom zero_mod : ZERO MOD a = a
-axiom inv_mod_self : a MOD⁻¹ (a MOD b) = a
 
 -- XOR axioms
 
@@ -74,18 +68,6 @@ def operation : bitvec word_len → bitvec word_len → bitvec word_len
 
 infix   ` OP `   : 90   := operation
 notation `OP_RHS`       := operation_rhs
-
--- The finite set of all the possible values a bitvector can be.
-def S : set (bitvec word_len) := {n : (bitvec word_len) | n ≤ max_bitvec}
-
--- All bitvectors are in the set.
-axiom bitvector_in_set : ∀ a, a ∈ S
-
--- The right hand side of the operation is in the set.
-lemma rhs_is_in_set : OP_RHS b c shift ∈ S :=
-begin
-  apply bitvector_in_set,
-end
 
 -- More random bitvectors and another random shift value for equality proofs.
 variables a' b' c' : bitvec word_len
