@@ -18,36 +18,6 @@ def doubleround_10 (X : matrixType): matrixType :=
   doubleround $ doubleround $ doubleround $ doubleround $ doubleround $ doubleround $ doubleround 
     $ doubleround $ doubleround $ doubleround $ X
 
--- Modular 2^32 addition of 4x4 matrices by doing Aᵢⱼ + Bᵢⱼ
--- The `MOD` operation (modulo 2^32 addition) is the key to make the hash function irreversible.
--- Everything is reversible except for this addition.
-def mod_matrix (A B : matrixType) : matrixType := (
-  (
-    A.fst.fst          MOD B.fst.fst,
-    A.fst.snd.fst      MOD B.fst.snd.fst,
-    A.fst.snd.snd.fst  MOD B.fst.snd.snd.fst,
-    A.fst.snd.snd.snd  MOD B.fst.snd.snd.snd
-  ),
-  (
-    A.snd.fst.fst          MOD B.snd.fst.fst,
-    A.snd.fst.snd.fst      MOD B.snd.fst.snd.fst,
-    A.snd.fst.snd.snd.fst  MOD B.snd.fst.snd.snd.fst,
-    A.snd.fst.snd.snd.snd  MOD B.snd.fst.snd.snd.snd
-  ),
-  (
-    A.snd.snd.fst.fst          MOD B.snd.snd.fst.fst,
-    A.snd.snd.fst.snd.fst      MOD B.snd.snd.fst.snd.fst,
-    A.snd.snd.fst.snd.snd.fst  MOD B.snd.snd.fst.snd.snd.fst,
-    A.snd.snd.fst.snd.snd.snd  MOD B.snd.snd.fst.snd.snd.snd
-  ),
-  (
-    A.snd.snd.snd.fst          MOD B.snd.snd.snd.fst,
-    A.snd.snd.snd.snd.fst      MOD B.snd.snd.snd.snd.fst,
-    A.snd.snd.snd.snd.snd.fst  MOD B.snd.snd.snd.snd.snd.fst,
-    A.snd.snd.snd.snd.snd.snd  MOD B.snd.snd.snd.snd.snd.snd
-  )
-)
-
 -- Do addition modulo 2^32 of the reduced input and the doubleround of the reduced input.
 def core (X : matrixType) : matrixType := mod_matrix (doubleround_10 X) X
 

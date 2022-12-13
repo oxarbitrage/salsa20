@@ -2,22 +2,24 @@
   Utility types and functions
 -/
 
+import operations
 import params
 
+open operations
 open params
 
 namespace utils
 
 -- We define a row or a column to be a tuple of 4 bit vectors.
--- This is the input and output of the `quarterround` function. 
 notation `vecType` := (bitvec word_len) × (bitvec word_len) × (bitvec word_len) × (bitvec word_len) 
 
--- A 16 elements matrix type used as `rowround` and `rowround_inv` input and output.
+-- A 16 elements matrix type.
 notation `matrixType` := vecType × vecType × vecType × vecType
 
--- 
+-- A 64 elements matrix type.
 notation `matrix64Type` := matrixType × matrixType × matrixType × matrixType
 
+-- 
 variable M : matrixType
 
 /-
@@ -61,7 +63,6 @@ def rowround_input : matrixType :=
   (z₄, z₅, z₆, z₇)
   (z₈, z₉, z₁₀, z₁₁)
   (z₁₂, z₁₃, z₁₄, z₁₅)
-
 -/
 def rowround_output : matrixType :=
   (
@@ -136,5 +137,37 @@ begin
   unfold columnround_output,
   simp only [prod.mk.eta],
 end
+
+
+-- Modular 2^32 addition of 4x4 matrices by doing Aᵢⱼ + Bᵢⱼ
+-- The `MOD` operation (modulo 2^32 addition) is the key to make the salsa20 hash function irreversible.
+-- Everything is reversible except for this addition.
+def mod_matrix (A B : matrixType) : matrixType := (
+  (
+    A.fst.fst          MOD B.fst.fst,
+    A.fst.snd.fst      MOD B.fst.snd.fst,
+    A.fst.snd.snd.fst  MOD B.fst.snd.snd.fst,
+    A.fst.snd.snd.snd  MOD B.fst.snd.snd.snd
+  ),
+  (
+    A.snd.fst.fst          MOD B.snd.fst.fst,
+    A.snd.fst.snd.fst      MOD B.snd.fst.snd.fst,
+    A.snd.fst.snd.snd.fst  MOD B.snd.fst.snd.snd.fst,
+    A.snd.fst.snd.snd.snd  MOD B.snd.fst.snd.snd.snd
+  ),
+  (
+    A.snd.snd.fst.fst          MOD B.snd.snd.fst.fst,
+    A.snd.snd.fst.snd.fst      MOD B.snd.snd.fst.snd.fst,
+    A.snd.snd.fst.snd.snd.fst  MOD B.snd.snd.fst.snd.snd.fst,
+    A.snd.snd.fst.snd.snd.snd  MOD B.snd.snd.fst.snd.snd.snd
+  ),
+  (
+    A.snd.snd.snd.fst          MOD B.snd.snd.snd.fst,
+    A.snd.snd.snd.snd.fst      MOD B.snd.snd.snd.snd.fst,
+    A.snd.snd.snd.snd.snd.fst  MOD B.snd.snd.snd.snd.snd.fst,
+    A.snd.snd.snd.snd.snd.snd  MOD B.snd.snd.snd.snd.snd.snd
+  )
+)
+
 
 end utils
