@@ -44,15 +44,12 @@ variable shift : ℕ
 -- ROTL axioms
 
 axiom zero_rotl : ZERO ROTL shift = ZERO
-axiom inv_rotl_self : a ROTL⁻¹ shift = a
 
 -- MOD axioms
 
-axiom zero_mod : ZERO MOD a = a
 axiom mod_neg : a MOD -a = bitvec.zero word_len
 axiom neg_mod : (-a) MOD a = bitvec.zero word_len
 axiom double_mod : ∀ a, a MOD a = 2 * a
-axiom double_neg_mod : ∀ a, (-a) MOD -a = 2 * (-a)
 
 def two_31 := bitvec.of_nat word_len (2^31)
 axiom modular_magic (h1 : a < two_31) (h2 : b = a MOD two_31) : 2 * a = 2 * b
@@ -60,14 +57,12 @@ axiom mod_self : a MOD a = 2 * a
 
 -- XOR axioms
 
-axiom zero_xor : ZERO XOR a = a
 axiom xor_zero : a XOR ZERO = a
 axiom xor_inv : a XOR a  = ZERO
 axiom xor_assoc : (a XOR b) XOR c = a XOR (b XOR c)
 
 -- Tag all axioms with simp
-attribute [simp] zero_rotl inv_rotl_self zero_mod mod_neg neg_mod double_mod 
-  double_neg_mod modular_magic mod_self zero_xor xor_zero xor_inv xor_assoc
+attribute [simp] zero_rotl mod_neg neg_mod double_mod modular_magic mod_self xor_zero xor_inv xor_assoc
 
 -- We split the operation in 2 terms, one at each side of the XOR. This is the left hand side.
 def operation_rhs : bitvec word_len := (b MOD c) ROTL shift
