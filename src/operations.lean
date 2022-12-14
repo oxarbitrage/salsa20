@@ -51,7 +51,6 @@ axiom mod_neg : a MOD -a = bitvec.zero word_len
 axiom neg_mod : (-a) MOD a = bitvec.zero word_len
 axiom double_mod : ∀ a, a MOD a = 2 * a
 
-def two_31 := bitvec.of_nat word_len (2^31)
 axiom modular_magic (h1 : a < two_31) (h2 : b = a MOD two_31) : 2 * a = 2 * b
 axiom mod_self : a MOD a = 2 * a
 

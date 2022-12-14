@@ -17,4 +17,7 @@ def mod : ℕ := (2^word_len)
 -- the maxumum valuea bitvec can be.
 def max_bitvec : bitvec word_len := bitvec.of_nat word_len (mod - 1)
 
+-- 2³² as a bitvector of 32 bits.
+def two_31 := bitvec.of_nat word_len (2^(word_len - 1))
+
 end params
