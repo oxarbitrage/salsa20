@@ -1,7 +1,6 @@
 import littleendian
 
 open littleendian
-open utils
 
 /- 
   Examples from the spec. 

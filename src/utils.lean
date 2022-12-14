@@ -4,9 +4,11 @@
 
 import operations
 import params
+import littleendian
 
 open operations
 open params
+open littleendian
 
 namespace utils
 
@@ -138,6 +140,71 @@ begin
   simp only [prod.mk.eta],
 end
 
+-- An random input 64 bytes matrix to be used as inputs and outputs of `hash` and `hash_inv`.
+variable X : matrix64Type
+
+--
+variable Y : matrixType
+
+-- Reduce the 64 bytes sequence to a 16 bytes one by using little endian.
+def reduce : matrixType :=
+  (
+    (
+      littleendian (((X.fst).fst).fst,          ((X.fst).fst).snd.fst,          ((X.fst).fst).snd.snd.fst,          ((X.fst).fst).snd.snd.snd), 
+      littleendian (((X.fst).snd.fst).fst,      ((X.fst).snd.fst).snd.fst,      ((X.fst).snd.fst).snd.snd.fst,      ((X.fst).snd.fst).snd.snd.snd),
+      littleendian (((X.fst).snd.snd.fst).fst,  ((X.fst).snd.snd.fst).snd.fst,  ((X.fst).snd.snd.fst).snd.snd.fst,  ((X.fst).snd.snd.fst).snd.snd.snd),
+      littleendian (((X.fst).snd.snd.snd).fst,  ((X.fst).snd.snd.snd).snd.fst,  ((X.fst).snd.snd.snd).snd.snd.fst,  ((X.fst).snd.snd.snd).snd.snd.snd)
+    ),
+    (
+      littleendian (((X.snd.fst).fst).fst,          ((X.snd.fst).fst).snd.fst,          ((X.snd.fst).fst).snd.snd.fst,          ((X.snd.fst).fst).snd.snd.snd), 
+      littleendian (((X.snd.fst).snd.fst).fst,      ((X.snd.fst).snd.fst).snd.fst,      ((X.snd.fst).snd.fst).snd.snd.fst,      ((X.snd.fst).snd.fst).snd.snd.snd),
+      littleendian (((X.snd.fst).snd.snd.fst).fst,  ((X.snd.fst).snd.snd.fst).snd.fst,  ((X.snd.fst).snd.snd.fst).snd.snd.fst,  ((X.snd.fst).snd.snd.fst).snd.snd.snd),
+      littleendian (((X.snd.fst).snd.snd.snd).fst,  ((X.snd.fst).snd.snd.snd).snd.fst,  ((X.snd.fst).snd.snd.snd).snd.snd.fst,  ((X.snd.fst).snd.snd.snd).snd.snd.snd)
+    ),
+    (
+      littleendian (((X.snd.snd.fst).fst).fst,          ((X.snd.snd.fst).fst).snd.fst,          ((X.snd.snd.fst).fst).snd.snd.fst,          ((X.snd.snd.fst).fst).snd.snd.snd), 
+      littleendian (((X.snd.snd.fst).snd.fst).fst,      ((X.snd.snd.fst).snd.fst).snd.fst,      ((X.snd.snd.fst).snd.fst).snd.snd.fst,      ((X.snd.snd.fst).snd.fst).snd.snd.snd),
+      littleendian (((X.snd.snd.fst).snd.snd.fst).fst,  ((X.snd.snd.fst).snd.snd.fst).snd.fst,  ((X.snd.snd.fst).snd.snd.fst).snd.snd.fst,  ((X.snd.snd.fst).snd.snd.fst).snd.snd.snd),
+      littleendian (((X.snd.snd.fst).snd.snd.snd).fst,  ((X.snd.snd.fst).snd.snd.snd).snd.fst,  ((X.snd.snd.fst).snd.snd.snd).snd.snd.fst,  ((X.snd.snd.fst).snd.snd.snd).snd.snd.snd)
+    ),
+    (
+      littleendian (((X.snd.snd.snd).fst).fst,          ((X.snd.snd.snd).fst).snd.fst,          ((X.snd.snd.snd).fst).snd.snd.fst,          ((X.snd.snd.snd).fst).snd.snd.snd), 
+      littleendian (((X.snd.snd.snd).snd.fst).fst,      ((X.snd.snd.snd).snd.fst).snd.fst,      ((X.snd.snd.snd).snd.fst).snd.snd.fst,      ((X.snd.snd.snd).snd.fst).snd.snd.snd),
+      littleendian (((X.snd.snd.snd).snd.snd.fst).fst,  ((X.snd.snd.snd).snd.snd.fst).snd.fst,  ((X.snd.snd.snd).snd.snd.fst).snd.snd.fst,  ((X.snd.snd.snd).snd.snd.fst).snd.snd.snd),
+      littleendian (((X.snd.snd.snd).snd.snd.snd).fst,  ((X.snd.snd.snd).snd.snd.snd).snd.fst,  ((X.snd.snd.snd).snd.snd.snd).snd.snd.fst,  ((X.snd.snd.snd).snd.snd.snd).snd.snd.snd)
+    )
+  )
+
+-- 
+def aument : matrix64Type := (
+  (
+    littleendian_inv Y.fst.fst,
+    littleendian_inv Y.fst.snd.fst,
+    littleendian_inv Y.fst.snd.snd.fst,
+    littleendian_inv Y.fst.snd.snd.snd
+  ),
+  (
+    littleendian_inv Y.snd.fst.fst,
+    littleendian_inv Y.snd.fst.snd.fst,
+    littleendian_inv Y.snd.fst.snd.snd.fst,
+    littleendian_inv Y.snd.fst.snd.snd.snd
+  ),
+  (
+    littleendian_inv Y.snd.snd.fst.fst,
+    littleendian_inv Y.snd.snd.fst.snd.fst,
+    littleendian_inv Y.snd.snd.fst.snd.snd.fst,
+    littleendian_inv Y.snd.snd.fst.snd.snd.snd
+  ),
+  (
+    littleendian_inv Y.snd.snd.snd.fst,
+    littleendian_inv Y.snd.snd.snd.snd.fst,
+    littleendian_inv Y.snd.snd.snd.snd.snd.fst,
+    littleendian_inv Y.snd.snd.snd.snd.snd.snd
+  )
+)
+
+
+
 
 -- Modular 2^32 addition of 4x4 matrices by doing Aᵢⱼ + Bᵢⱼ
 -- The `MOD` operation (modulo 2^32 addition) is the key to make the salsa20 hash function irreversible.
@@ -168,6 +235,33 @@ def mod_matrix (A B : matrixType) : matrixType := (
     A.snd.snd.snd.snd.snd.snd  MOD B.snd.snd.snd.snd.snd.snd
   )
 )
+
+-- Have 16 random numbers.
+variables A₀ A₁ A₂ A₃ A₄ A₅ A₆ A₇ A₈ A₉ A₁₀ A₁₁ A₁₂ A₁₃ A₁₄ A₁₅ : bitvec word_len
+
+-- Distribute 2 * Matrix.
+@[simp] lemma matrix_distribute_two :
+  2 * ((A₀, A₁, A₂, A₃), (A₄, A₅, A₆, A₇), (A₈, A₉, A₁₀, A₁₁), (A₁₂, A₁₃, A₁₄, A₁₅)) =
+  (
+    (2 * A₀, 2 * A₁, 2 * A₂, 2 * A₃),
+    (2 * A₄, 2 * A₅, 2 * A₆, 2 * A₇),
+    (2 * A₈, 2 * A₉, 2 * A₁₀, 2 * A₁₁),
+    (2 * A₁₂, 2 * A₁₃, 2 * A₁₄, 2 * A₁₅)
+  ) := rfl
+
+-- The MOD sum of two equal matrices X is 2 times X.
+@[simp] lemma mod_matrix_double : mod_matrix M M = 2 * M :=
+begin
+  unfold mod_matrix,
+  simp only [mod_self],
+
+  rw ← matrix_distribute_two
+    M.fst.fst         M.fst.snd.fst         M.fst.snd.snd.fst         M.fst.snd.snd.snd
+    M.snd.fst.fst     M.snd.fst.snd.fst     M.snd.fst.snd.snd.fst     M.snd.fst.snd.snd.snd
+    M.snd.snd.fst.fst M.snd.snd.fst.snd.fst M.snd.snd.fst.snd.snd.fst M.snd.snd.fst.snd.snd.snd
+    M.snd.snd.snd.fst M.snd.snd.snd.snd.fst M.snd.snd.snd.snd.snd.fst M.snd.snd.snd.snd.snd.snd,
+  refl,
+end
 
 
 end utils

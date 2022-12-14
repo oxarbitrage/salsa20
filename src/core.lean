@@ -8,6 +8,7 @@ import littleendian
 open doubleround
 open littleendian
 open operations
+open params
 open utils
 
 
@@ -56,7 +57,7 @@ axiom hash_has_no_inverse (A : matrix64Type) : ¬ hash'.bijective → ¬hash_inv
   `doubleround_10_is_left_invariant` is created proving the invariance for 10 rounds.
 -/
 
---
+-- Have a random number that we will use in some of the proofs below.
 variable A : bitvec params.word_len
 
 -- `doubleround_10` is left invariant. 
@@ -68,11 +69,10 @@ end
 
 
 /-
-  Salsa20 core function can behave as a linear transformation: https://www.iacr.org/archive/fse2008/50860470/50860470.pdf
-
+  Salsa20 core function can behave as a linear transformation of the form 2 * A
+  
+  https://www.iacr.org/archive/fse2008/50860470/50860470.pdf
 -/
-
--- `core` behaves as a linear transformation of the form 2 * A. 
 @[simp] theorem salsa20_core_linear_transformation : core (doubleround.input A) = 2 * (doubleround.input A) :=
 begin
   unfold core,
@@ -89,41 +89,27 @@ end
 -/
 
 --
-variable z : fin (2^31)
+variable z : fin (bitvec.to_nat two_31)
 
-def Z : bitvec 32 := bitvec.of_nat 32 z.val
-def Z' : bitvec 32 := (Z z) MOD bitvec.of_nat 32 (2^31)
+def Z : bitvec word_len := bitvec.of_nat word_len z.val
+def Z' : bitvec word_len := (Z z) MOD two_31
 
-variable X : matrixType
+/- An hypotetical collission output of a `core` function where the inputs are:
+  
+  Z −Z Z −Z
+  −Z Z −Z Z
+  Z −Z Z −Z
+  −Z Z −Z Z
 
--- Have 16 random numbers.
-variables A₀ A₁ A₂ A₃ A₄ A₅ A₆ A₇ A₈ A₉ A₁₀ A₁₁ A₁₂ A₁₃ A₁₄ A₁₅ : bitvec 32 
+  or
 
--- Distribute 2 * Matrix.
-@[simp] lemma matrix_distribute_two :
-  2 * ((A₀, A₁, A₂, A₃), (A₄, A₅, A₆, A₇), (A₈, A₉, A₁₀, A₁₁), (A₁₂, A₁₃, A₁₄, A₁₅)) = 
-  (
-    (2 * A₀, 2 * A₁, 2 * A₂, 2 * A₃),
-    (2 * A₄, 2 * A₅, 2 * A₆, 2 * A₇),
-    (2 * A₈, 2 * A₉, 2 * A₁₀, 2 * A₁₁),
-    (2 * A₁₂, 2 * A₁₃, 2 * A₁₄, 2 * A₁₅)
-  ) := rfl
+  Z' −Z' Z' −Z'
+  −Z' Z' −Z' Z'
+  Z' −Z' Z' −Z'
+  −Z' Z' −Z' Z'
 
--- The MOD sum of two equal matrices X is 2 times X. 
-@[simp] lemma mod_matrix_double : mod_matrix X X = 2 * X :=
-begin
-  unfold mod_matrix,
-  simp only [mod_self],
-
-  rw ← matrix_distribute_two 
-    X.fst.fst         X.fst.snd.fst         X.fst.snd.snd.fst         X.fst.snd.snd.snd
-    X.snd.fst.fst     X.snd.fst.snd.fst     X.snd.fst.snd.snd.fst     X.snd.fst.snd.snd.snd
-    X.snd.snd.fst.fst X.snd.snd.fst.snd.fst X.snd.snd.fst.snd.snd.fst X.snd.snd.fst.snd.snd.snd
-    X.snd.snd.snd.fst X.snd.snd.snd.snd.fst X.snd.snd.snd.snd.snd.fst X.snd.snd.snd.snd.snd.snd,
-  refl,
-end
-
--- An output of a `core` function where the inputs were collision inputs.
+  Where Z and Z' are of the form of the definitions above.
+-/
 def output : matrixType := do 
   let x := Z z,
   (
@@ -135,7 +121,10 @@ def output : matrixType := do
 
 --
 @[simp] theorem collision 
-  (h1 : Z' z < two_31) (h2 : Z z = Z' z MOD two_31) (h3 : -Z' z < two_31) (h4 : -Z z = (-Z' z) MOD two_31) :
+  -- TODO: this 4 assumptions should be true by definition as they can be proved easily for nat numbers and
+  -- fintypes however the bitvec conversions makes them a bit trickier.
+  (h1 : Z z < two_31) (h2 : Z' z = Z z MOD two_31) (h3 : -Z z < two_31) (h4 : -Z' z = (-Z z) MOD two_31) :
+  -- Two different inputs will produce the same output.
   core (doubleround.input (Z' z)) = output z ∧ core (doubleround.input (Z z)) = output z :=
 begin
   unfold core,
@@ -160,13 +149,13 @@ begin
 
       have h5 : 2 * (Z' z) = 2 * (Z z),
       {
-        rw modular_magic,
+        rw ← modular_magic,
         { exact h1 },
         { exact h2 },
       },
       have h6 : 2 * (-Z' z) = 2 * (-Z z),
       {
-        rw modular_magic,
+        rw ← modular_magic,
         { exact h3 },
         { exact h4 },
       },
