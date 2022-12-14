@@ -142,6 +142,8 @@ end
 
   We prove each single `qr{0..3}` is invariant to the left and derive that the full quarterround
   function is left invariant.
+
+  Theorem 1 of the paper.
 -/
 
 --

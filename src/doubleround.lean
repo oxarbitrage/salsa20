@@ -58,21 +58,19 @@ end
 /-
   Left invariance of the doubleround function: https://www.iacr.org/archive/fse2008/50860470/50860470.pdf
 
+  Theorem 4 of the paper.
 -/
 
---
+-- Have a few numbers to form the invariant input.
 variable A : bitvec word_len
 
---
+-- An input of this form should be invariant.
 def input : matrixType := (
   (A, -A, A, -A),
   (-A, A, -A, A),
   (A, -A, A, -A),
   (-A, A, -A, A)
 )
-
---
-variable X : bitvec word_len
 
 -- `doubleround` is left invariant. 
 @[simp] theorem doubleround_is_left_invariant : doubleround (input A) = input A :=

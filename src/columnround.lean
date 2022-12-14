@@ -32,21 +32,19 @@ end
 /-
   Left invariance of the columnround function: https://www.iacr.org/archive/fse2008/50860470/50860470.pdf
 
+  Theorem 3 of the paper.
 -/
 
---
+-- Have a few numbers to form the invariant input.
 variables A B C D : bitvec word_len
 
---
+-- An input of this form should be invariant.
 def input : matrixType := (
   (A, -B, C, -D),
   (-A, B, -C, D),
   (A, -B, C, -D),
   (-A, B, -C, D)
 )
-
---
-variable X : bitvec word_len
 
 -- `columnround` is left invariant. 
 @[simp] theorem columnround_is_left_invariant : 

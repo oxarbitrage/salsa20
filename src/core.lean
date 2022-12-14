@@ -72,6 +72,8 @@ end
   Salsa20 core function can behave as a linear transformation of the form 2 * A
   
   https://www.iacr.org/archive/fse2008/50860470/50860470.pdf
+
+  Theorem 5 of the paper.
 -/
 @[simp] theorem salsa20_core_linear_transformation : core (doubleround.input A) = 2 * (doubleround.input A) :=
 begin
@@ -86,12 +88,18 @@ end
 
 /-
   Collisions
+
+  https://www.iacr.org/archive/fse2008/50860470/50860470.pdf
+
+  Theorem 6 of the paper.
 -/
 
---
+-- the maximum value Z can be.
 variable z : fin (bitvec.to_nat two_31)
 
+-- Z < 2³¹
 def Z : bitvec word_len := bitvec.of_nat word_len z.val
+-- Z′ = Z + 2³¹
 def Z' : bitvec word_len := (Z z) MOD two_31
 
 /- An hypotetical collission output of a `core` function where the inputs are:
@@ -119,7 +127,7 @@ def output : matrixType := do
     (2 *-x, 2 * x, 2 *-x, 2 * x)
   )
 
---
+-- Two different specially crafted inputs produces the same output.
 @[simp] theorem collision 
   -- TODO: this 4 assumptions should be true by definition as they can be proved easily for nat numbers and
   -- fintypes however the bitvec conversions makes them a bit trickier.

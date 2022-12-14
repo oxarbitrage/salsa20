@@ -78,21 +78,19 @@ end
 /-
   Left invariance of the rowround function: https://www.iacr.org/archive/fse2008/50860470/50860470.pdf
 
+  Theorem 2 of the paper.
 -/
 
---
+-- Have a few numbers to form the invariant input.
 variables A B C D : bitvec word_len
 
---
+-- An input of this form should be invariant.
 def input : matrixType := (
   (A, -A, A, -A),
   (B, -B, B, -B),
   (C, -C, C, -C),
   (D, -D, D, -D)
 )
-
---
-variable X : bitvec word_len
 
 -- `rowround` is left invariant. 
 @[simp] theorem rowround_is_left_invariant : rowround (input A B C D) = input A B C D :=
