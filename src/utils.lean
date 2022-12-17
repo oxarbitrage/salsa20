@@ -41,7 +41,7 @@ variable M : matrixType
   (y₁₀, y₁₁, y₈, y₉)
   (y₁₅, y₁₂, y₁₃, y₁₄)  
 -/
-def rowround_input : matrixType :=
+@[simp] def rowround_input : matrixType :=
   (
     ((M.fst).fst,                 (M.fst).snd.fst,              (M.fst).snd.snd.fst,      (M.fst).snd.snd.snd),
     ((M.snd.fst).snd.fst,         (M.snd.fst).snd.snd.fst,      (M.snd.fst).snd.snd.snd,  (M.snd.fst).fst),
@@ -66,7 +66,7 @@ def rowround_input : matrixType :=
   (z₈, z₉, z₁₀, z₁₁)
   (z₁₂, z₁₃, z₁₄, z₁₅)
 -/
-def rowround_output : matrixType :=
+@[simp] def rowround_output : matrixType :=
   (
     ((M.fst).fst,                 (M.fst).snd.fst,              (M.fst).snd.snd.fst,          (M.fst).snd.snd.snd),
     ((M.snd.fst).snd.snd.snd,     (M.snd.fst).fst,              (M.snd.fst).snd.fst,          (M.snd.fst).snd.snd.fst),
@@ -99,7 +99,7 @@ end
   (x₁₀, x₁₄, x₂, x₆)
   (x₁₅, x₃, x₇, x₁₁)
 -/
-def columnround_input : matrixType :=
+@[simp] def columnround_input : matrixType :=
   (
     ((M.fst).fst,                 (M.snd.fst).fst,              (M.snd.snd.fst).fst,      (M.snd.snd.snd).fst),
     ((M.snd.fst).snd.fst,         (M.snd.snd.fst).snd.fst,      (M.snd.snd.snd).snd.fst,  (M.fst).snd.fst),
@@ -124,7 +124,7 @@ def columnround_input : matrixType :=
   (y₈, y₉, y₁₀, y₁₁)
   (y₁₂, y₁₃, y₁₄, y₁₅)  
 -/
-def columnround_output : matrixType :=
+@[simp] def columnround_output : matrixType :=
   (
     ((M.fst).fst,         (M.snd.fst).snd.snd.snd,  (M.snd.snd.fst).snd.snd.fst,  (M.snd.snd.snd).snd.fst),
     ((M.fst).snd.fst,     (M.snd.fst).fst,          (M.snd.snd.fst).snd.snd.snd,  (M.snd.snd.snd).snd.snd.fst),

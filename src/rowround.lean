@@ -1,5 +1,5 @@
 /-
-  The `rowround` function and its inverse
+  The `rowround` function, its inverse and the invariance theorem.
 -/
 
 import params
@@ -20,14 +20,14 @@ variable R : vecType
 variable M : matrixType
 
 -- The row round of a single row. Complete `rowround` function will use 4 of this.
-def rowround_single : vecType :=
+@[simp] def rowround_single : vecType :=
   (
     (quarterround R).fst, (quarterround R).snd.fst, 
     (quarterround R).snd.snd.fst, (quarterround R).snd.snd.snd
   )
 
 -- The inverse of a single row round.
-def rowround_single_inv : vecType :=
+@[simp] def rowround_single_inv : vecType :=
   (
     (quarterround_inv R).fst, (quarterround_inv R).snd.fst, 
     (quarterround_inv R).snd.snd.fst, (quarterround_inv R).snd.snd.snd
@@ -36,18 +36,12 @@ def rowround_single_inv : vecType :=
 -- Each row is invertible.
 @[simp] lemma rowround_single_is_inv : rowround_single_inv (rowround_single R) = R :=
 begin
-  unfold rowround_single_inv,
-  unfold rowround_single,
-  unfold quarterround_inv,
-  unfold quarterround,
-
-  rw [qr0_is_inv, qr1_is_inv, qr2_is_inv, qr3_is_inv],
-
-  finish,
+  simp only [rowround_single_inv, rowround_single, quarterround_inv, quarterround, qr0_is_inv, qr1_is_inv, qr2_is_inv, qr3_is_inv,
+    prod.mk.eta],
 end
 
 /- Apply `rowround_single` to get a row round matrix output -/
-def rowround : matrixType :=
+@[simp] def rowround : matrixType :=
   (
     rowround_single M.fst,
     rowround_single M.snd.fst,
@@ -56,7 +50,7 @@ def rowround : matrixType :=
   )
 
 /- Reverses `rowround` by doing `rowround_single_inv` to get the original matrix output -/
-def rowround_inv : matrixType :=
+@[simp] def rowround_inv : matrixType :=
   (
     rowround_single_inv M.fst,
     rowround_single_inv M.snd.fst,
@@ -67,12 +61,8 @@ def rowround_inv : matrixType :=
 -- For any `rowround` output, we can get back to original values using the defined inverse.
 @[simp] lemma rowround_is_inv : rowround_inv (rowround M) = M :=
 begin
-  unfold rowround_inv,
-  unfold rowround,
-
-  repeat { rw rowround_single_is_inv },
-
-  simp only [prod.mk.eta],
+  simp only [rowround_inv, rowround, rowround_single_inv, rowround_single, quarterround, quarterround_inv, qr0_is_inv, qr1_is_inv,
+    qr2_is_inv, qr3_is_inv, prod.mk.eta],
 end
 
 /-
@@ -95,13 +85,9 @@ def input : matrixType := (
 -- `rowround` is left invariant. 
 @[simp] theorem rowround_is_left_invariant : rowround (input A B C D) = input A B C D :=
 begin
-  unfold rowround,
-  unfold rowround_single,
+  simp only [rowround, rowround_single, quarterround],
   unfold input,
-  simp only [
-    quarterround_is_left_invariant, quarterround_is_left_invariant, 
-    quarterround_is_left_invariant, quarterround_is_left_invariant
-  ],
+  simp only [qr0_is_left_invariant, qr1_is_left_invariant, qr2_is_left_invariant, qr3_is_left_invariant],
 end
 
 end rowround
