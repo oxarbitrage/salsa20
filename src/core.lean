@@ -98,7 +98,7 @@ def Z : bitvec word_len := bitvec.of_nat word_len z.val
 -- Z′ = Z + 2³¹
 def Z' : bitvec word_len := (Z z) MOD two_31
 
-/- An hypotetical collission output of a `core` function where the inputs are:
+/- An hypotetical collission output of the `core` function where the inputs are:
   
   Z −Z Z −Z
   −Z Z −Z Z
@@ -113,6 +113,13 @@ def Z' : bitvec word_len := (Z z) MOD two_31
   −Z' Z' −Z' Z'
 
   Where Z and Z' are of the form of the definitions above.
+
+  Note : This type of input is not allowed in Salsa20. 
+  When expansion matrix us used, diagonal constants are added that mitigates this problem.
+
+  https://www.ecrypt.eu.org/stream/papersdir/2008/011.pdf
+
+  However, at the `core` function level, wthout the constants added, this inputs are possible.
 -/
 def output : matrixType := do 
   let x := Z z,
@@ -188,8 +195,10 @@ begin
   }
 end
 
+-- Random numbers to form a random input matrix
 variables a₀ a₁ a₂ a₃ a₄ a₅ a₆ a₇ a₈ a₉ a₁₀ a₁₁ a₁₂ a₁₃ a₁₄ a₁₅ : bitvec word_len
 
+-- A random input matrix.
 def Input : matrixType := (
   (a₀, a₁, a₂, a₃),
   (a₄, a₅, a₆, a₇),
@@ -197,6 +206,7 @@ def Input : matrixType := (
   (a₁₂, a₁₃, a₁₄, a₁₅)
 )
 
+-- A matrix consisting of all 2³¹ (0x80000000) bit vectors.
 def Delta : matrixType :=
   (
     (0x80000000, 0x80000000, 0x80000000, 0x80000000),
@@ -205,6 +215,7 @@ def Delta : matrixType :=
     (0x80000000, 0x80000000, 0x80000000, 0x80000000)
   )
 
+-- A matrix where all its elements are zero.
 def Zero : matrixType :=
   (
     (0x00000000, 0x00000000, 0x00000000, 0x00000000),
@@ -213,15 +224,30 @@ def Zero : matrixType :=
     (0x00000000, 0x00000000, 0x00000000, 0x00000000)
   )
 
---
+-- core of delta is always zero.
 lemma core_of_delta: core Delta = Zero := rfl
 
---
+-- core of zero is always zero.
 lemma core_of_zero: core Zero = Zero := rfl
 
+--
 local notation `INPUT` := Input a₀ a₁ a₂ a₃ a₄ a₅ a₆ a₇ a₈ a₉ a₁₀ a₁₁ a₁₂ a₁₃ a₁₄ a₁₅
 
---  
+/-
+  The specially crafted input based in some random input produces the same result as the original input. 
+
+  TODO: prove.
+
+  - quarterrround conserves the difference.
+  - rowround conserves the difference.
+  - columnround conserves the difference.
+  - doubleround conserves the difference.
+  - doubleround_10 conserves the difference.
+  - mod_matrix cancel the difference.
+
+  https://crypto.stackexchange.com/questions/26437/collision-or-second-preimage-for-the-chacha-core
+  https://www.iacr.org/archive/fse2008/50860470/50860470.pdf
+-/
 lemma differences_cancel : mod_matrix (doubleround_10 (xor_matrix INPUT Delta)) (xor_matrix INPUT Delta) = 
   mod_matrix (doubleround_10 INPUT) INPUT :=
 begin
@@ -229,7 +255,12 @@ begin
   sorry,
 end
 
---
+/-
+  As stated in https://www.ecrypt.eu.org/stream/papersdir/2008/011.pdf there are known collissions in salsa20 core
+  in the form of salsa20(x) = salsa20 (x + Δ), where Δ = (0x80000000, ...).
+
+  This is also Theorem 7 of https://www.iacr.org/archive/fse2008/50860470/50860470.pdf
+-/
 theorem known_collissions : core (xor_matrix INPUT Delta) = core INPUT :=
 begin
   unfold core,
