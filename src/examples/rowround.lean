@@ -5,6 +5,8 @@ open utils
 
 /- 
   Examples from the spec.
+
+  https://cr.yp.to/snuffle/spec.pdf
 -/
 
 -- example 1
@@ -47,7 +49,9 @@ def output' : matrixType :=
 
 #eval if rowround_output (rowround (rowround_input input')) = output' then "pass" else "fail"
 
--- Inverse examples, using the same test vectors as the spec but going backwards.
+/-
+  Inverse examples, using the same test vectors as the spec but going backwards.
+-/
 
 -- example1
 #eval if rowround_output (rowround_inv (rowround_input output)) = input then "pass" else "fail"

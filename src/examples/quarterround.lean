@@ -3,6 +3,8 @@ import quarterround
 open quarterround
 /- 
   Examples from the spec.
+
+  https://cr.yp.to/snuffle/spec.pdf
 -/
 
 -- example 1

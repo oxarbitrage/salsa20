@@ -3,7 +3,9 @@ import doubleround
 open doubleround
 
 /- 
-  Examples from the spec. 
+  Examples from the spec.
+
+  https://cr.yp.to/snuffle/spec.pdf
 -/
 
 -- example 1
@@ -53,4 +55,3 @@ def output' : matrixType :=
 
 -- example 2
 #eval if doubleround_inv output' = input' then "pass" else "fail"
-

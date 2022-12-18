@@ -3,7 +3,9 @@ import littleendian
 open littleendian
 
 /- 
-  Examples from the spec. 
+  Examples from the spec.
+
+  https://cr.yp.to/snuffle/spec.pdf
 -/
 
 -- example 1

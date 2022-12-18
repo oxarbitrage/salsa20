@@ -233,7 +233,7 @@ def mod_matrix (A B : matrixType) : matrixType := (
   )
 )
 
--- 
+-- We define the xor of a matrix to be the xor of each individual bitvector of matrix A and matrix B.
 def xor_matrix (A B : matrixType) : matrixType := (
   (
     A.fst.fst          XOR B.fst.fst,
