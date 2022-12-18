@@ -122,3 +122,26 @@ def result' : matrixType :=
   )
 
 #eval if (core W = core W' ∧ core W = result') then "pass" else "fail"
+
+-- For any given input, the core function of the difference with 0x80000000 produces the same
+-- output as without it.
+
+-- A demo input.
+def U : matrixType :=
+  (
+    (0x00000001, 0xF0000001, 0x00000001, 0x00000001),
+    (0x60000001, 0x00000001, 0x00000001, 0x00000001),
+    (0x00000001, 0x00000001, 0x00000001, 0x00000001),
+    (0x00000001, 0x00000001, 0x00000001, 0x00000001)
+  )
+
+-- Another input consisting of U XOR 0x80000000
+def U' : matrixType :=
+  (
+    (0x00000001 XOR 0x80000000, 0xF0000001 XOR 0x80000000, 0x00000001 XOR 0x80000000, 0x00000001 XOR 0x80000000),
+    (0x60000001 XOR 0x80000000, 0x00000001 XOR 0x80000000, 0x00000001 XOR 0x80000000, 0x00000001 XOR 0x80000000),
+    (0x00000001 XOR 0x80000000, 0x00000001 XOR 0x80000000, 0x00000001 XOR 0x80000000, 0x00000001 XOR 0x80000000),
+    (0x00000001 XOR 0x80000000, 0x00000001 XOR 0x80000000, 0x00000001 XOR 0x80000000, 0x00000001 XOR 0x80000000)
+  )
+
+#eval if core U = core U' then "pass" else "fail"

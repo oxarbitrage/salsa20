@@ -147,7 +147,7 @@ end
 -/
 
 --
-variables A : bitvec word_len
+variable A : bitvec word_len
 
 --
 @[simp] lemma qr1_is_left_invariant : qr1 A (-A) A (-A) = -A := 
@@ -197,5 +197,6 @@ end
 begin
   simp only [quarterround, qr0_is_left_invariant, qr1_is_left_invariant, qr2_is_left_invariant, qr3_is_left_invariant],
 end
+
 
 end quarterround

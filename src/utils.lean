@@ -203,9 +203,6 @@ def aument : matrix64Type := (
   )
 )
 
-
-
-
 -- Modular 2^32 addition of 4x4 matrices by doing Aᵢⱼ + Bᵢⱼ
 -- The `MOD` operation (modulo 2^32 addition) is the key to make the salsa20 hash function irreversible.
 -- Everything is reversible except for this addition.
@@ -233,6 +230,34 @@ def mod_matrix (A B : matrixType) : matrixType := (
     A.snd.snd.snd.snd.fst      MOD B.snd.snd.snd.snd.fst,
     A.snd.snd.snd.snd.snd.fst  MOD B.snd.snd.snd.snd.snd.fst,
     A.snd.snd.snd.snd.snd.snd  MOD B.snd.snd.snd.snd.snd.snd
+  )
+)
+
+-- 
+def xor_matrix (A B : matrixType) : matrixType := (
+  (
+    A.fst.fst          XOR B.fst.fst,
+    A.fst.snd.fst      XOR B.fst.snd.fst,
+    A.fst.snd.snd.fst  XOR B.fst.snd.snd.fst,
+    A.fst.snd.snd.snd  XOR B.fst.snd.snd.snd
+  ),
+  (
+    A.snd.fst.fst          XOR B.snd.fst.fst,
+    A.snd.fst.snd.fst      XOR B.snd.fst.snd.fst,
+    A.snd.fst.snd.snd.fst  XOR B.snd.fst.snd.snd.fst,
+    A.snd.fst.snd.snd.snd  XOR B.snd.fst.snd.snd.snd
+  ),
+  (
+    A.snd.snd.fst.fst          XOR B.snd.snd.fst.fst,
+    A.snd.snd.fst.snd.fst      XOR B.snd.snd.fst.snd.fst,
+    A.snd.snd.fst.snd.snd.fst  XOR B.snd.snd.fst.snd.snd.fst,
+    A.snd.snd.fst.snd.snd.snd  XOR B.snd.snd.fst.snd.snd.snd
+  ),
+  (
+    A.snd.snd.snd.fst          XOR B.snd.snd.snd.fst,
+    A.snd.snd.snd.snd.fst      XOR B.snd.snd.snd.snd.fst,
+    A.snd.snd.snd.snd.snd.fst  XOR B.snd.snd.snd.snd.snd.fst,
+    A.snd.snd.snd.snd.snd.snd  XOR B.snd.snd.snd.snd.snd.snd
   )
 )
 

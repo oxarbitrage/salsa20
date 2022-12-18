@@ -1,5 +1,5 @@
 /-
-  The `hash` function and its inverse
+  The `hash` and `core` functions, the non existing inverse and the `collision` theorems.
 -/
 
 import doubleround
@@ -31,25 +31,21 @@ def hash (X : matrix64Type) : matrix64Type := aument (core (reduce X))
 
   TODO: It should be easy to prove or assume the MOD operation is not reversible. 
         Then `mod_as_matrix` is irreversible and `hash` is irreverisble.
-        I was not able to make this proof in lean yet.
--/
 
-/-
   Another approach will be to treat `hash` and `hash_inv` as a generic function, assume or prove they are not
-  bijective and then assume or prove not bijective functions does not have an inverse. 
+  bijective and then assume or prove no bijective functions does not have an inverse. 
+
+  -- Hash as a generic function that returns the same type as its input.
+  variable hash' : matrix64Type → matrix64Type 
+
+  -- A potential generic inverse of the hash that returns the same type as its input.
+  variable hash_inv : matrix64Type → matrix64Type 
+
+  -- Hash function is not bijective then inverse does not exist.
+  -- TODO: prove or assume hash is not bijective.
+  -- TODO: prove or assume a non bijective function does not have an inverse.
+  lemma hash_has_no_inverse (A : matrix64Type) : ¬ hash'.bijective → ¬hash_inv (hash' A) = A  
 -/
-
--- Hash as a generic function that returns the same type as its input.
-variable hash' : matrix64Type → matrix64Type 
-
--- A potential generic inverse of the hash that returns the same type as its input.
-variable hash_inv : matrix64Type → matrix64Type 
-
--- Hash function is not bijective then inverse does not exist.
--- TODO: prove hash is not bijective.
--- TODO: prove a non bijective function does not have an inverse.
-axiom hash_has_no_inverse (A : matrix64Type) : ¬ hash'.bijective → ¬hash_inv (hash' A) = A  
-
 
 /-
   Theorem `doubleround_is_left_invariant` is independent of the number of rounds performed.
@@ -190,6 +186,54 @@ begin
       unfold output,
     },
   }
+end
+
+variables a₀ a₁ a₂ a₃ a₄ a₅ a₆ a₇ a₈ a₉ a₁₀ a₁₁ a₁₂ a₁₃ a₁₄ a₁₅ : bitvec word_len
+
+def Input : matrixType := (
+  (a₀, a₁, a₂, a₃),
+  (a₄, a₅, a₆, a₇),
+  (a₈, a₉, a₁₀, a₁₁),
+  (a₁₂, a₁₃, a₁₄, a₁₅)
+)
+
+def Delta : matrixType :=
+  (
+    (0x80000000, 0x80000000, 0x80000000, 0x80000000),
+    (0x80000000, 0x80000000, 0x80000000, 0x80000000),
+    (0x80000000, 0x80000000, 0x80000000, 0x80000000),
+    (0x80000000, 0x80000000, 0x80000000, 0x80000000)
+  )
+
+def Zero : matrixType :=
+  (
+    (0x00000000, 0x00000000, 0x00000000, 0x00000000),
+    (0x00000000, 0x00000000, 0x00000000, 0x00000000),
+    (0x00000000, 0x00000000, 0x00000000, 0x00000000),
+    (0x00000000, 0x00000000, 0x00000000, 0x00000000)
+  )
+
+--
+lemma core_of_delta: core Delta = Zero := rfl
+
+--
+lemma core_of_zero: core Zero = Zero := rfl
+
+local notation `INPUT` := Input a₀ a₁ a₂ a₃ a₄ a₅ a₆ a₇ a₈ a₉ a₁₀ a₁₁ a₁₂ a₁₃ a₁₄ a₁₅
+
+--  
+lemma differences_cancel : mod_matrix (doubleround_10 (xor_matrix INPUT Delta)) (xor_matrix INPUT Delta) = 
+  mod_matrix (doubleround_10 INPUT) INPUT :=
+begin
+  unfold doubleround_10,
+  sorry,
+end
+
+--
+theorem known_collissions : core (xor_matrix INPUT Delta) = core INPUT :=
+begin
+  unfold core,
+  rw differences_cancel,
 end
 
 
