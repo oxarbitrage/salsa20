@@ -81,3 +81,21 @@ open quarterround
 #eval if 
   quarterround_inv (0x3e2f308c, 0xd90a8f36, 0x6ab2a923, 0x2883524c) =
     (0xd3917c5b, 0x55f1c407, 0x52a58a7a, 0x8f887a3b) then "pass" else "fail"
+
+
+/-
+  Some tests for carried difference of the `quarterround` function.
+-/
+
+-- The most significant bit of the result is never equal
+#eval if (quarterround (30, 12, 44, 124)).fst.head ≠
+  (quarterround (30 XOR 0x80000000, 12 XOR 0x80000000, 44 XOR 0x80000000, 124 XOR 0x80000000)).fst.head
+    then "pass" else "fail"
+
+-- But the rest of the bitstring is always the same
+#eval if (quarterround (30, 12, 44, 124)).fst.tail =
+  (quarterround (30 XOR 0x80000000, 12 XOR 0x80000000, 44 XOR 0x80000000, 124 XOR 0x80000000)).fst.tail
+    then "pass" else "fail"
+
+-- 
+#eval if 50 XOR (50 XOR 0x80000000) = 0x80000000 then "pass" else "fail"

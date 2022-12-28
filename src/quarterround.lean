@@ -198,5 +198,115 @@ begin
   simp only [quarterround, qr0_is_left_invariant, qr1_is_left_invariant, qr2_is_left_invariant, qr3_is_left_invariant],
 end
 
+/-
+  `quarterround` function will only flip the most significant bit when two set of elements is
+  provided where the difference (or xor) between each element is 2^31.
+-/
+
+-- Have 4 random vectors to be used as quarterround inputs.
+variables m n o p : bitvec 32
+
+-- define that x xor 2^31 = flip msb bit only, leave the rest as is.
+-- TODO: this could be proved.
+def craft (m : bitvec word_len) : bitvec word_len :=
+  if m.head = ff then (bitvec.one 1).append m.tail else (bitvec.zero 1).append m.tail
+
+-- a shortcut to a vector head.
+def msb (m : bitvec word_len) : bool := m.head
+-- a shortcut for a vector tail.
+def rest (m : bitvec word_len) : bitvec (word_len - 1) := m.tail
+
+-- lets suppose the msb of any uncrafted bitvec that we will send to quarterround is always `ff`.
+-- TODO: this does not need to be the case, everything should work in a very similar way if the head is 1
+-- as it will gets flipped to 0 but we do this for simplicity by now.
+-- Basically by restricting the msb to be 0 we are saying that the number is smaller than 2^31.
+constant h_msb : m.head = ff
+
+-- define a type notation which is an abstract function that can represent qr0 qr1 qr2 qr3
+local notation `qrX` := bitvec word_len → bitvec word_len → bitvec word_len → bitvec word_len → bitvec word_len
+
+-- assumes that any qrX function that is feeded with crafted numbers will result in a head of 1
+-- and the rest or tail equal to the tail of the uncrafted number.
+-- TODO: this needs to be proved.
+constant qrX_crafted (f : qrX) :
+  f (craft m) (craft n) (craft o) (craft p) = (bitvec.one 1).append (f m n o p).tail
+
+-- a random bitvector of size `word_len - 1` representing the tail of a bitvector of size `word_len`.
+variable tail_placeholder : bitvec (word_len - 1)
+-- the head (msb) of anything that starts with a 1 and then stuff is appended should be always 1.
+-- TODO: should be easy to prove ?
+constant msb_of_one_append : vector.head ((bitvec.one 1).append tail_placeholder) = tt
+-- the rest of the bitvector where 1 gets appended with the tail of the bitvector is the tail of the bitvector.
+-- TODO: should be easy to prove ?
+constant rest_of_one_append : vector.tail m = ((bitvec.one 1).append (m).tail).tail
+
+-- for any individual qrX function, when feeded with crafted data the difference is carried.
+lemma qrX_difference_is_carried (f : qrX) :
+  msb (f m n o p) ≠ msb (f (craft m) (craft n) (craft o) (craft p)) ∧
+    rest (f m n o p) = rest (f (craft m) (craft n) (craft o) (craft p)) :=
+begin
+  rw qrX_crafted m n o p f,
+  split,
+  {
+    unfold msb,
+    rw h_msb,
+    rw msb_of_one_append (vector.tail (f m n o p)),
+    finish,
+  },
+  {
+    unfold rest,
+    rw ← rest_of_one_append,
+  }
+end
+
+-- qr1 difference is carried
+lemma qr1_difference_is_carried :
+  msb (qr1 m n o p) ≠ msb (qr1 (craft m) (craft n) (craft o) (craft p)) ∧
+    rest (qr1 m n o p) = rest (qr1 (craft m) (craft n) (craft o) (craft p)) :=
+by apply qrX_difference_is_carried m n o p qr1
+
+-- qr2 difference is carried
+lemma qr2_difference_is_carried :
+  msb (qr2 m n o p) ≠ msb (qr2 (craft m) (craft n) (craft o) (craft p)) ∧
+    rest (qr2 m n o p) = rest (qr2 (craft m) (craft n) (craft o) (craft p)) :=
+by apply qrX_difference_is_carried m n o p qr2
+
+-- qr3 difference is carried
+lemma qr3_difference_is_carried :
+  msb (qr3 m n o p) ≠ msb (qr3 (craft m) (craft n) (craft o) (craft p)) ∧
+    rest (qr3 m n o p) = rest (qr3 (craft m) (craft n) (craft o) (craft p)) :=
+by apply qrX_difference_is_carried m n o p qr3
+
+-- qr0 difference is carried
+lemma qr0_difference_is_carried :
+  msb (qr0 m n o p) ≠ msb (qr0 (craft m) (craft n) (craft o) (craft p)) ∧
+    rest (qr0 m n o p) = rest (qr0 (craft m) (craft n) (craft o) (craft p)) :=
+by apply qrX_difference_is_carried m n o p qr0
+
+-- full quarterround carries the difference when feeded with crafted data.
+lemma quarterround_difference_is_carried :
+  -- z0 only changes in the msb
+  (msb (quarterround (m, n, o, p)).fst ≠ msb (quarterround ((craft m), (craft n), (craft o), (craft p))).fst ∧
+    rest (quarterround (m, n, o, p)).fst = rest (quarterround ((craft m), (craft n), (craft o), (craft p))).fst) ∧
+  -- z1 only changes in the msb
+  (msb (quarterround (m, n, o, p)).snd.fst ≠ msb (quarterround ((craft m), (craft n), (craft o), (craft p))).snd.fst ∧
+    rest (quarterround (m, n, o, p)).snd.fst = rest (quarterround ((craft m), (craft n), (craft o), (craft p))).snd.fst) ∧
+  -- z2 only changes in the msb
+  (msb (quarterround (m, n, o, p)).snd.snd.fst ≠ msb (quarterround ((craft m), (craft n), (craft o), (craft p))).snd.snd.fst ∧
+    rest (quarterround (m, n, o, p)).snd.snd.fst = rest (quarterround ((craft m), (craft n), (craft o), (craft p))).snd.snd.fst) ∧
+  -- z3 only changes in the msb
+  (msb (quarterround (m, n, o, p)).snd.snd.snd ≠ msb (quarterround ((craft m), (craft n), (craft o), (craft p))).snd.snd.snd ∧
+    rest (quarterround (m, n, o, p)).snd.snd.snd = rest (quarterround ((craft m), (craft n), (craft o), (craft p))).snd.snd.snd) :=
+begin
+  apply and.intro,
+  apply qr0_difference_is_carried,
+  apply and.intro,
+  apply qr1_difference_is_carried,
+  tauto,
+  apply and.intro,
+  apply qr2_difference_is_carried,
+  apply qr3_difference_is_carried,
+end
+
 
 end quarterround
