@@ -90,4 +90,169 @@ begin
   simp only [qr0_is_left_invariant, qr1_is_left_invariant, qr2_is_left_invariant, qr3_is_left_invariant],
 end
 
+/-
+  In this section we want to prove that a crafted input difference is carried when `rowround`
+  function is applied.
+-/
+
+-- Have 16 random vectors to be used as rowround inputs.
+variables m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅: bitvec word_len
+
+-- Define a random input
+def input_random : matrixType := (
+  (m₀, m₁, m₂, m₃),
+  (m₄, m₅, m₆, m₇),
+  (m₈, m₉, m₁₀, m₁₁),
+  (m₁₂, m₁₃, m₁₄, m₁₅)
+)
+
+-- Define a crafted input based on the random input.
+def input_crafted : matrixType := (
+  (craft m₀, craft m₁, craft m₂, craft m₃),
+  (craft m₄, craft m₅, craft m₆, craft m₇),
+  (craft m₈, craft m₉, craft m₁₀, craft m₁₁),
+  (craft m₁₂, craft m₁₃, craft m₁₄, craft m₁₅)
+)
+
+-- Alias for a random input with 16 random arguments.
+local notation `RANDOM_INPUT` := input_random m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅
+
+-- Alias for crafted input with 16 random arguments.
+local notation `CRAFTED_INPUT` := input_crafted m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅
+
+-- Each number produced by the `rowround` function when feeded with crafted and uncrafted inputs carries
+-- the difference. We need to prove this is true for all the 16 output values of the rowround.
+lemma rowround_difference_is_carried :
+  -- row 1
+  -- value 1
+  (
+    msb (rowround RANDOM_INPUT).fst.fst ≠ msb (rowround CRAFTED_INPUT).fst.fst ∧
+    rest (rowround RANDOM_INPUT).fst.fst = rest (rowround CRAFTED_INPUT).fst.fst
+  ) ∧
+  -- value 2
+  (
+    msb (rowround RANDOM_INPUT).fst.snd.fst ≠ msb (rowround CRAFTED_INPUT).fst.snd.fst ∧
+    rest (rowround RANDOM_INPUT).fst.snd.fst = rest (rowround CRAFTED_INPUT).fst.snd.fst
+  ) ∧
+  -- value 3
+  (
+    msb (rowround RANDOM_INPUT).fst.snd.snd.fst ≠ msb (rowround CRAFTED_INPUT).fst.snd.snd.fst ∧
+    rest (rowround RANDOM_INPUT).fst.snd.snd.fst = rest (rowround CRAFTED_INPUT).fst.snd.snd.fst
+  ) ∧
+  -- value 4
+  (
+    msb (rowround RANDOM_INPUT).fst.snd.snd.snd ≠ msb (rowround CRAFTED_INPUT).fst.snd.snd.snd ∧
+    rest (rowround RANDOM_INPUT).fst.snd.snd.snd = rest (rowround CRAFTED_INPUT).fst.snd.snd.snd
+  ) ∧
+  -- row 2
+  -- value 1
+  (
+    msb (rowround RANDOM_INPUT).snd.fst.fst ≠ msb (rowround CRAFTED_INPUT).snd.fst.fst ∧
+    rest (rowround RANDOM_INPUT).snd.fst.fst = rest (rowround CRAFTED_INPUT).snd.fst.fst
+  ) ∧
+  -- value 2
+  (
+    msb (rowround RANDOM_INPUT).snd.fst.snd.fst ≠ msb (rowround CRAFTED_INPUT).snd.fst.snd.fst ∧
+    rest (rowround RANDOM_INPUT).snd.fst.snd.fst = rest (rowround CRAFTED_INPUT).snd.fst.snd.fst
+  ) ∧
+  -- value 3
+  (
+    msb (rowround RANDOM_INPUT).snd.fst.snd.snd.fst ≠ msb (rowround CRAFTED_INPUT).snd.fst.snd.snd.fst ∧
+    rest (rowround RANDOM_INPUT).snd.fst.snd.snd.fst = rest (rowround CRAFTED_INPUT).snd.fst.snd.snd.fst
+  ) ∧
+  -- value 4
+  (
+    msb (rowround RANDOM_INPUT).snd.fst.snd.snd.snd ≠ msb (rowround CRAFTED_INPUT).snd.fst.snd.snd.snd ∧
+    rest (rowround RANDOM_INPUT).snd.fst.snd.snd.snd = rest (rowround CRAFTED_INPUT).snd.fst.snd.snd.snd
+  ) ∧
+  -- row 3
+  -- value 1
+  (
+    msb (rowround RANDOM_INPUT).snd.snd.fst.fst ≠ msb (rowround CRAFTED_INPUT).snd.snd.fst.fst ∧
+    rest (rowround RANDOM_INPUT).snd.snd.fst.fst = rest (rowround CRAFTED_INPUT).snd.snd.fst.fst
+  ) ∧
+  -- value 2
+  (
+    msb (rowround RANDOM_INPUT).snd.snd.fst.snd.fst ≠ msb (rowround CRAFTED_INPUT).snd.snd.fst.snd.fst ∧
+    rest (rowround RANDOM_INPUT).snd.snd.fst.snd.fst = rest (rowround CRAFTED_INPUT).snd.snd.fst.snd.fst
+  ) ∧
+  -- value 3
+  (
+    msb (rowround RANDOM_INPUT).snd.snd.fst.snd.snd.fst ≠ msb (rowround CRAFTED_INPUT).snd.snd.fst.snd.snd.fst ∧
+    rest (rowround RANDOM_INPUT).snd.snd.fst.snd.snd.fst = rest (rowround CRAFTED_INPUT).snd.snd.fst.snd.snd.fst
+  ) ∧
+  -- value 4
+  (
+    msb (rowround RANDOM_INPUT).snd.snd.fst.snd.snd.snd ≠ msb (rowround CRAFTED_INPUT).snd.snd.fst.snd.snd.snd ∧
+    rest (rowround RANDOM_INPUT).snd.snd.fst.snd.snd.snd = rest (rowround CRAFTED_INPUT).snd.snd.fst.snd.snd.snd
+  ) ∧
+  -- row 4
+  -- value 1
+  (
+    msb (rowround RANDOM_INPUT).snd.snd.snd.fst ≠ msb (rowround CRAFTED_INPUT).snd.snd.snd.fst ∧
+    rest (rowround RANDOM_INPUT).snd.snd.snd.fst = rest (rowround CRAFTED_INPUT).snd.snd.snd.fst
+  ) ∧
+  -- value 2
+  (
+    msb (rowround RANDOM_INPUT).snd.snd.snd.snd.fst ≠ msb (rowround CRAFTED_INPUT).snd.snd.snd.snd.fst ∧
+    rest (rowround RANDOM_INPUT).snd.snd.snd.snd.fst = rest (rowround CRAFTED_INPUT).snd.snd.snd.snd.fst
+  ) ∧
+  -- value 3
+  (
+    msb (rowround RANDOM_INPUT).snd.snd.snd.snd.snd.fst ≠ msb (rowround CRAFTED_INPUT).snd.snd.snd.snd.snd.fst ∧
+    rest (rowround RANDOM_INPUT).snd.snd.snd.snd.snd.fst = rest (rowround CRAFTED_INPUT).snd.snd.snd.snd.snd.fst
+  ) ∧
+  -- value 4
+  (
+    msb (rowround RANDOM_INPUT).snd.snd.snd.snd.snd.snd ≠ msb (rowround CRAFTED_INPUT).snd.snd.snd.snd.snd.snd ∧
+    rest (rowround RANDOM_INPUT).snd.snd.snd.snd.snd.snd = rest (rowround CRAFTED_INPUT).snd.snd.snd.snd.snd.snd
+  )
+:=
+begin
+  unfold input_random,
+  unfold input_crafted,
+  unfold rowround,
+  unfold rowround_single,
+  simp only [quarterround, ne.def],
+
+  -- first row
+  apply and.intro,
+  apply qr0_difference_is_carried,
+  apply and.intro,
+  apply qr1_difference_is_carried,
+  apply and.intro,
+  apply qr2_difference_is_carried,
+  apply and.intro,
+  apply qr3_difference_is_carried,
+
+  -- second row
+  apply and.intro,
+  apply qr0_difference_is_carried,
+  apply and.intro,
+  apply qr1_difference_is_carried,
+  apply and.intro,
+  apply qr2_difference_is_carried,
+  apply and.intro,
+  apply qr3_difference_is_carried,
+
+  -- third row
+  apply and.intro,
+  apply qr0_difference_is_carried,
+  apply and.intro,
+  apply qr1_difference_is_carried,
+  apply and.intro,
+  apply qr2_difference_is_carried,
+  apply and.intro,
+  apply qr3_difference_is_carried,
+
+  -- fourth row
+  apply and.intro,
+  apply qr0_difference_is_carried,
+  apply and.intro,
+  apply qr1_difference_is_carried,
+  apply and.intro,
+  apply qr2_difference_is_carried,
+  apply qr3_difference_is_carried,
+end
+
 end rowround
