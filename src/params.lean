@@ -2,7 +2,6 @@
   Constants used in salsa20.
 -/
 import data.bitvec.basic
-import tactic
 
 namespace params
 

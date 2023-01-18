@@ -2,9 +2,6 @@
   Building blocks operations and axioms.
 -/
 
-import data.bitvec.basic
-import data.zmod.basic
-
 import params
 
 open params
