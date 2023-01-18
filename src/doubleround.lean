@@ -39,18 +39,18 @@ end
 -/
 
 -- Have a number to form the invariant input.
-variable A : bitvec word_len
+variable a : bitvec word_len
 
 -- An input of this form should be invariant.
 def input : matrixType := (
-  (A, -A, A, -A),
-  (-A, A, -A, A),
-  (A, -A, A, -A),
-  (-A, A, -A, A)
+  (a, -a, a, -a),
+  (-a, a, -a, a),
+  (a, -a, a, -a),
+  (-a, a, -a, a)
 )
 
 -- `doubleround` is left invariant. 
-@[simp] theorem doubleround_is_left_invariant : doubleround (input A) = input A :=
+@[simp] theorem doubleround_is_left_invariant : doubleround (input a) = input a :=
 begin
   simp only [doubleround, rowround_output, rowround, rowround_input, columnround_output, columnround, columnround_input,
     rowround_single, prod.mk.eta],

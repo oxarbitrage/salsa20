@@ -12,16 +12,7 @@ open littleendian
 
 namespace utils
 
--- We define a row or a column to be a tuple of 4 bit vectors.
-notation `vecType` := (bitvec word_len) × (bitvec word_len) × (bitvec word_len) × (bitvec word_len) 
-
--- A 16 elements matrix type.
-notation `matrixType` := vecType × vecType × vecType × vecType
-
--- A 64 elements matrix type.
-notation `matrix64Type` := matrixType × matrixType × matrixType × matrixType
-
--- 
+-- A random input matrix to be used as `rowround` and `columnround` inputs. 
 variable M : matrixType
 
 /-
@@ -140,10 +131,10 @@ begin
   simp only [prod.mk.eta],
 end
 
--- An random input 64 bytes matrix to be used as inputs and outputs of `hash` and `hash_inv`.
+-- An random input 64 bytes matrix that we can reduce using `littleendian` function.
 variable X : matrix64Type
 
---
+-- A random input 16 bytes matrix that we can aument using the `littleendian_inv` function.
 variable Y : matrixType
 
 -- Reduce the 64 bytes sequence to a 16 bytes one by using little endian.
@@ -175,7 +166,7 @@ def reduce : matrixType :=
     )
   )
 
--- 
+-- Aument a given 16 bytes sequence to a 64 bytes one using `littleenedian_inv`.
 def aument : matrix64Type := (
   (
     littleendian_inv Y.fst.fst,
@@ -262,16 +253,16 @@ def xor_matrix (A B : matrixType) : matrixType := (
 )
 
 -- Have 16 random numbers.
-variables A₀ A₁ A₂ A₃ A₄ A₅ A₆ A₇ A₈ A₉ A₁₀ A₁₁ A₁₂ A₁₃ A₁₄ A₁₅ : bitvec word_len
+variables a₀ a₁ a₂ a₃ a₄ a₅ a₆ a₇ a₈ a₉ a₁₀ a₁₁ a₁₂ a₁₃ a₁₄ a₁₅ : bitvec word_len
 
 -- Distribute 2 * Matrix.
 @[simp] lemma matrix_distribute_two :
-  2 * ((A₀, A₁, A₂, A₃), (A₄, A₅, A₆, A₇), (A₈, A₉, A₁₀, A₁₁), (A₁₂, A₁₃, A₁₄, A₁₅)) =
+  2 * ((a₀, a₁, a₂, a₃), (a₄, a₅, a₆, a₇), (a₈, a₉, a₁₀, a₁₁), (a₁₂, a₁₃, a₁₄, a₁₅)) =
   (
-    (2 * A₀, 2 * A₁, 2 * A₂, 2 * A₃),
-    (2 * A₄, 2 * A₅, 2 * A₆, 2 * A₇),
-    (2 * A₈, 2 * A₉, 2 * A₁₀, 2 * A₁₁),
-    (2 * A₁₂, 2 * A₁₃, 2 * A₁₄, 2 * A₁₅)
+    (2 * a₀, 2 * a₁, 2 * a₂, 2 * a₃),
+    (2 * a₄, 2 * a₅, 2 * a₆, 2 * a₇),
+    (2 * a₈, 2 * a₉, 2 * a₁₀, 2 * a₁₁),
+    (2 * a₁₂, 2 * a₁₃, 2 * a₁₄, 2 * a₁₅)
   ) := rfl
 
 -- The MOD sum of two equal matrices X is 2 times X.

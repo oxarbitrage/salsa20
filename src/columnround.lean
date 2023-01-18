@@ -34,19 +34,19 @@ end
 -/
 
 -- Have a few numbers to form the invariant input.
-variables A B C D : bitvec word_len
+variables a b c d : bitvec word_len
 
 -- An input of this form should be invariant.
 def input : matrixType := (
-  (A, -B, C, -D),
-  (-A, B, -C, D),
-  (A, -B, C, -D),
-  (-A, B, -C, D)
+  (a, -b, c, -d),
+  (-a, b, -c, d),
+  (a, -b, c, -d),
+  (-a, b, -c, d)
 )
 
 -- `columnround` is left invariant. 
 @[simp] theorem columnround_is_left_invariant : 
-  utils.columnround_output (columnround (utils.columnround_input (input A B C D))) = input A B C D :=
+  utils.columnround_output (columnround (utils.columnround_input (input a b c d))) = input a b c d :=
 begin
   simp only [utils.columnround_output, columnround, utils.columnround_input, rowround_single, rowround],
   unfold input,

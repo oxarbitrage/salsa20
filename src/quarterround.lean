@@ -17,6 +17,9 @@ variables a' b' c' d' : bitvec word_len
 
 -- Quarter round definitions
 
+-- TODO: We are sending the 4 numbers `a` `b` `c` and `d` to each qr function but this is not
+-- always needed (example: `qr1` will just use `b` `a` and `d`)
+
 -- z₁ = y₁ ⊕ ((y₀ + y₃) <<< 7)
 def qr1 (a b c d : bitvec word_len) := b OP (OP_RHS a d 7)
 -- z₂ = y₂ ⊕ ((z₁ + y₀) <<< 9)
@@ -55,7 +58,7 @@ def qr1_inv (a' b' c' d' : bitvec word_len) := b' OP (operation_rhs (qr0_inv a' 
 )
 
 -- The quarterround operation is fully invertible.
-@[simp] lemma quarterround_is_invertible : 
+@[simp] lemma quarterround_is_invertible (a b c d : bitvec word_len) : 
   qr0_inv (qr0 a b c d) (qr1 a b c d) (qr2 a b c d) (qr3 a b c d) = a ∧
   qr3_inv (qr0 a b c d) (qr1 a b c d) (qr2 a b c d) (qr3 a b c d) = d ∧ 
   qr2_inv (qr0 a b c d) (qr1 a b c d) (qr2 a b c d) (qr3 a b c d) = c ∧
@@ -147,10 +150,7 @@ end
 -/
 
 --
-variable A : bitvec word_len
-
---
-@[simp] lemma qr1_is_left_invariant : qr1 A (-A) A (-A) = -A := 
+@[simp] lemma qr1_is_left_invariant : qr1 a (-a) a (-a) = -a := 
 begin
   unfold qr1,
   unfold operation_rhs,
@@ -159,7 +159,7 @@ begin
 end
 
 --
-@[simp] lemma qr2_is_left_invariant : qr2 A (-A) A (-A) = A := 
+@[simp] lemma qr2_is_left_invariant : qr2 a (-a) a (-a) = a := 
 begin
   unfold qr2,
   rw qr1_is_left_invariant,
@@ -169,7 +169,7 @@ begin
 end
 
 --
-@[simp] lemma qr3_is_left_invariant : qr3 A (-A) A (-A) = -A := 
+@[simp] lemma qr3_is_left_invariant : qr3 a (-a) a (-a) = -a := 
 begin
   unfold qr3,
   rw [qr1_is_left_invariant, qr2_is_left_invariant],
@@ -181,7 +181,7 @@ begin
 end
 
 --
-@[simp] lemma qr0_is_left_invariant : qr0 A (-A) A (-A) = A := 
+@[simp] lemma qr0_is_left_invariant : qr0 a (-a) a (-a) = a := 
 begin
   unfold qr0,
   rw [qr3_is_left_invariant, qr2_is_left_invariant],
@@ -193,7 +193,7 @@ begin
 end
 
 --
-@[simp] theorem quarterround_is_left_invariant : quarterround (A, -A, A, -A) = (A, -A, A, -A) :=
+@[simp] theorem quarterround_is_left_invariant : quarterround (a, -a, a, -a) = (a, -a, a, -a) :=
 begin
   simp only [quarterround, qr0_is_left_invariant, qr1_is_left_invariant, qr2_is_left_invariant, qr3_is_left_invariant],
 end
