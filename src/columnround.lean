@@ -8,6 +8,7 @@ open params
 open operations
 open quarterround
 open rowround
+open utils
 
 namespace columnround
 
@@ -16,6 +17,11 @@ variable M : matrixType
 
 --  Without ordering for inputs, a `columnround` is exactly the same as a `rowround`.
 @[simp] def columnround : matrixType := rowround M
+
+-- This columnround call will sort all the elements of the input and the output to match salsa 20.
+-- It should be used in `doubleround`.
+@[simp] def columnround' := 
+  columnround_output (columnround (columnround_input M))
 
 --  Without ordering for inputs, a `columnround_inv` is exactly the same as a `rowround_inv`.
 @[simp] def columnround_inv : matrixType := rowround_inv M
@@ -26,6 +32,12 @@ begin
   simp only [columnround_inv, columnround, rowround_inv, rowround_single, rowround, prod.mk.eta],
   apply rowround_is_inv,
 end
+
+-- This columnround inverse call will sort all the elements of the input and the output to match salsa 20.
+-- It should be used in `doubleround`.
+@[simp] def columnround_inv' := 
+  columnround_output (columnround_inv (columnround_input M))
+
 
 /-
   Left invariance of the columnround function: https://www.iacr.org/archive/fse2008/50860470/50860470.pdf

@@ -19,17 +19,18 @@ variable M : matrixType
 
 -- doubleround(x) = rowround(columnround(x))
 @[simp] def doubleround : matrixType := 
-  rowround_output $ rowround $ rowround_input $ columnround_output $ columnround $ columnround_input M
+  rowround' $ columnround' M
 
 --  doubleround_inv(x) = columnround_inv(rowround_inv(x))
 @[simp] def doubleround_inv : matrixType := 
-  columnround_output $ columnround_inv $ columnround_input $ rowround_output $ rowround_inv $ rowround_input M
+  columnround_inv' $ rowround_inv' M
 
 -- For any `doubleround` output, we can get back to original values using the defined inverse.
 @[simp] lemma doubleround_is_inv : doubleround_inv (doubleround M) = M :=
 begin
-  simp only [doubleround_inv, doubleround, columnround_output, columnround_inv, columnround_input, rowround_output, rowround_inv,
-    rowround_input, rowround, columnround, prod.mk.eta, rowround_single_is_inv],
+  simp only [doubleround_inv, doubleround, columnround_output, columnround_inv, columnround_input, columnround_inv', rowround_inv',
+  rowround_output, rowround, rowround_input, rowround', columnround', columnround, rowround_single, quarterround,
+  rowround_inv, rowround_single_inv, quarterround_inv, qr0_is_inv, qr1_is_inv, qr2_is_inv, qr3_is_inv, prod.mk.eta],
 end
 
 /-
@@ -52,8 +53,8 @@ def input : matrixType := (
 -- `doubleround` is left invariant. 
 @[simp] theorem doubleround_is_left_invariant : doubleround (input a) = input a :=
 begin
-  simp only [doubleround, rowround_output, rowround, rowround_input, columnround_output, columnround, columnround_input,
-    rowround_single, prod.mk.eta],
+  simp only [doubleround, rowround_output, rowround', rowround, rowround_input, columnround_output, 
+    columnround', columnround, columnround_input, rowround_single, prod.mk.eta],
   
   unfold input,
   simp only [quarterround_is_left_invariant],

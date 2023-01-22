@@ -49,6 +49,11 @@ end
     rowround_single M.snd.snd.snd
   )
 
+-- This rowround call will sort all the elements of the input and the output to match salsa 20.
+-- It should be used in `doubleround`.
+@[simp] def rowround' := 
+  rowround_output (rowround (rowround_input M))
+
 /- Reverses `rowround` by doing `rowround_single_inv` to get the original matrix output -/
 @[simp] def rowround_inv : matrixType :=
   (
@@ -64,6 +69,12 @@ begin
   simp only [rowround_inv, rowround, rowround_single_inv, rowround_single, quarterround, quarterround_inv, qr0_is_inv, qr1_is_inv,
     qr2_is_inv, qr3_is_inv, prod.mk.eta],
 end
+
+-- This rowround inverse call will sort all the elements of the input and the output to match salsa 20.
+-- It should be used in `doubleround`.
+@[simp] def rowround_inv' := 
+  rowround_output (rowround_inv (rowround_input M))
+
 
 /-
   Left invariance of the rowround function: https://www.iacr.org/archive/fse2008/50860470/50860470.pdf

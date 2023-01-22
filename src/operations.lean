@@ -60,7 +60,7 @@ axiom xor_assoc : (a XOR b) XOR c = a XOR (b XOR c)
 -- Tag all axioms with simp
 attribute [simp] zero_rotl mod_neg neg_mod double_mod modular_magic mod_self xor_zero xor_inv xor_assoc
 
--- We split the operation in 2 terms, one at each side of the XOR. This is the left hand side.
+-- We split the operation in 2 terms, one at each side of the XOR. This is the right hand side.
 def operation_rhs : bitvec word_len := (b MOD c) ROTL shift
 
 -- Then an operation is just a XOR of 2 bitvectors.

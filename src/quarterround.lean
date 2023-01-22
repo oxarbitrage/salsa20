@@ -159,6 +159,15 @@ begin
 end
 
 --
+@[simp] lemma qr1_is_left_invariant' : qr1 (-a) a (-a) a = a := 
+begin
+  unfold qr1,
+  unfold operation_rhs,
+  unfold operation,
+  simp only [neg_mod, zero_rotl, xor_zero],
+end
+
+--
 @[simp] lemma qr2_is_left_invariant : qr2 a (-a) a (-a) = a := 
 begin
   unfold qr2,
@@ -166,6 +175,16 @@ begin
   unfold operation_rhs,
   unfold operation,
   simp only [neg_mod, zero_rotl, xor_zero],
+end
+
+--
+@[simp] lemma qr2_is_left_invariant' : qr2 (-a) a (-a) a = -a := 
+begin
+  unfold qr2,
+  rw qr1_is_left_invariant',
+  unfold operation_rhs,
+  unfold operation,
+  simp only [mod_neg, zero_rotl, xor_zero],
 end
 
 --
@@ -177,7 +196,19 @@ begin
   unfold operation_rhs,
   unfold operation,
     
-  rw [mod_neg, zero_rotl, xor_zero],
+  simp only [mod_neg, zero_rotl, xor_zero],
+end
+
+--
+@[simp] lemma qr3_is_left_invariant' : qr3 (-a) a (-a) a = a := 
+begin
+  unfold qr3,
+  rw [qr1_is_left_invariant', qr2_is_left_invariant'],
+  
+  unfold operation_rhs,
+  unfold operation,
+    
+  simp only [neg_mod, zero_rotl, xor_zero],
 end
 
 --
@@ -193,10 +224,30 @@ begin
 end
 
 --
+@[simp] lemma qr0_is_left_invariant' : qr0 (-a) a (-a) a = -a := 
+begin
+  unfold qr0,
+  rw [qr3_is_left_invariant', qr2_is_left_invariant'],
+  
+  unfold operation_rhs,
+  unfold operation,
+
+  simp only [mod_neg, zero_rotl, xor_zero],
+end
+
+
+--
 @[simp] theorem quarterround_is_left_invariant : quarterround (a, -a, a, -a) = (a, -a, a, -a) :=
 begin
   simp only [quarterround, qr0_is_left_invariant, qr1_is_left_invariant, qr2_is_left_invariant, qr3_is_left_invariant],
 end
+
+--
+@[simp] theorem quarterround_is_left_invariant' : quarterround (-a, a, -a, a) = (-a, a, -a, a) :=
+begin
+  simp only [quarterround, qr0_is_left_invariant', qr1_is_left_invariant', qr2_is_left_invariant', qr3_is_left_invariant'],
+end
+
 
 /-
   `quarterround` function will only flip the most significant bit when two set of elements is
