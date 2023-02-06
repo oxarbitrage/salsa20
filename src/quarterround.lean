@@ -12,7 +12,7 @@ namespace quarterround
 
 -- `a` `b` `c` and `d` are random elements of the 4 words starting sequence
 variables a b c d : bitvec word_len
--- a new set of random elements that might or might not be the same than the ones above
+-- A new set of random elements that might or might not be the same than the ones above
 variables a' b' c' d' : bitvec word_len
 
 -- Quarter round definitions
@@ -29,7 +29,8 @@ def qr3 (a b c d : bitvec word_len) := d OP (OP_RHS (qr2 a b c d) (qr1 a b c d) 
 -- z₀ = y₀ ⊕ ((z₃ + z₂) <<< 18)
 def qr0 (a b c d : bitvec word_len) := a OP (OP_RHS (qr3 a b c d) (qr2 a b c d) 18)
 
--- Puts the 4 elements that form a quarterround all together
+-- Given a sequence of 4 numbers `seq` use the four equations above to get the quarterround
+-- output, which is a 4 numbers sequence too.
 @[simp] def quarterround (seq : vecType) : vecType :=
   (
     qr0 seq.fst seq.snd.fst seq.snd.snd.fst seq.snd.snd.snd,
@@ -108,6 +109,11 @@ begin
   simp only [xor_assoc, xor_inv, xor_zero],
 end
 
+/-
+  Inverses of the `quarterround` and `quarterround_inv` individual pieces.
+-/
+
+-- Inverse of `qr0` given the sequence `a, b, c, d` is `a`.
 @[simp] lemma qr0_is_inv : 
   qr0_inv (qr0 a b c d) (qr1 a b c d) (qr2 a b c d) (qr3 a b c d) = a :=
 begin
@@ -116,6 +122,7 @@ begin
     simp only [xor_assoc, xor_inv, xor_zero],
 end
 
+-- Inverse of `qr1` given the sequence `a, b, c, d` is `b`.
 @[simp] lemma qr1_is_inv : 
   qr1_inv (qr0 a b c d) (qr1 a b c d) (qr2 a b c d) (qr3 a b c d) = b :=
 begin  
@@ -124,6 +131,7 @@ begin
     simp only [xor_assoc, xor_assoc, xor_assoc, xor_inv, xor_inv, xor_zero, xor_zero, xor_inv, xor_zero]
 end
 
+-- Inverse of `qr2` given the sequence `a, b, c, d` is `c`.
 @[simp] lemma qr2_is_inv : 
   qr2_inv (qr0 a b c d) (qr1 a b c d) (qr2 a b c d) (qr3 a b c d) = c :=
 begin
@@ -132,6 +140,7 @@ begin
     simp only [xor_assoc, xor_assoc, xor_inv, xor_zero, xor_inv, xor_zero],
 end
 
+-- Inverse of `qr3` given the sequence `a, b, c, d` is `d`.
 @[simp] lemma qr3_is_inv : 
   qr3_inv (qr0 a b c d) (qr1 a b c d) (qr2 a b c d) (qr3 a b c d) = d :=
 begin
@@ -140,16 +149,86 @@ begin
     simp only [xor_assoc, xor_inv, xor_zero],
 end
 
+-- Inverse of `qr0_inv` given the sequence `a, b, c, d` is `a`.
+@[simp] lemma qr0_inv_is_inv :
+  qr0 (qr0_inv a b c d) (qr1_inv a b c d) (qr2_inv a b c d) (qr3_inv a b c d) = a :=
+begin
+    rw [qr0_inv, qr1_inv, qr2_inv, qr3_inv, qr0],
+    rw [qr3, qr0_inv, qr2, qr1],
+    unfold operation,
+    simp only [xor_assoc, xor_inv, xor_zero],
+end
+
+-- Inverse of `qr1_inv` given the sequence `a, b, c, d` is `b`.
+@[simp] lemma qr1_inv_is_inv :
+  qr1 (qr0_inv a b c d) (qr1_inv a b c d) (qr2_inv a b c d) (qr3_inv a b c d) = b :=
+begin
+    rw [qr1, qr0_inv, qr1_inv, qr3_inv, qr0_inv],
+    unfold operation,
+    simp only [xor_assoc, xor_inv, xor_zero],
+end
+
+-- Inverse of `qr2_inv` given the sequence `a, b, c, d` is `c`.
+@[simp] lemma qr2_inv_is_inv :
+  qr2 (qr0_inv a b c d) (qr1_inv a b c d) (qr2_inv a b c d) (qr3_inv a b c d) = c :=
+begin
+    rw [qr2, qr0_inv, qr1_inv, qr2_inv, qr3_inv, qr1, qr0_inv],
+    unfold operation,
+    simp only [xor_assoc, xor_inv, xor_zero],
+end
+
+-- Inverse of `qr3_inv` given the sequence `a, b, c, d` is `d`.
+@[simp] lemma qr3_inv_is_inv :
+  qr3 (qr0_inv a b c d) (qr1_inv a b c d) (qr2_inv a b c d) (qr3_inv a b c d) = d :=
+begin
+    rw [qr3, qr0_inv, qr1_inv, qr2_inv, qr3_inv, qr1, qr0_inv, qr2, qr1],
+    unfold operation,
+    simp only [xor_assoc, xor_inv, xor_zero],
+end
+
+/-
+  Quarterround isomorphism.
+-/
+
+-- The identity of a `quarterround` function given a sequence is the sequence.
+@[simp] def id_quarterround (seq : vecType) := seq
+
+-- The identity of a `quarterround_inv` function given a sequence is the sequence.
+@[simp] def id_quarterround_inv (seq : vecType) := seq
+
+-- Isomorphism condition 1 `f ∘ g = id_f`
+@[simp] lemma isomorphism1 (seq : vecType) : (quarterround_inv ∘ quarterround) seq = id_quarterround seq :=
+begin
+  finish,
+end
+
+-- Isomorphism condition 2 `g ∘ f = id_g`
+@[simp] lemma isomorphism2 (seq : vecType) : (quarterround ∘ quarterround_inv) seq = id_quarterround_inv seq :=
+begin
+  finish,
+end
+
+-- Two categories are isomrphic if `f ∘ g = id_f` and `g ∘ f = id_g`.
+@[simp] theorem quarterround_is_isomorphic (seq : vecType) :
+  (quarterround_inv ∘ quarterround) seq = id_quarterround seq ∧
+  (quarterround ∘ quarterround_inv) seq = id_quarterround_inv seq :=
+begin
+  simp only [isomorphism1, eq_self_iff_true, isomorphism2, and_self],
+end
+
 /-
   Left invariance of the quarterround function: https://www.iacr.org/archive/fse2008/50860470/50860470.pdf
 
   We prove each single `qr{0..3}` is invariant to the left and derive that the full quarterround
   function is left invariant.
 
-  Theorem 1 of the paper.
+  Theorem 1 of the paper:
+
+  > For any 32-bit value A, an input of the form (A −A A −A) is left invariant by the
+  > quarterround function, where −A represents the only 32-bit integer satisfying A + (−A) = 0 (mod 232).
 -/
 
---
+-- 
 @[simp] lemma qr1_is_left_invariant : qr1 a (-a) a (-a) = -a := 
 begin
   unfold qr1,
@@ -247,7 +326,6 @@ end
 begin
   simp only [quarterround, qr0_is_left_invariant', qr1_is_left_invariant', qr2_is_left_invariant', qr3_is_left_invariant'],
 end
-
 
 /-
   `quarterround` function will only flip the most significant bit when two set of elements is
