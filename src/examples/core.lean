@@ -3,6 +3,8 @@ import core
 open core
 open utils
 
+namespace core_examples
+
 /- 
   Examples from the spec.
 
@@ -147,3 +149,5 @@ def U' : matrixType :=
   )
 
 #eval if core U = core U' then "pass" else "fail"
+
+end core_examples

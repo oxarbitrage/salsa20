@@ -2,6 +2,8 @@ import operations
 
 open operations
 
+namespace operations_examples
+
 /- 
   Examples from the spec.
 
@@ -29,3 +31,5 @@ open operations
 
 -- example rotl
 #eval if (rotl_inv (bitvec.of_nat 32 0x150f0fd8) 5).to_nat = 0xc0a8787e then "pass" else "fail"
+
+end operations_examples

@@ -2,6 +2,8 @@ import littleendian
 
 open littleendian
 
+namespace littleendian_examples
+
 /- 
   Examples from the spec.
 
@@ -29,3 +31,5 @@ open littleendian
 
 -- example 3
 #eval if littleendian_inv 0xfaffffff = (255, 255, 255, 250) then "pass" else "fail"
+
+end littleendian_examples

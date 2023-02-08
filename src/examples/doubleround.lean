@@ -2,6 +2,8 @@ import doubleround
 
 open doubleround
 
+namespace doubleround_examples
+
 /- 
   Examples from the spec.
 
@@ -55,3 +57,5 @@ def output' : matrixType :=
 
 -- example 2
 #eval if doubleround_inv output' = input' then "pass" else "fail"
+
+end doubleround_examples

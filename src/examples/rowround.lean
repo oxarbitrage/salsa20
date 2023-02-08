@@ -3,6 +3,8 @@ import rowround
 open rowround
 open utils
 
+namespace rowround_examples
+
 /- 
   Examples from the spec.
 
@@ -58,3 +60,5 @@ def output' : matrixType :=
 
 -- example2
 #eval if rowround_output (rowround_inv (rowround_input output')) = input' then "pass" else "fail"
+
+end rowround_examples

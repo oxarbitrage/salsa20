@@ -1,6 +1,8 @@
 import quarterround
 
 open quarterround
+
+namespace quarterround_examples
 /- 
   Examples from the spec.
 
@@ -99,3 +101,5 @@ open quarterround
 
 -- 
 #eval if 50 XOR (50 XOR 0x80000000) = 0x80000000 then "pass" else "fail"
+
+end quarterround_examples

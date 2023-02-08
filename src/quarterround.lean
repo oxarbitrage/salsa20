@@ -1,6 +1,3 @@
-/-
-  The `quarterround` function, its inverse and the invariance theorem.
--/
 import operations
 import utils
 
@@ -9,6 +6,10 @@ open params
 open utils
 
 namespace quarterround
+
+/-!
+  The `quarterround` function, its inverse and the invariance theorem.
+-/
 
 -- `a` `b` `c` and `d` are random elements of the 4 words starting sequence
 variables a b c d : bitvec word_len

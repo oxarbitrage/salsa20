@@ -3,6 +3,8 @@ import columnround
 open columnround
 open utils
 
+namespace columnround_examples
+
 /- 
   Examples from the spec.
 
@@ -58,3 +60,5 @@ def output' : matrixType :=
 
 -- example 2
 #eval if columnround_output (columnround_inv (columnround_input output')) = input' then "pass" else "fail"
+
+end columnround_examples
