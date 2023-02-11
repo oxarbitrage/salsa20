@@ -5,7 +5,7 @@ open params
 namespace operations
 
 /-!
-  ## Salsa 20 operations
+  # Operations
 
   Building blocks operations and axioms.
 
@@ -46,11 +46,11 @@ infix     ` XOR `   : 90  := xor
 variables a b c : bitvec word_len
 variable shift : ℕ
 
-/-! ### ROTL axioms -/
+/-! ## ROTL axioms -/
 
 axiom zero_rotl : ZERO ROTL shift = ZERO
 
-/-! ### MOD axioms -/
+/-! ## MOD axioms -/
 
 axiom mod_neg : a MOD -a = bitvec.zero word_len
 axiom neg_mod : (-a) MOD a = bitvec.zero word_len
@@ -59,7 +59,7 @@ axiom double_mod : ∀ a, a MOD a = 2 * a
 axiom modular_magic (h1 : a < two_31) (h2 : b = a MOD two_31) : 2 * a = 2 * b
 axiom mod_self : a MOD a = 2 * a
 
-/-! ### XOR axioms -/
+/-! ## XOR axioms -/
 
 axiom xor_zero : a XOR ZERO = a
 axiom xor_inv : a XOR a  = ZERO
@@ -68,7 +68,7 @@ axiom xor_assoc : (a XOR b) XOR c = a XOR (b XOR c)
 -- Tag all axioms with simp
 attribute [simp] zero_rotl mod_neg neg_mod double_mod modular_magic mod_self xor_zero xor_inv xor_assoc
 
-/-! ### Operation definitions -/
+/-! ## Operation definitions -/
 
 /-- We split the salsa20 operations in 2 terms, one
 at each side of the XOR. This is the right hand side. -/
@@ -79,7 +79,7 @@ a XOR of 2 bitvectors. -/
 def operation : bitvec word_len → bitvec word_len → bitvec word_len
 | a b := a XOR b
 
-/-! ### Operation lemmas -/
+/-! ## Operation lemmas -/
 
 -- some notation for operations:
 

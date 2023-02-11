@@ -4,7 +4,7 @@ import data.bitvec.basic
 namespace params
 
 /-!
-  ## Parameters
+  # Parameters
 
   Constants used in salsa20.
 -/

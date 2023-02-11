@@ -8,7 +8,7 @@ open utils
 namespace quarterround
 
 /-!
-  ## Quarterround
+  # Quarterround
 
   The `quarterround` function and its properties.
 -/
@@ -18,7 +18,7 @@ variables a b c d : bitvec word_len
 -- A new set of random elements that might or might not be the same than the ones above
 variables a' b' c' d' : bitvec word_len
 
-/-! ### Definitions -/
+/-! ## Definitions -/
 
 -- TODO: We are sending the 4 numbers `a` `b` `c` and `d` to each qr function but this is not
 -- always needed (example: `qr1` will just use `b` `a` and `d`)
@@ -42,7 +42,7 @@ output, which is a 4 numbers sequence too. -/
     qr3 seq.fst seq.snd.fst seq.snd.snd.fst seq.snd.snd.snd
   )
 
-/-! ### Inverse definitions -/
+/-! ## Inverse definitions -/
 
 /-- y₀ = z₀ ⊕ ((z₃ + z₂) <<< 18) -/
 def qr0_inv (a' b' c' d' : bitvec word_len) := a' OP (operation_rhs d' c' 18)
@@ -61,7 +61,7 @@ def qr1_inv (a' b' c' d' : bitvec word_len) := b' OP (operation_rhs (qr0_inv a' 
   qr3_inv seq.fst seq.snd.fst seq.snd.snd.fst seq.snd.snd.snd
 )
 
-/-! ### Inverse lemmas -/
+/-! ## Inverse lemmas -/
 
 /-- The quarterround operation is fully invertible. -/
 @[simp] lemma quarterround_is_invertible (a b c d : bitvec word_len) : 
@@ -114,7 +114,7 @@ begin
   simp only [xor_assoc, xor_inv, xor_zero],
 end
 
-/-! ### Inverses of the `quarterround` and `quarterround_inv` individual pieces lemmas -/
+/-! ## Inverses of the `quarterround` and `quarterround_inv` individual pieces lemmas -/
 
 /-- Inverse of `qr0` given the sequence `a, b, c, d` is `a`. -/
 @[simp] lemma qr0_is_inv : 
@@ -189,7 +189,7 @@ begin
     simp only [xor_assoc, xor_inv, xor_zero],
 end
 
-/-! ### Isomorphism -/
+/-! ## Isomorphism -/
 
 /-- The identity of a `quarterround` function given a sequence is the sequence. -/
 @[simp] def id_quarterround (seq : vecType) := seq
@@ -218,7 +218,7 @@ begin
 end
 
 /-!
-  ### Invariance
+  ## Invariance
 
   We prove each single `qr{0..3}` is invariant to the left
   when fed with a crafted sequence and by this derive that the
@@ -331,7 +331,7 @@ begin
 end
 
 /-!
-  ### Known variance of `quarterround` if diff of each input is 2³¹
+  ## Known variance of `quarterround` if diff of each input is 2³¹
 
   `quarterround` function will only flip the most significant bit when two set of elements is
   provided where the difference (or xor) between each element is 2³¹.
@@ -343,7 +343,7 @@ variables m n o p : bitvec 32
 /--
 Define that x xor 2³¹ = flip msb bit only, leave the rest as is.
 
-#### TODO:
+### TODO:
 
 This could be proved.
 -/
@@ -358,7 +358,7 @@ def rest (m : bitvec word_len) : bitvec (word_len - 1) := m.tail
 /--
 Lets suppose the msb of any uncrafted bitvec that we will send to quarterround is always `ff`.
 
-#### TODO:
+### TODO:
 
 This does not need to be the case, everything should work in a very similar way if the head is 1
 as it will gets flipped to 0 but we do this for simplicity by now.
@@ -372,7 +372,7 @@ local notation `qrX` := bitvec word_len → bitvec word_len → bitvec word_len 
 Assumes that any qrX function that is feeded with crafted numbers will result in a head of 1
 and the rest or tail equal to the tail of the uncrafted number.
 
-#### TODO:
+### TODO:
 
 This needs to be proved.
 -/
@@ -385,12 +385,14 @@ A random bitvector of size `word_len - 1` representing the tail of a bitvector o
 variable tail_placeholder : bitvec (word_len - 1)
 /--
 The head (msb) of anything that starts with a 1 and then stuff is appended should be always 1.
-#### TODO:
+
+### TODO:
 
 Should be easy to prove ? -/
 constant msb_of_one_append : vector.head ((bitvec.one 1).append tail_placeholder) = tt
 /-- The rest of the bitvector where 1 gets appended with the tail of the bitvector is the tail of the bitvector.
-#### TODO:
+
+### TODO:
 
 should be easy to prove ?
 -/

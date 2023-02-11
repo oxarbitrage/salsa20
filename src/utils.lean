@@ -1,7 +1,3 @@
-/-
-  Utility types and functions
--/
-
 import operations
 import params
 import littleendian
@@ -12,11 +8,16 @@ open littleendian
 
 namespace utils
 
+/-!
+  # Utilities
+-/
+
+
 -- A random input matrix to be used as `rowround` and `columnround` inputs. 
 variable M : matrixType
 
-/-
-  Prepare the `rowround` matrix input
+/--
+  Prepare the `rowround` matrix input.
 
   Any `rowround` input matrix is in the form:
 
@@ -40,8 +41,8 @@ variable M : matrixType
     ((M.snd.snd.snd).snd.snd.snd, (M.snd.snd.snd).fst,          (M.snd.snd.snd).snd.fst,  (M.snd.snd.snd).snd.snd.fst)
   )
 
-/-
-  Prepare the `rowround` matrix output
+/--
+  Prepare the `rowround` matrix output.
 
   Any `rowround` output matrix is of the form:
 
@@ -65,7 +66,7 @@ variable M : matrixType
     ((M.snd.snd.snd).snd.fst,     (M.snd.snd.snd).snd.snd.fst,  (M.snd.snd.snd).snd.snd.snd,  (M.snd.snd.snd).fst)
   )
 
--- The `rowround_output` function is the inverse of the `rowround_input` function.
+/-- The `rowround_output` function is the inverse of the `rowround_input` function. -/
 lemma rowround_output_is_inv_of_input : rowround_output (rowround_input M) = M :=
 begin
   unfold rowround_input,
@@ -73,8 +74,8 @@ begin
   simp only [prod.mk.eta],
 end
 
-/-
-  Prepare the `columnround` matrix input
+/--
+  Prepare the `columnround` matrix input.
 
   Any `columnround` input matrix is in the form:
 
@@ -98,8 +99,8 @@ end
     ((M.snd.snd.snd).snd.snd.snd, (M.fst).snd.snd.snd,          (M.snd.fst).snd.snd.snd,  (M.snd.snd.fst).snd.snd.snd)
   )
 
-/-
-  Prepare the `columnround` matrix output
+/--
+  Prepare the `columnround` matrix output.
 
   Any `columnround` output matrix is in the form:
 
@@ -123,7 +124,7 @@ end
     ((M.fst).snd.snd.snd, (M.snd.fst).snd.snd.fst,  (M.snd.snd.fst).snd.fst,      (M.snd.snd.snd).fst)
   )
 
--- The `columnround_output` function is the inverse of the `columnround_input` function.
+/-- The `columnround_output` function is the inverse of the `columnround_input` function. -/
 lemma columnround_output_is_inv_of_input : columnround_output (columnround_input M) = M :=
 begin
   unfold columnround_input,
@@ -131,13 +132,13 @@ begin
   simp only [prod.mk.eta],
 end
 
--- An random input 64 bytes matrix that we can reduce using `littleendian` function.
+-- A random input 64 bytes matrix that we can reduce using `littleendian` function.
 variable X : matrix64Type
 
 -- A random input 16 bytes matrix that we can aument using the `littleendian_inv` function.
 variable Y : matrixType
 
--- Reduce the 64 bytes sequence to a 16 bytes one by using little endian.
+/-- Reduce the 64 bytes sequence to a 16 bytes one by using little endian. -/
 def reduce : matrixType :=
   (
     (
@@ -166,7 +167,7 @@ def reduce : matrixType :=
     )
   )
 
--- Aument a given 16 bytes sequence to a 64 bytes one using `littleenedian_inv`.
+/-- Aument a given 16 bytes sequence to a 64 bytes one using `littleenedian_inv`. -/
 def aument : matrix64Type := (
   (
     littleendian_inv Y.fst.fst,
@@ -194,9 +195,12 @@ def aument : matrix64Type := (
   )
 )
 
--- Modular 2^32 addition of 4x4 matrices by doing Aᵢⱼ + Bᵢⱼ
--- The `MOD` operation (modulo 2^32 addition) is the key to make the salsa20 hash function irreversible.
--- Everything is reversible except for this addition.
+/-- 
+Modular 2^32 addition of 4x4 matrices by doing Aᵢⱼ + Bᵢⱼ
+
+The `MOD` operation (modulo 2^32 addition) is the key to make the salsa20 hash function irreversible.
+Everything is reversible except for this addition.
+-/
 def mod_matrix (A B : matrixType) : matrixType := (
   (
     A.fst.fst          MOD B.fst.fst,
@@ -224,7 +228,7 @@ def mod_matrix (A B : matrixType) : matrixType := (
   )
 )
 
--- We define the xor of a matrix to be the xor of each individual bitvector of matrix A and matrix B.
+/-- We define the xor of a matrix to be the xor of each individual bitvector of matrix A and matrix B. -/
 def xor_matrix (A B : matrixType) : matrixType := (
   (
     A.fst.fst          XOR B.fst.fst,
@@ -255,7 +259,7 @@ def xor_matrix (A B : matrixType) : matrixType := (
 -- Have 16 random numbers.
 variables a₀ a₁ a₂ a₃ a₄ a₅ a₆ a₇ a₈ a₉ a₁₀ a₁₁ a₁₂ a₁₃ a₁₄ a₁₅ : bitvec word_len
 
--- Distribute 2 * Matrix.
+/-- Distribute 2 * Matrix. -/
 @[simp] lemma matrix_distribute_two :
   2 * ((a₀, a₁, a₂, a₃), (a₄, a₅, a₆, a₇), (a₈, a₉, a₁₀, a₁₁), (a₁₂, a₁₃, a₁₄, a₁₅)) =
   (
@@ -265,7 +269,7 @@ variables a₀ a₁ a₂ a₃ a₄ a₅ a₆ a₇ a₈ a₉ a₁₀ a₁₁ a₁
     (2 * a₁₂, 2 * a₁₃, 2 * a₁₄, 2 * a₁₅)
   ) := rfl
 
--- The MOD sum of two equal matrices X is 2 times X.
+/-- The MOD sum of two equal matrices X is 2 times X. -/
 @[simp] lemma mod_matrix_double : mod_matrix M M = 2 * M :=
 begin
   unfold mod_matrix,
