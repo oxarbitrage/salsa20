@@ -1,7 +1,3 @@
-/-
-  The `doubleround` function, its inverse and the invariance theorem.
--/
-
 import rowround
 import columnround
 
@@ -14,18 +10,24 @@ open utils
 
 namespace doubleround
 
+/-!
+  # DoubleRound
+
+  The `doubleround` function, its inverse and the invariance theorem.
+-/
+
 -- An random input matrix to be used as inputs and outputs of `doubleround` and `doubleround_inv`.
 variable M : matrixType
 
--- doubleround(x) = rowround(columnround(x))
+/-- doubleround(x) = rowround(columnround(x)) -/
 @[simp] def doubleround : matrixType := 
   rowround' $ columnround' M
 
---  doubleround_inv(x) = columnround_inv(rowround_inv(x))
+/--  doubleround_inv(x) = columnround_inv(rowround_inv(x)) -/
 @[simp] def doubleround_inv : matrixType := 
   columnround_inv' $ rowround_inv' M
 
--- For any `doubleround` output, we can get back to original values using the defined inverse.
+/-- For any `doubleround` output, we can get back to original values using the defined inverse. -/
 @[simp] lemma doubleround_is_inv : doubleround_inv (doubleround M) = M :=
 begin
   simp only [doubleround_inv, doubleround, columnround_output, columnround_inv, columnround_input, columnround_inv', rowround_inv',
@@ -33,7 +35,9 @@ begin
   rowround_inv, rowround_single_inv, quarterround_inv, qr0_is_inv, qr1_is_inv, qr2_is_inv, qr3_is_inv, prod.mk.eta],
 end
 
-/-
+/-!
+  ## Invariance
+
   Left invariance of the doubleround function: https://www.iacr.org/archive/fse2008/50860470/50860470.pdf
 
   Theorem 4 of the paper.
@@ -42,7 +46,7 @@ end
 -- Have a number to form the invariant input.
 variable a : bitvec word_len
 
--- An input of this form should be invariant.
+/-- An input of this form should be invariant. -/
 def input : matrixType := (
   (a, -a, a, -a),
   (-a, a, -a, a),
@@ -50,7 +54,7 @@ def input : matrixType := (
   (-a, a, -a, a)
 )
 
--- `doubleround` is left invariant. 
+/-- `doubleround` is left invariant. -/
 @[simp] theorem doubleround_is_left_invariant : doubleround (input a) = input a :=
 begin
   simp only [doubleround, rowround_output, rowround', rowround, rowround_input, columnround_output, 

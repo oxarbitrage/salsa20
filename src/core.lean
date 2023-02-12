@@ -1,7 +1,3 @@
-/-
-  The `hash` and `core` functions, the non existing inverse and the `collision` theorems.
--/
-
 import doubleround
 import littleendian
 
@@ -11,34 +7,42 @@ open operations
 open params
 open utils
 
-
 namespace core
 
--- Apply double round 10 times to a reduced input.
+/-!
+  # Core
+
+  The `hash` and `core` functions, the non existing inverse and the `collision` theorems.
+-/
+
+
+/-- Apply double round 10 times to a reduced input. -/
 def doubleround_10 (X : matrixType): matrixType := 
   doubleround $ doubleround $ doubleround $ doubleround $ doubleround $ doubleround $ doubleround 
     $ doubleround $ doubleround $ doubleround $ X
 
--- Do addition modulo 2^32 of the reduced input and the doubleround of the reduced input.
+/-- Do addition modulo 2^32 of the reduced input and the doubleround of the reduced input. -/
 def core (X : matrixType) : matrixType := mod_matrix (doubleround_10 X) X
 
--- Do the hash.
+/-- Do the hash. -/
 def hash (X : matrix64Type) : matrix64Type := aument (core (reduce X))
 
 
-/-
-  Hash does not have an inverse.
+/-!
+  ## Hash does not have an inverse.
 
-  TODO: It should be easy to prove or assume the MOD operation is not reversible. 
-        Then `mod_as_matrix` is irreversible and `hash` is irreverisble.
+  ### TODO:
+
+  It should be easy to prove or assume the MOD operation is not reversible.
+  Then `mod_as_matrix` is irreversible and `hash` is irreverisble.
 
   Another approach will be to treat `hash` and `hash_inv` as a generic function, assume or prove they are not
-  bijective and then assume or prove no bijective functions does not have an inverse. 
+  bijective and then assume or prove functions that are not bijective do not have an inverse.
 
-  -- Hash as a generic function that returns the same type as its input.
+  Hash as a generic function that returns the same type as its input.
   variable hash' : matrix64Type → matrix64Type 
 
-  -- A potential generic inverse of the hash that returns the same type as its input.
+  A potential generic inverse of the hash that returns the same type as its input.
   variable hash_inv : matrix64Type → matrix64Type 
 
   -- Hash function is not bijective then inverse does not exist.
@@ -47,7 +51,9 @@ def hash (X : matrix64Type) : matrix64Type := aument (core (reduce X))
   lemma hash_has_no_inverse (A : matrix64Type) : ¬ hash'.bijective → ¬hash_inv (hash' A) = A  
 -/
 
-/-
+/-!
+  ## Invariance
+
   Theorem `doubleround_is_left_invariant` is independent of the number of rounds performed.
 
   `doubleround_10_is_left_invariant` is created proving the invariance for 10 rounds.
@@ -56,7 +62,7 @@ def hash (X : matrix64Type) : matrix64Type := aument (core (reduce X))
 -- Have a random number that we will use in some of the proofs below.
 variable A : bitvec params.word_len
 
--- `doubleround_10` is left invariant. 
+/-- `doubleround_10` is left invariant. -/
 @[simp] theorem doubleround_10_is_left_invariant : doubleround_10 (doubleround.input A) = doubleround.input A :=
 begin
   unfold doubleround_10,
@@ -64,7 +70,9 @@ begin
 end
 
 
-/-
+/-!
+  ## Linear transformation
+
   Salsa20 core function can behave as a linear transformation of the form 2 * A
   
   https://www.iacr.org/archive/fse2008/50860470/50860470.pdf
@@ -82,8 +90,8 @@ begin
   refl,
 end
 
-/-
-  Collisions
+/-!
+  ## Collissions
 
   https://www.iacr.org/archive/fse2008/50860470/50860470.pdf
 
@@ -93,12 +101,12 @@ end
 -- the maximum value Z can be.
 variable z : fin (bitvec.to_nat two_31)
 
--- Z < 2³¹
+/-- Z < 2³¹ -/
 def Z : bitvec word_len := bitvec.of_nat word_len z.val
--- Z′ = Z + 2³¹
+/-- Z′ = Z + 2³¹ -/
 def Z' : bitvec word_len := (Z z) MOD two_31
 
-/- An hypotetical collission output of the `core` function where the inputs are:
+/-- An hypotetical collission output of the `core` function where the inputs are:
   
   Z −Z Z −Z
   −Z Z −Z Z
@@ -130,7 +138,7 @@ def output : matrixType := do
     (2 *-x, 2 * x, 2 *-x, 2 * x)
   )
 
--- Two different specially crafted inputs produces the same output.
+/-- Two different specially crafted inputs produces the same output. -/
 @[simp] theorem collision 
   -- TODO: this 4 assumptions should be true by definition as they can be proved easily for nat numbers and
   -- fintypes however the bitvec conversions makes them a bit trickier.
@@ -198,7 +206,7 @@ end
 -- Random numbers to form a random input matrix
 variables a₀ a₁ a₂ a₃ a₄ a₅ a₆ a₇ a₈ a₉ a₁₀ a₁₁ a₁₂ a₁₃ a₁₄ a₁₅ : bitvec word_len
 
--- A random input matrix.
+/-- A random input matrix. -/
 def Input : matrixType := (
   (a₀, a₁, a₂, a₃),
   (a₄, a₅, a₆, a₇),
@@ -206,7 +214,7 @@ def Input : matrixType := (
   (a₁₂, a₁₃, a₁₄, a₁₅)
 )
 
--- A matrix consisting of all 2³¹ (0x80000000) bit vectors.
+/-- A matrix consisting of all 2³¹ (0x80000000) bit vectors. -/
 def Delta : matrixType :=
   (
     (0x80000000, 0x80000000, 0x80000000, 0x80000000),
@@ -215,7 +223,7 @@ def Delta : matrixType :=
     (0x80000000, 0x80000000, 0x80000000, 0x80000000)
   )
 
--- A matrix where all its elements are zero.
+/-- A matrix where all its elements are zero. -/
 def Zero : matrixType :=
   (
     (0x00000000, 0x00000000, 0x00000000, 0x00000000),
@@ -224,26 +232,28 @@ def Zero : matrixType :=
     (0x00000000, 0x00000000, 0x00000000, 0x00000000)
   )
 
--- core of delta is always zero.
+/-- `core` of delta is always zero. -/
 lemma core_of_delta: core Delta = Zero := rfl
 
--- core of zero is always zero.
+/-- `core` of zero is always zero. -/
 lemma core_of_zero: core Zero = Zero := rfl
 
 --
 local notation `INPUT` := Input a₀ a₁ a₂ a₃ a₄ a₅ a₆ a₇ a₈ a₉ a₁₀ a₁₁ a₁₂ a₁₃ a₁₄ a₁₅
 
-/-
+/--
   The specially crafted input based in some random input produces the same result as the original input. 
 
-  TODO: prove.
+  ### TODO:
 
-  - quarterrround conserves the difference.
-  - rowround conserves the difference.
-  - columnround conserves the difference.
-  - doubleround conserves the difference.
-  - doubleround_10 conserves the difference.
-  - mod_matrix cancel the difference.
+  Prove:
+
+  - `quarterrround` conserves the difference. ✓
+  - `rowround` conserves the difference.
+  - `columnround` conserves the difference.
+  - `doubleround` conserves the difference.
+  - `doubleround`_10 conserves the difference.
+  - `mod_matrix` cancel the difference.
 
   https://crypto.stackexchange.com/questions/26437/collision-or-second-preimage-for-the-chacha-core
   https://www.iacr.org/archive/fse2008/50860470/50860470.pdf
@@ -255,7 +265,7 @@ begin
   sorry,
 end
 
-/-
+/--
   As stated in https://www.ecrypt.eu.org/stream/papersdir/2008/011.pdf there are known collissions in salsa20 core
   in the form of salsa20(x) = salsa20 (x + Δ), where Δ = (0x80000000, ...).
 
