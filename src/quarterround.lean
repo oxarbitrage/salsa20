@@ -42,6 +42,23 @@ output, which is a 4 numbers sequence too. -/
     qr3 seq.fst seq.snd.fst seq.snd.snd.fst seq.snd.snd.snd
   )
 
+/-! ## Quarterround zero lemmas -/
+
+/-- `qr0` of 4 zeros is zero -/
+@[simp] lemma qr0_zero : qr0 0 0 0 0 = 0 := by refl
+
+/-- `qr1` of 4 zeros is zero -/
+@[simp] lemma qr1_zero : qr1 0 0 0 0 = 0 := by refl
+
+/-- `qr2` of 4 zeros is zero -/
+@[simp] lemma qr2_zero : qr2 0 0 0 0 = 0 := by refl
+
+/-- `qr3` of 4 zeros is zero -/
+@[simp] lemma qr3_zero : qr3 0 0 0 0 = 0 := by refl
+
+/-- `quarterround` of 4 zeros is a sequence of 4 zeros -/
+@[simp] lemma quarterround_zero : quarterround (0, 0, 0, 0) = (0, 0, 0, 0) := by refl
+
 /-! ## Inverse definitions -/
 
 /-- y₀ = z₀ ⊕ ((z₃ + z₂) <<< 18) -/
