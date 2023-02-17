@@ -5,13 +5,18 @@ open operations
 namespace operations_examples
 
 /-!
-  # Examples from the spec.
+  # Formalized examples from the spec
 
   https://cr.yp.to/snuffle/spec.pdf
+
+  Notes:
+
+  - Examples are formalized as `lemma`s instead of `example`
+  so they show up in the documentation.
 -/
 
-/-- example xor -/
-example : bitvec.xor (bitvec.of_nat params.word_len 0xc0a8787e)
+/-- 0xc0a8787e ⊕ 0x9fd1161d = 0x5f796e63 -/
+lemma example_xor : bitvec.xor (bitvec.of_nat params.word_len 0xc0a8787e)
   (bitvec.of_nat params.word_len 0x9fd1161d) = 0x5f796e63 :=
 begin
   rw params.word_len,
@@ -20,8 +25,8 @@ begin
   refl,
 end
 
-/-- example modular addition -/
-example : 0xc0a8787e MOD 0x9fd1161d = 0x60798e9b :=
+/-- 0xc0a8787e + 0x9fd1161d = 0x60798e9b -/
+lemma example_mod : 0xc0a8787e MOD 0x9fd1161d = 0x60798e9b :=
 begin
   unfold operations.mod,
   unfold params.max_bitvec,
@@ -32,8 +37,8 @@ begin
   refl,
 end
 
-/-- example rotl --/
-example : (rotl (bitvec.of_nat params.word_len 0xc0a8787e) 5) = 0x150f0fd8 :=
+/-- 0xc0a8787e <<< 5 = 0x150f0fd8 -/
+lemma example_rotl : (rotl (bitvec.of_nat params.word_len 0xc0a8787e) 5) = 0x150f0fd8 :=
 begin
   unfold operations.rotl,
   unfold bitvec.shl,
@@ -47,8 +52,8 @@ end
 
 /-! # Inverse examples -/
 
-/-- example inverse xor -/
-example : bitvec.xor (bitvec.of_nat params.word_len 0x5f796e63)
+/-- 0x5f796e63 ⊕ 0x9fd1161d = 0xc0a8787e -/
+lemma example_inverse_xor : bitvec.xor (bitvec.of_nat params.word_len 0x5f796e63)
   (bitvec.of_nat params.word_len 0x9fd1161d) = 0xc0a8787e :=
 begin
   rw params.word_len,
@@ -57,8 +62,8 @@ begin
   refl,
 end
 
-/-- example rotl_inv -/
-example : rotl_inv (bitvec.of_nat params.word_len 0x150f0fd8) 5 =
+/-- 0x150f0fd8 <<<⁻¹ 5 = 0xc0a8787e -/
+lemma example_rotl_inv : rotl_inv (bitvec.of_nat params.word_len 0x150f0fd8) 5 =
   0xc0a8787e :=
 begin
   unfold rotl_inv,

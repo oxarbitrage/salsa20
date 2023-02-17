@@ -3,18 +3,130 @@ import quarterround
 open quarterround
 
 namespace quarterround_examples
-/- 
-  Examples from the spec.
+/-!
+  # Examples from the spec.
 
   https://cr.yp.to/snuffle/spec.pdf
 -/
 
--- example 1
-#eval if 
-  quarterround (0x00000000, 0x00000000, 0x00000000, 0x00000000) =  
-    (0x000000000, 0x00000000, 0x00000000, 0x00000000) then "pass" else "fail"
+/-- example 1 -/
+example : quarterround (0x00000000, 0x00000000, 0x00000000, 0x00000000) =
+    (0x000000000, 0x00000000, 0x00000000, 0x00000000) :=
+begin
+  refl,
+end
+
+lemma example1_qr1 :
+  qr1 0x00000001 0x00000000 0x00000000 0x00000000 = 0x00000080 :=
+begin
+  rw qr1,
+  rw operations.operation,
+  rw operations.operation_rhs,
+  rw operations.xor,
+  rw operations.mod,
+  rw operations.rotl,
+  rw params.max_bitvec,
+  rw params.mod,
+  rw params.word_len,
+  rw bitvec.of_nat,
+  rw bitvec.shl,
+  rw bitvec.ushr,
+  rw bitvec.fill_shr,
+  repeat { rw bitvec.of_nat },
+
+  norm_num,
+
+  refl,
+end
+
+lemma example1_qr2 :
+  qr2 0x00000001 0x00000000 0x00000000 0x00000000 = 0x00010200 :=
+begin
+  rw qr2,
+  rw qr1,
+  repeat { rw operations.operation },
+  repeat { rw operations.operation_rhs },
+  repeat { rw operations.xor },
+  repeat { rw operations.mod },
+  repeat { rw operations.rotl },
+  rw params.max_bitvec,
+  rw params.mod,
+  rw params.word_len,
+  rw bitvec.of_nat,
+  rw bitvec.shl,
+  rw bitvec.ushr,
+  rw bitvec.fill_shr,
+  repeat { rw bitvec.of_nat },
+
+  norm_num,
+
+  refl,
+end
+
+lemma example1_qr3 :
+  qr3 0x00000001 0x00000000 0x00000000 0x00000000 = 0x20500000 :=
+begin
+  rw qr3,
+  rw qr1,
+  rw qr2,
+  rw qr1,
+  repeat { rw operations.operation },
+  repeat { rw operations.operation_rhs },
+  repeat { rw operations.xor },
+  repeat { rw operations.mod },
+  repeat { rw operations.rotl },
+  rw params.max_bitvec,
+  rw params.mod,
+  rw params.word_len,
+  rw bitvec.of_nat,
+  rw bitvec.shl,
+  rw bitvec.ushr,
+  rw bitvec.fill_shr,
+  repeat { rw bitvec.of_nat },
+
+  norm_num,
+
+  refl,
+end
+
+lemma example1_qr0 :
+  qr0 0x00000001 0x00000000 0x00000000 0x00000000 = 0x08008145 :=
+begin
+  rw qr0,
+  rw qr3,
+  rw qr2,
+  rw qr1,
+  repeat { rw operations.operation },
+  repeat { rw operations.operation_rhs },
+  repeat { rw operations.xor },
+  repeat { rw operations.mod },
+  repeat { rw operations.rotl },
+  rw params.max_bitvec,
+  rw params.mod,
+  rw params.word_len,
+  rw bitvec.of_nat,
+  rw bitvec.shl,
+  rw bitvec.ushr,
+  rw bitvec.fill_shr,
+  repeat { rw bitvec.of_nat },
+
+  norm_num,
+
+  refl,
+end
 
 -- example 2
+example : quarterround (0x00000001, 0x00000000, 0x00000000, 0x00000000) =
+    (0x08008145, 0x00000080, 0x00010200, 0x20500000) :=
+begin
+  rw quarterround,
+  rw example1_qr0,
+  rw example1_qr1,
+  rw example1_qr2,
+  rw example1_qr3,
+end
+
+
 #eval if 
   quarterround (0x00000001, 0x00000000, 0x00000000, 0x00000000) =  
     (0x08008145, 0x00000080, 0x00010200, 0x20500000) then "pass" else "fail"
