@@ -140,95 +140,88 @@ local notation `RANDOM_INPUT` := input_random m₀ m₁ m₂ m₃ m₄ m₅ m₆
 -- Alias for crafted input with 16 random arguments.
 local notation `CRAFTED_INPUT` := input_crafted m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅
 
-/-- Each number produced by the `rowround` function when feeded with crafted and uncrafted inputs carries
-the difference. We need to prove this is true for all the 16 output values of the rowround.
--/
-lemma rowround_difference_is_carried :
-  -- row 1
-  -- value 1
-  (
-    msb (rowround RANDOM_INPUT).fst.fst ≠ msb (rowround CRAFTED_INPUT).fst.fst ∧
-    rest (rowround RANDOM_INPUT).fst.fst = rest (rowround CRAFTED_INPUT).fst.fst
-  ) ∧
-  -- value 2
-  (
-    msb (rowround RANDOM_INPUT).fst.snd.fst ≠ msb (rowround CRAFTED_INPUT).fst.snd.fst ∧
-    rest (rowround RANDOM_INPUT).fst.snd.fst = rest (rowround CRAFTED_INPUT).fst.snd.fst
-  ) ∧
-  -- value 3
-  (
-    msb (rowround RANDOM_INPUT).fst.snd.snd.fst ≠ msb (rowround CRAFTED_INPUT).fst.snd.snd.fst ∧
-    rest (rowround RANDOM_INPUT).fst.snd.snd.fst = rest (rowround CRAFTED_INPUT).fst.snd.snd.fst
-  ) ∧
-  -- value 4
-  (
-    msb (rowround RANDOM_INPUT).fst.snd.snd.snd ≠ msb (rowround CRAFTED_INPUT).fst.snd.snd.snd ∧
-    rest (rowround RANDOM_INPUT).fst.snd.snd.snd = rest (rowround CRAFTED_INPUT).fst.snd.snd.snd
-  ) ∧
-  -- row 2
-  -- value 1
-  (
-    msb (rowround RANDOM_INPUT).snd.fst.fst ≠ msb (rowround CRAFTED_INPUT).snd.fst.fst ∧
-    rest (rowround RANDOM_INPUT).snd.fst.fst = rest (rowround CRAFTED_INPUT).snd.fst.fst
-  ) ∧
-  -- value 2
-  (
-    msb (rowround RANDOM_INPUT).snd.fst.snd.fst ≠ msb (rowround CRAFTED_INPUT).snd.fst.snd.fst ∧
-    rest (rowround RANDOM_INPUT).snd.fst.snd.fst = rest (rowround CRAFTED_INPUT).snd.fst.snd.fst
-  ) ∧
-  -- value 3
-  (
-    msb (rowround RANDOM_INPUT).snd.fst.snd.snd.fst ≠ msb (rowround CRAFTED_INPUT).snd.fst.snd.snd.fst ∧
-    rest (rowround RANDOM_INPUT).snd.fst.snd.snd.fst = rest (rowround CRAFTED_INPUT).snd.fst.snd.snd.fst
-  ) ∧
-  -- value 4
-  (
-    msb (rowround RANDOM_INPUT).snd.fst.snd.snd.snd ≠ msb (rowround CRAFTED_INPUT).snd.fst.snd.snd.snd ∧
-    rest (rowround RANDOM_INPUT).snd.fst.snd.snd.snd = rest (rowround CRAFTED_INPUT).snd.fst.snd.snd.snd
-  ) ∧
-  -- row 3
-  -- value 1
-  (
-    msb (rowround RANDOM_INPUT).snd.snd.fst.fst ≠ msb (rowround CRAFTED_INPUT).snd.snd.fst.fst ∧
-    rest (rowround RANDOM_INPUT).snd.snd.fst.fst = rest (rowround CRAFTED_INPUT).snd.snd.fst.fst
-  ) ∧
-  -- value 2
-  (
-    msb (rowround RANDOM_INPUT).snd.snd.fst.snd.fst ≠ msb (rowround CRAFTED_INPUT).snd.snd.fst.snd.fst ∧
-    rest (rowround RANDOM_INPUT).snd.snd.fst.snd.fst = rest (rowround CRAFTED_INPUT).snd.snd.fst.snd.fst
-  ) ∧
-  -- value 3
-  (
-    msb (rowround RANDOM_INPUT).snd.snd.fst.snd.snd.fst ≠ msb (rowround CRAFTED_INPUT).snd.snd.fst.snd.snd.fst ∧
-    rest (rowround RANDOM_INPUT).snd.snd.fst.snd.snd.fst = rest (rowround CRAFTED_INPUT).snd.snd.fst.snd.snd.fst
-  ) ∧
-  -- value 4
-  (
-    msb (rowround RANDOM_INPUT).snd.snd.fst.snd.snd.snd ≠ msb (rowround CRAFTED_INPUT).snd.snd.fst.snd.snd.snd ∧
-    rest (rowround RANDOM_INPUT).snd.snd.fst.snd.snd.snd = rest (rowround CRAFTED_INPUT).snd.snd.fst.snd.snd.snd
-  ) ∧
-  -- row 4
-  -- value 1
-  (
-    msb (rowround RANDOM_INPUT).snd.snd.snd.fst ≠ msb (rowround CRAFTED_INPUT).snd.snd.snd.fst ∧
-    rest (rowround RANDOM_INPUT).snd.snd.snd.fst = rest (rowround CRAFTED_INPUT).snd.snd.snd.fst
-  ) ∧
-  -- value 2
-  (
-    msb (rowround RANDOM_INPUT).snd.snd.snd.snd.fst ≠ msb (rowround CRAFTED_INPUT).snd.snd.snd.snd.fst ∧
-    rest (rowround RANDOM_INPUT).snd.snd.snd.snd.fst = rest (rowround CRAFTED_INPUT).snd.snd.snd.snd.fst
-  ) ∧
-  -- value 3
-  (
-    msb (rowround RANDOM_INPUT).snd.snd.snd.snd.snd.fst ≠ msb (rowround CRAFTED_INPUT).snd.snd.snd.snd.snd.fst ∧
-    rest (rowround RANDOM_INPUT).snd.snd.snd.snd.snd.fst = rest (rowround CRAFTED_INPUT).snd.snd.snd.snd.snd.fst
-  ) ∧
-  -- value 4
-  (
-    msb (rowround RANDOM_INPUT).snd.snd.snd.snd.snd.snd ≠ msb (rowround CRAFTED_INPUT).snd.snd.snd.snd.snd.snd ∧
-    rest (rowround RANDOM_INPUT).snd.snd.snd.snd.snd.snd = rest (rowround CRAFTED_INPUT).snd.snd.snd.snd.snd.snd
-  )
-:=
+-- Alias for a carry difference property, first row and first value.
+local notation `CARRY_PROP_ROW1_VALUE1` :=
+  msb (rowround RANDOM_INPUT).fst.fst ≠ msb (rowround CRAFTED_INPUT).fst.fst ∧
+  rest (rowround RANDOM_INPUT).fst.fst = rest (rowround CRAFTED_INPUT).fst.fst
+
+-- Alias for a carry difference property, first row and second value.
+local notation `CARRY_PROP_ROW1_VALUE2` :=
+  msb (rowround RANDOM_INPUT).fst.snd.fst ≠ msb (rowround CRAFTED_INPUT).fst.snd.fst ∧
+  rest (rowround RANDOM_INPUT).fst.snd.fst = rest (rowround CRAFTED_INPUT).fst.snd.fst
+
+-- Alias for a carry difference property, first row and third value.
+local notation `CARRY_PROP_ROW1_VALUE3` :=
+  msb (rowround RANDOM_INPUT).fst.snd.snd.fst ≠ msb (rowround CRAFTED_INPUT).fst.snd.snd.fst ∧
+  rest (rowround RANDOM_INPUT).fst.snd.snd.fst = rest (rowround CRAFTED_INPUT).fst.snd.snd.fst
+
+-- Alias for a carry difference property, first row and fourth value.
+local notation `CARRY_PROP_ROW1_VALUE4` :=
+  msb (rowround RANDOM_INPUT).fst.snd.snd.snd ≠ msb (rowround CRAFTED_INPUT).fst.snd.snd.snd ∧
+  rest (rowround RANDOM_INPUT).fst.snd.snd.snd = rest (rowround CRAFTED_INPUT).fst.snd.snd.snd
+
+-- Alias for a carry difference property, second row and first value.
+local notation `CARRY_PROP_ROW2_VALUE1` :=
+  msb (rowround RANDOM_INPUT).snd.fst.fst ≠ msb (rowround CRAFTED_INPUT).snd.fst.fst ∧
+  rest (rowround RANDOM_INPUT).snd.fst.fst = rest (rowround CRAFTED_INPUT).snd.fst.fst
+
+-- Alias for a carry difference property, second row and second value.
+local notation `CARRY_PROP_ROW2_VALUE2` :=
+  msb (rowround RANDOM_INPUT).snd.fst.snd.fst ≠ msb (rowround CRAFTED_INPUT).snd.fst.snd.fst ∧
+  rest (rowround RANDOM_INPUT).snd.fst.snd.fst = rest (rowround CRAFTED_INPUT).snd.fst.snd.fst
+
+-- Alias for a carry difference property, second row and third value.
+local notation `CARRY_PROP_ROW2_VALUE3` :=
+  msb (rowround RANDOM_INPUT).snd.fst.snd.snd.fst ≠ msb (rowround CRAFTED_INPUT).snd.fst.snd.snd.fst ∧
+  rest (rowround RANDOM_INPUT).snd.fst.snd.snd.fst = rest (rowround CRAFTED_INPUT).snd.fst.snd.snd.fst
+
+-- Alias for a carry difference property, second row and fourth value.
+local notation `CARRY_PROP_ROW2_VALUE4` :=
+  msb (rowround RANDOM_INPUT).snd.fst.snd.snd.snd ≠ msb (rowround CRAFTED_INPUT).snd.fst.snd.snd.snd ∧
+  rest (rowround RANDOM_INPUT).snd.fst.snd.snd.snd = rest (rowround CRAFTED_INPUT).snd.fst.snd.snd.snd
+
+-- Alias for a carry difference property, third row and first value.
+local notation `CARRY_PROP_ROW3_VALUE1` :=
+  msb (rowround RANDOM_INPUT).snd.snd.fst.fst ≠ msb (rowround CRAFTED_INPUT).snd.snd.fst.fst ∧
+  rest (rowround RANDOM_INPUT).snd.snd.fst.fst = rest (rowround CRAFTED_INPUT).snd.snd.fst.fst
+
+-- Alias for a carry difference property, third row and second value.
+local notation `CARRY_PROP_ROW3_VALUE2` :=
+  msb (rowround RANDOM_INPUT).snd.snd.fst.snd.fst ≠ msb (rowround CRAFTED_INPUT).snd.snd.fst.snd.fst ∧
+  rest (rowround RANDOM_INPUT).snd.snd.fst.snd.fst = rest (rowround CRAFTED_INPUT).snd.snd.fst.snd.fst
+
+-- Alias for a carry difference property, third row and third value.
+local notation `CARRY_PROP_ROW3_VALUE3` :=
+  msb (rowround RANDOM_INPUT).snd.snd.fst.snd.snd.fst ≠ msb (rowround CRAFTED_INPUT).snd.snd.fst.snd.snd.fst ∧
+  rest (rowround RANDOM_INPUT).snd.snd.fst.snd.snd.fst = rest (rowround CRAFTED_INPUT).snd.snd.fst.snd.snd.fst
+
+-- Alias for a carry difference property, third row and fourth value.
+local notation `CARRY_PROP_ROW3_VALUE4` :=
+  msb (rowround RANDOM_INPUT).snd.snd.fst.snd.snd.snd ≠ msb (rowround CRAFTED_INPUT).snd.snd.fst.snd.snd.snd ∧
+  rest (rowround RANDOM_INPUT).snd.snd.fst.snd.snd.snd = rest (rowround CRAFTED_INPUT).snd.snd.fst.snd.snd.snd
+
+-- Alias for a carry difference property, fourth row and first value.
+local notation `CARRY_PROP_ROW4_VALUE1` :=
+  msb (rowround RANDOM_INPUT).snd.snd.snd.fst ≠ msb (rowround CRAFTED_INPUT).snd.snd.snd.fst ∧
+  rest (rowround RANDOM_INPUT).snd.snd.snd.fst = rest (rowround CRAFTED_INPUT).snd.snd.snd.fst
+
+-- Alias for a carry difference property, fourth row and second value.
+local notation `CARRY_PROP_ROW4_VALUE2` :=
+  msb (rowround RANDOM_INPUT).snd.snd.snd.snd.fst ≠ msb (rowround CRAFTED_INPUT).snd.snd.snd.snd.fst ∧
+  rest (rowround RANDOM_INPUT).snd.snd.snd.snd.fst = rest (rowround CRAFTED_INPUT).snd.snd.snd.snd.fst
+
+-- Alias for a carry difference property, fourth row and third value.
+local notation `CARRY_PROP_ROW4_VALUE3` :=
+  msb (rowround RANDOM_INPUT).snd.snd.snd.snd.snd.fst ≠ msb (rowround CRAFTED_INPUT).snd.snd.snd.snd.snd.fst ∧
+  rest (rowround RANDOM_INPUT).snd.snd.snd.snd.snd.fst = rest (rowround CRAFTED_INPUT).snd.snd.snd.snd.snd.fst
+
+-- Alias for a carry difference property, fourth row and fourth value.
+local notation `CARRY_PROP_ROW4_VALUE4` :=
+  msb (rowround RANDOM_INPUT).snd.snd.snd.snd.snd.snd ≠ msb (rowround CRAFTED_INPUT).snd.snd.snd.snd.snd.snd ∧
+  rest (rowround RANDOM_INPUT).snd.snd.snd.snd.snd.snd = rest (rowround CRAFTED_INPUT).snd.snd.snd.snd.snd.snd
+
+/-- Proof that the difference is carried for the first row and the first value. -/
+@[simp] lemma carry_diff_row1_value1 : CARRY_PROP_ROW1_VALUE1 :=
 begin
   unfold input_random,
   unfold input_crafted,
@@ -236,44 +229,170 @@ begin
   unfold rowround_single,
   simp only [quarterround, ne.def],
 
-  -- first row
-  apply and.intro,
   apply qr0_difference_is_carried,
-  apply and.intro,
-  apply qr1_difference_is_carried,
-  apply and.intro,
-  apply qr2_difference_is_carried,
-  apply and.intro,
-  apply qr3_difference_is_carried,
+end
 
-  -- second row
-  apply and.intro,
-  apply qr0_difference_is_carried,
-  apply and.intro,
-  apply qr1_difference_is_carried,
-  apply and.intro,
-  apply qr2_difference_is_carried,
-  apply and.intro,
-  apply qr3_difference_is_carried,
+/-- Proof that the difference is carried for the first row and the second value. -/
+@[simp] lemma carry_diff_row1_value2 : CARRY_PROP_ROW1_VALUE2 :=
+begin
+  unfold input_random,
+  unfold input_crafted,
+  unfold rowround,
+  unfold rowround_single,
+  simp only [quarterround, ne.def],
 
-  -- third row
-  apply and.intro,
-  apply qr0_difference_is_carried,
-  apply and.intro,
   apply qr1_difference_is_carried,
-  apply and.intro,
-  apply qr2_difference_is_carried,
-  apply and.intro,
-  apply qr3_difference_is_carried,
+end
 
-  -- fourth row
-  apply and.intro,
-  apply qr0_difference_is_carried,
-  apply and.intro,
-  apply qr1_difference_is_carried,
-  apply and.intro,
+/-- Proof that the difference is carried for the first row and the third value. -/
+@[simp] lemma carry_diff_row1_value3 : CARRY_PROP_ROW1_VALUE3 :=
+begin
+  unfold input_random,
+  unfold input_crafted,
+  unfold rowround,
+  unfold rowround_single,
+  simp only [quarterround, ne.def],
+
   apply qr2_difference_is_carried,
+end
+
+/-- Proof that the difference is carried for the first row and the third value. -/
+@[simp] lemma carry_diff_row1_value4 : CARRY_PROP_ROW1_VALUE4 :=
+begin
+  unfold input_random,
+  unfold input_crafted,
+  unfold rowround,
+  unfold rowround_single,
+  simp only [quarterround, ne.def],
+
   apply qr3_difference_is_carried,
+end
+
+/-- Proof that the difference is carried for the second row and the first value. -/
+@[simp] lemma carry_diff_row2_value1 : CARRY_PROP_ROW2_VALUE1 :=
+begin
+  apply carry_diff_row1_value1,
+  repeat { tauto },
+end
+
+/-- Proof that the difference is carried for the second row and the second value. -/
+@[simp] lemma carry_diff_row2_value2 : CARRY_PROP_ROW2_VALUE2 :=
+begin
+  apply carry_diff_row1_value2,
+  repeat { tauto },
+end
+
+/-- Proof that the difference is carried for the second row and the third value. -/
+@[simp] lemma carry_diff_row2_value3 : CARRY_PROP_ROW2_VALUE3 :=
+begin
+  apply carry_diff_row1_value3,
+  repeat { tauto },
+end
+
+/-- Proof that the difference is carried for the second row and the fourth value. -/
+@[simp] lemma carry_diff_row2_value4 : CARRY_PROP_ROW2_VALUE4 :=
+begin
+  apply carry_diff_row1_value4,
+  repeat { tauto },
+end
+
+/-- Proof that the difference is carried for the third row and the first value. -/
+@[simp] lemma carry_diff_row3_value1 : CARRY_PROP_ROW3_VALUE1 :=
+begin
+  apply carry_diff_row1_value1,
+  repeat { tauto },
+end
+
+/-- Proof that the difference is carried for the third row and the second value. -/
+@[simp] lemma carry_diff_row3_value2 : CARRY_PROP_ROW3_VALUE2 :=
+begin
+  apply carry_diff_row1_value2,
+  repeat { tauto },
+end
+
+/-- Proof that the difference is carried for the third row and the third value. -/
+@[simp] lemma carry_diff_row3_value3 : CARRY_PROP_ROW3_VALUE3 :=
+begin
+  apply carry_diff_row1_value3,
+  repeat { tauto },
+end
+
+/-- Proof that the difference is carried for the third row and the fourth value. -/
+@[simp] lemma carry_diff_row3_value4 : CARRY_PROP_ROW3_VALUE4 :=
+begin
+  apply carry_diff_row1_value4,
+  repeat { tauto },
+end
+
+/-- Proof that the difference is carried for the fourth row and the first value. -/
+@[simp] lemma carry_diff_row4_value1 : CARRY_PROP_ROW4_VALUE1 :=
+begin
+  apply carry_diff_row1_value1,
+  repeat { tauto },
+end
+
+/-- Proof that the difference is carried for the fourth row and the second value. -/
+@[simp] lemma carry_diff_row4_value2 : CARRY_PROP_ROW4_VALUE2 :=
+begin
+  apply carry_diff_row1_value2,
+  repeat { tauto },
+end
+
+/-- Proof that the difference is carried for the fourth row and the third value. -/
+@[simp] lemma carry_diff_row4_value3 : CARRY_PROP_ROW4_VALUE3 :=
+begin
+  apply carry_diff_row1_value3,
+  repeat { tauto },
+end
+
+/-- Proof that the difference is carried for the fourth row and the fourth value. -/
+@[simp] lemma carry_diff_row4_value4 : CARRY_PROP_ROW4_VALUE4 :=
+begin
+  apply carry_diff_row1_value4,
+  repeat { tauto },
+end
+
+/-- Each number produced by the `rowround` function when feeded with crafted and uncrafted inputs carries
+the difference. We need to prove this is true for all the 16 output values of the rowround.
+-/
+lemma rowround_difference_is_carried :
+  (CARRY_PROP_ROW1_VALUE1) ∧ (CARRY_PROP_ROW1_VALUE2) ∧ (CARRY_PROP_ROW1_VALUE3) ∧(CARRY_PROP_ROW1_VALUE4) ∧
+  (CARRY_PROP_ROW2_VALUE1) ∧ (CARRY_PROP_ROW2_VALUE2) ∧ (CARRY_PROP_ROW2_VALUE3) ∧ (CARRY_PROP_ROW2_VALUE4) ∧
+  (CARRY_PROP_ROW3_VALUE1) ∧ (CARRY_PROP_ROW3_VALUE2) ∧ (CARRY_PROP_ROW3_VALUE3) ∧ (CARRY_PROP_ROW3_VALUE4) ∧
+  (CARRY_PROP_ROW4_VALUE1) ∧ (CARRY_PROP_ROW4_VALUE2) ∧ (CARRY_PROP_ROW4_VALUE3) ∧ (CARRY_PROP_ROW4_VALUE4)
+:=
+begin
+  apply and.intro,
+  apply carry_diff_row1_value1,
+  apply and.intro,
+  apply carry_diff_row1_value2,
+  apply and.intro,
+  apply carry_diff_row1_value3,
+  apply and.intro,
+  apply carry_diff_row1_value4,
+  apply and.intro,
+  apply carry_diff_row2_value1,
+  apply and.intro,
+  apply carry_diff_row2_value2,
+  apply and.intro,
+  apply carry_diff_row2_value3,
+  apply and.intro,
+  apply carry_diff_row2_value4,
+  apply and.intro,
+  apply carry_diff_row3_value1,
+  apply and.intro,
+  apply carry_diff_row3_value2,
+  apply and.intro,
+  apply carry_diff_row3_value3,
+  apply and.intro,
+  apply carry_diff_row3_value4,
+  apply and.intro,
+  apply carry_diff_row4_value1,
+  apply and.intro,
+  apply carry_diff_row4_value2,
+  apply and.intro,
+  apply carry_diff_row4_value3,
+  apply carry_diff_row4_value4,
 end
 
 end rowround

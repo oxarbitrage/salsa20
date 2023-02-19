@@ -9,8 +9,8 @@ namespace quarterround_examples
   https://cr.yp.to/snuffle/spec.pdf
 -/
 
-/-- example 1 -/
-example : quarterround (0x00000000, 0x00000000, 0x00000000, 0x00000000) =
+/-- quarterround 0 0 0 0 = 0 0 0 0 -/
+lemma example0_quarterround : quarterround (0x00000000, 0x00000000, 0x00000000, 0x00000000) =
     (0x000000000, 0x00000000, 0x00000000, 0x00000000) :=
 begin
   refl,
@@ -115,8 +115,8 @@ begin
   refl,
 end
 
--- example 2
-example : quarterround (0x00000001, 0x00000000, 0x00000000, 0x00000000) =
+/-- example 2 --/
+lemma example1_quarterround : quarterround (0x00000001, 0x00000000, 0x00000000, 0x00000000) =
     (0x08008145, 0x00000080, 0x00010200, 0x20500000) :=
 begin
   rw quarterround,
@@ -126,10 +126,35 @@ begin
   rw example1_qr3,
 end
 
-
+/-
 #eval if 
   quarterround (0x00000001, 0x00000000, 0x00000000, 0x00000000) =  
     (0x08008145, 0x00000080, 0x00010200, 0x20500000) then "pass" else "fail"
+-/
+
+lemma example2_qr1 :
+  qr1 0x00000000 0x00000001 0x00000000 0x00000000 = 0x00000001 :=
+begin
+  rw qr1,
+  rw operations.operation,
+  rw operations.operation_rhs,
+  rw operations.xor,
+  rw operations.mod,
+  rw operations.rotl,
+  rw params.max_bitvec,
+  rw params.mod,
+  rw params.word_len,
+  rw bitvec.of_nat,
+  rw bitvec.shl,
+  rw bitvec.ushr,
+  rw bitvec.fill_shr,
+  repeat { rw bitvec.of_nat },
+
+  norm_num,
+
+  refl,
+end
+
 
 -- example 3
 #eval if 
