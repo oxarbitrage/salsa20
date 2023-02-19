@@ -221,7 +221,7 @@ local notation `CARRY_PROP_ROW4_VALUE4` :=
   rest (rowround RANDOM_INPUT).snd.snd.snd.snd.snd.snd = rest (rowround CRAFTED_INPUT).snd.snd.snd.snd.snd.snd
 
 /-- Proof that the difference is carried for the first row and the first value. -/
-@[simp] lemma carry_diff_row1_value1 : CARRY_PROP_ROW1_VALUE1 :=
+lemma carry_diff_row1_value1 : CARRY_PROP_ROW1_VALUE1 :=
 begin
   unfold input_random,
   unfold input_crafted,
@@ -233,7 +233,7 @@ begin
 end
 
 /-- Proof that the difference is carried for the first row and the second value. -/
-@[simp] lemma carry_diff_row1_value2 : CARRY_PROP_ROW1_VALUE2 :=
+lemma carry_diff_row1_value2 : CARRY_PROP_ROW1_VALUE2 :=
 begin
   unfold input_random,
   unfold input_crafted,
@@ -245,7 +245,7 @@ begin
 end
 
 /-- Proof that the difference is carried for the first row and the third value. -/
-@[simp] lemma carry_diff_row1_value3 : CARRY_PROP_ROW1_VALUE3 :=
+lemma carry_diff_row1_value3 : CARRY_PROP_ROW1_VALUE3 :=
 begin
   unfold input_random,
   unfold input_crafted,
@@ -257,7 +257,7 @@ begin
 end
 
 /-- Proof that the difference is carried for the first row and the third value. -/
-@[simp] lemma carry_diff_row1_value4 : CARRY_PROP_ROW1_VALUE4 :=
+lemma carry_diff_row1_value4 : CARRY_PROP_ROW1_VALUE4 :=
 begin
   unfold input_random,
   unfold input_crafted,
@@ -269,84 +269,84 @@ begin
 end
 
 /-- Proof that the difference is carried for the second row and the first value. -/
-@[simp] lemma carry_diff_row2_value1 : CARRY_PROP_ROW2_VALUE1 :=
+lemma carry_diff_row2_value1 : CARRY_PROP_ROW2_VALUE1 :=
 begin
   apply carry_diff_row1_value1,
   repeat { tauto },
 end
 
 /-- Proof that the difference is carried for the second row and the second value. -/
-@[simp] lemma carry_diff_row2_value2 : CARRY_PROP_ROW2_VALUE2 :=
+lemma carry_diff_row2_value2 : CARRY_PROP_ROW2_VALUE2 :=
 begin
   apply carry_diff_row1_value2,
   repeat { tauto },
 end
 
 /-- Proof that the difference is carried for the second row and the third value. -/
-@[simp] lemma carry_diff_row2_value3 : CARRY_PROP_ROW2_VALUE3 :=
+lemma carry_diff_row2_value3 : CARRY_PROP_ROW2_VALUE3 :=
 begin
   apply carry_diff_row1_value3,
   repeat { tauto },
 end
 
 /-- Proof that the difference is carried for the second row and the fourth value. -/
-@[simp] lemma carry_diff_row2_value4 : CARRY_PROP_ROW2_VALUE4 :=
+lemma carry_diff_row2_value4 : CARRY_PROP_ROW2_VALUE4 :=
 begin
   apply carry_diff_row1_value4,
   repeat { tauto },
 end
 
 /-- Proof that the difference is carried for the third row and the first value. -/
-@[simp] lemma carry_diff_row3_value1 : CARRY_PROP_ROW3_VALUE1 :=
+lemma carry_diff_row3_value1 : CARRY_PROP_ROW3_VALUE1 :=
 begin
   apply carry_diff_row1_value1,
   repeat { tauto },
 end
 
 /-- Proof that the difference is carried for the third row and the second value. -/
-@[simp] lemma carry_diff_row3_value2 : CARRY_PROP_ROW3_VALUE2 :=
+lemma carry_diff_row3_value2 : CARRY_PROP_ROW3_VALUE2 :=
 begin
   apply carry_diff_row1_value2,
   repeat { tauto },
 end
 
 /-- Proof that the difference is carried for the third row and the third value. -/
-@[simp] lemma carry_diff_row3_value3 : CARRY_PROP_ROW3_VALUE3 :=
+lemma carry_diff_row3_value3 : CARRY_PROP_ROW3_VALUE3 :=
 begin
   apply carry_diff_row1_value3,
   repeat { tauto },
 end
 
 /-- Proof that the difference is carried for the third row and the fourth value. -/
-@[simp] lemma carry_diff_row3_value4 : CARRY_PROP_ROW3_VALUE4 :=
+lemma carry_diff_row3_value4 : CARRY_PROP_ROW3_VALUE4 :=
 begin
   apply carry_diff_row1_value4,
   repeat { tauto },
 end
 
 /-- Proof that the difference is carried for the fourth row and the first value. -/
-@[simp] lemma carry_diff_row4_value1 : CARRY_PROP_ROW4_VALUE1 :=
+lemma carry_diff_row4_value1 : CARRY_PROP_ROW4_VALUE1 :=
 begin
   apply carry_diff_row1_value1,
   repeat { tauto },
 end
 
 /-- Proof that the difference is carried for the fourth row and the second value. -/
-@[simp] lemma carry_diff_row4_value2 : CARRY_PROP_ROW4_VALUE2 :=
+lemma carry_diff_row4_value2 : CARRY_PROP_ROW4_VALUE2 :=
 begin
   apply carry_diff_row1_value2,
   repeat { tauto },
 end
 
 /-- Proof that the difference is carried for the fourth row and the third value. -/
-@[simp] lemma carry_diff_row4_value3 : CARRY_PROP_ROW4_VALUE3 :=
+lemma carry_diff_row4_value3 : CARRY_PROP_ROW4_VALUE3 :=
 begin
   apply carry_diff_row1_value3,
   repeat { tauto },
 end
 
 /-- Proof that the difference is carried for the fourth row and the fourth value. -/
-@[simp] lemma carry_diff_row4_value4 : CARRY_PROP_ROW4_VALUE4 :=
+lemma carry_diff_row4_value4 : CARRY_PROP_ROW4_VALUE4 :=
 begin
   apply carry_diff_row1_value4,
   repeat { tauto },
