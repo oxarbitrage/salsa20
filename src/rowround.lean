@@ -118,7 +118,7 @@ end
 -- Have 16 random vectors to be used as rowround inputs.
 variables m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅: bitvec word_len
 
-/-- Define a random input. -/
+/-- Define a random input as a 4x4 matrix. -/
 def input_random : matrixType := (
   (m₀, m₁, m₂, m₃),
   (m₄, m₅, m₆, m₇),
@@ -126,7 +126,7 @@ def input_random : matrixType := (
   (m₁₂, m₁₃, m₁₄, m₁₅)
 )
 
-/-- Define a crafted input based on the random input. -/
+/-- Define a crafted input based on the random input as a 4x4 matrix. -/
 def input_crafted : matrixType := (
   (craft m₀, craft m₁, craft m₂, craft m₃),
   (craft m₄, craft m₅, craft m₆, craft m₇),
@@ -139,6 +139,16 @@ local notation `RANDOM_INPUT` := input_random m₀ m₁ m₂ m₃ m₄ m₅ m₆
 
 -- Alias for crafted input with 16 random arguments.
 local notation `CRAFTED_INPUT` := input_crafted m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅
+
+/-!
+
+  ## Property
+
+  Differences are carried iff the `msb` of each input is flipped when `rowround` is
+  executed in a random input comprared with a crafted one. In addition, the `rest` of the input must be equal.
+
+  We prove this in the following section that given a random and a crafted matrix for `rowround` as input, the output of each element has the property defined bewlow.
+-/
 
 -- Alias for a carry difference property, first row and first value.
 local notation `CARRY_PROP_ROW1_VALUE1` :=

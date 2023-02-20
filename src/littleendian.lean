@@ -5,12 +5,11 @@ open types
 
 namespace littleendian
 
-/-
+/-!
   # Littleendian
 
-  The `littleendian` function and its inverse
+  The `littleendian` function and its inverse.
 -/
-
 
 -- An random sequence of 4 words.
 variable b : vecType
@@ -38,8 +37,14 @@ def littleendian_inv (w : bitvec word_len) : vecType :=
     bitvec.of_nat word_len $ bitvec.to_nat $ (bitvec.ushr w 24).and 0xff
   )
 
-/-- The `littleendian` function is invertible and its inverse is `littleendian_inv`. -/
-axiom littleendian_is_inv : littleendian_inv (littleendian b) = b
+/-- 
+The `littleendian` function is invertible and its inverse is `littleendian_inv`.
 
+## TODO:
+
+- prove.
+
+-/
+axiom littleendian_is_inv : littleendian_inv (littleendian b) = b
 
 end littleendian
