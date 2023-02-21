@@ -55,7 +55,7 @@ end
     rowround_single M.snd.snd.snd
   )
 
-/-- This rowround call will sort all the elements of the input and the output to match salsa 20.
+/-- This rowround call will sort all the elements of the input and the output to match salsa20.
 It should be used in `doubleround`. -/
 @[simp] def rowround' := 
   rowround_output (rowround (rowround_input M))
@@ -76,7 +76,7 @@ begin
     qr2_is_inv, qr3_is_inv, prod.mk.eta],
 end
 
-/-- This rowround inverse call will sort all the elements of the input and the output to match salsa 20.
+/-- This rowround inverse call will sort all the elements of the input and the output to match salsa20.
 It should be used in `doubleround`. -/
 @[simp] def rowround_inv' := 
   rowround_output (rowround_inv (rowround_input M))
@@ -141,14 +141,13 @@ local notation `RANDOM_INPUT` := input_random m₀ m₁ m₂ m₃ m₄ m₅ m₆
 local notation `CRAFTED_INPUT` := input_crafted m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅
 
 /-!
-
   ## Property
 
   Differences are carried iff the `msb` of each input is flipped when `rowround`
   inputs are random and crafted. Also, the `rest` of the input must be equal for random and crafted inputs.
 
   We prove that given a random and a crafted matrix for `rowround` as input, the output of each element has
-  the property defined bewlow.
+  the property defined above.
 -/
 
 /- General form of the carry property. -/
@@ -160,7 +159,7 @@ constant n_succ_16 (n : ℕ) :
   n.succ.succ.succ.succ.succ.succ.succ.succ.succ.succ.succ.succ.succ.succ.succ.succ < 16 = false
 
 /-- Proof that the difference is carried for any row and any value of the input matrices. -/
-lemma carry_diff_for_any_row_and_value (n : fin 16) :
+lemma carry_diff_rowround_for_any_row_and_value (n : fin 16) :
   diff_carried_prop_n (matrix_to_list (rowround RANDOM_INPUT)) (matrix_to_list (rowround CRAFTED_INPUT)) n :=
 begin
   unfold diff_carried_prop_n,
@@ -207,53 +206,52 @@ lemma rowround_difference_is_carried :
   (diff_carried_prop_n (matrix_to_list (rowround RANDOM_INPUT)) (matrix_to_list (rowround CRAFTED_INPUT)) 14) ∧
   (diff_carried_prop_n (matrix_to_list (rowround RANDOM_INPUT)) (matrix_to_list (rowround CRAFTED_INPUT)) 15) :=
 begin
+  apply and.intro,
+  apply carry_diff_rowround_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 0,
 
   apply and.intro,
-  apply carry_diff_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 0,
+  apply carry_diff_rowround_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 1,
 
   apply and.intro,
-  apply carry_diff_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 1,
+  apply carry_diff_rowround_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 2,
 
   apply and.intro,
-  apply carry_diff_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 2,
+  apply carry_diff_rowround_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 3,
 
   apply and.intro,
-  apply carry_diff_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 3,
+  apply carry_diff_rowround_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 4,
 
   apply and.intro,
-  apply carry_diff_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 4,
+  apply carry_diff_rowround_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 5,
 
   apply and.intro,
-  apply carry_diff_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 5,
+  apply carry_diff_rowround_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 6,
 
   apply and.intro,
-  apply carry_diff_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 6,
+  apply carry_diff_rowround_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 7,
 
   apply and.intro,
-  apply carry_diff_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 7,
+  apply carry_diff_rowround_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 8,
 
   apply and.intro,
-  apply carry_diff_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 8,
+  apply carry_diff_rowround_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 9,
 
   apply and.intro,
-  apply carry_diff_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 9,
+  apply carry_diff_rowround_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 10,
 
   apply and.intro,
-  apply carry_diff_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 10,
+  apply carry_diff_rowround_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 11,
 
   apply and.intro,
-  apply carry_diff_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 11,
+  apply carry_diff_rowround_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 12,
 
   apply and.intro,
-  apply carry_diff_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 12,
+  apply carry_diff_rowround_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 13,
 
   apply and.intro,
-  apply carry_diff_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 13,
+  apply carry_diff_rowround_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 14,
 
-  apply and.intro,
-  apply carry_diff_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 14,
-
-  apply carry_diff_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 15,
+  apply carry_diff_rowround_for_any_row_and_value m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅ 15,
 end
 
 

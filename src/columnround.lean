@@ -24,7 +24,7 @@ variable M : matrixType
 /--  Without ordering for inputs, a `columnround` is exactly the same as a `rowround`. -/
 @[simp] def columnround : matrixType := rowround M
 
-/-- This columnround call will sort all the elements of the input and the output to match salsa 20.
+/-- This columnround call will sort all the elements of the input and the output to match salsa20.
 -- It should be used in `doubleround`.-/
 @[simp] def columnround' := 
   columnround_output (columnround (columnround_input M))
@@ -39,7 +39,7 @@ begin
   apply rowround_is_inv,
 end
 
-/-- This columnround inverse call will sort all the elements of the input and the output to match salsa 20.
+/-- This columnround inverse call will sort all the elements of the input and the output to match salsa20.
 It should be used in `doubleround`. -/
 @[simp] def columnround_inv' := 
   columnround_output (columnround_inv (columnround_input M))
@@ -71,6 +71,67 @@ begin
   simp only [utils.columnround_output, columnround, utils.columnround_input, rowround_single, rowround],
   unfold input,
   simp only [quarterround_is_left_invariant],
+end
+
+
+/-!
+  ## Known variance
+
+  In this section we want to prove that a crafted input difference is carried when `columnround`
+  function is applied.
+-/
+
+-- Have 16 random vectors to be used as `columnround` inputs.
+variables m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅: bitvec word_len
+
+-- Alias for a random input with 16 random arguments.
+local notation `RANDOM_INPUT` := input_random m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅
+
+-- Alias for crafted input with 16 random arguments.
+local notation `CRAFTED_INPUT` := input_crafted m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅
+
+/-!
+  ## Property
+
+  Differences are carried iff the `msb` of each input is flipped when `columnround`
+  inputs are random and crafted. Also, the `rest` of the input must be equal for random and crafted inputs.
+
+  We prove that given a random and a crafted matrix for `columnround` as input, the output of each element has
+  the property defined above.
+
+  Given that `rowround` = `columnround` by definition proofs are trivial using `rowround` lemmas.
+-/
+
+/-- Proof that the difference is carried for any row and any value of the input matrices. -/
+lemma carry_diff_columnround_for_any_row_and_value (n : fin 16) :
+  diff_carried_prop_n (matrix_to_list (columnround RANDOM_INPUT)) (matrix_to_list (columnround CRAFTED_INPUT)) n :=
+begin
+  unfold columnround,
+  apply carry_diff_rowround_for_any_row_and_value,
+end
+
+/-- Put together all the properties needed to prove that `columnround` carries the differfence for random and
+crafted inputs. -/
+lemma columnround_difference_is_carried :
+  (diff_carried_prop_n (matrix_to_list (columnround RANDOM_INPUT)) (matrix_to_list (columnround CRAFTED_INPUT)) 0) ∧
+  (diff_carried_prop_n (matrix_to_list (columnround RANDOM_INPUT)) (matrix_to_list (columnround CRAFTED_INPUT)) 1) ∧
+  (diff_carried_prop_n (matrix_to_list (columnround RANDOM_INPUT)) (matrix_to_list (columnround CRAFTED_INPUT)) 2) ∧
+  (diff_carried_prop_n (matrix_to_list (columnround RANDOM_INPUT)) (matrix_to_list (columnround CRAFTED_INPUT)) 3) ∧
+  (diff_carried_prop_n (matrix_to_list (columnround RANDOM_INPUT)) (matrix_to_list (columnround CRAFTED_INPUT)) 4) ∧
+  (diff_carried_prop_n (matrix_to_list (columnround RANDOM_INPUT)) (matrix_to_list (columnround CRAFTED_INPUT)) 5) ∧
+  (diff_carried_prop_n (matrix_to_list (columnround RANDOM_INPUT)) (matrix_to_list (columnround CRAFTED_INPUT)) 6) ∧
+  (diff_carried_prop_n (matrix_to_list (columnround RANDOM_INPUT)) (matrix_to_list (columnround CRAFTED_INPUT)) 7) ∧
+  (diff_carried_prop_n (matrix_to_list (columnround RANDOM_INPUT)) (matrix_to_list (columnround CRAFTED_INPUT)) 8) ∧
+  (diff_carried_prop_n (matrix_to_list (columnround RANDOM_INPUT)) (matrix_to_list (columnround CRAFTED_INPUT)) 9) ∧
+  (diff_carried_prop_n (matrix_to_list (columnround RANDOM_INPUT)) (matrix_to_list (columnround CRAFTED_INPUT)) 10) ∧
+  (diff_carried_prop_n (matrix_to_list (columnround RANDOM_INPUT)) (matrix_to_list (columnround CRAFTED_INPUT)) 11) ∧
+  (diff_carried_prop_n (matrix_to_list (columnround RANDOM_INPUT)) (matrix_to_list (columnround CRAFTED_INPUT)) 12) ∧
+  (diff_carried_prop_n (matrix_to_list (columnround RANDOM_INPUT)) (matrix_to_list (columnround CRAFTED_INPUT)) 13) ∧
+  (diff_carried_prop_n (matrix_to_list (columnround RANDOM_INPUT)) (matrix_to_list (columnround CRAFTED_INPUT)) 14) ∧
+  (diff_carried_prop_n (matrix_to_list (columnround RANDOM_INPUT)) (matrix_to_list (columnround CRAFTED_INPUT)) 15) :=
+begin
+  unfold columnround,
+  apply rowround_difference_is_carried,
 end
 
 
