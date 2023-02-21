@@ -284,7 +284,7 @@ begin
 end
 
 /-- Convert a `matrixType` to a `list` as lists are easy to work sometimes than prods. -/
-def matrix_to_list : matrixType → list (bitvec word_len)
+@[simp] def matrix_to_list : matrixType → list (bitvec word_len)
 | m := [
   m.fst.fst, m.fst.snd.fst, m.fst.snd.snd.fst, m.fst.snd.snd.snd,
   m.snd.fst.fst, m.snd.fst.snd.fst, m.snd.fst.snd.snd.fst, m.snd.fst.snd.snd.snd,
@@ -293,7 +293,7 @@ def matrix_to_list : matrixType → list (bitvec word_len)
 ]
 
 /-- Convert a list of bitvectors into a `matrixType`. Will panic if list size is < 16 -/
-def list_to_matrix : list (bitvec word_len) → matrixType
+@[simp] def list_to_matrix : list (bitvec word_len) → matrixType
 | l := (
   ((l.nth 0).iget, (l.nth 1).iget, (l.nth 2).iget, (l.nth 3).iget),
   ((l.nth 4).iget, (l.nth 5).iget, (l.nth 6).iget, (l.nth 7).iget),
