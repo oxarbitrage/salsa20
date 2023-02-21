@@ -370,7 +370,7 @@ def craft (m : bitvec word_len) : bitvec word_len :=
 /-- a shortcut to a vector head. -/
 def msb (m : bitvec word_len) : bool := m.head
 /-- a shortcut for a vector tail. -/
-def rest (m : bitvec word_len) : bitvec (word_len - 1) := m.tail3
+def rest (m : bitvec word_len) : bitvec (word_len - 1) := m.tail
 /--
 Lets suppose the msb of any uncrafted bitvec that we will send to quarterround is always `ff`.
 
