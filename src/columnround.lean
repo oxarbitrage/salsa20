@@ -73,7 +73,6 @@ begin
   simp only [quarterround_is_left_invariant],
 end
 
-
 /-!
   ## Known variance
 
@@ -91,7 +90,7 @@ local notation `RANDOM_INPUT` := input_random m₀ m₁ m₂ m₃ m₄ m₅ m₆
 local notation `CRAFTED_INPUT` := input_crafted m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅
 
 /-!
-  ## Property
+  ### Property
 
   Differences are carried iff the `msb` of each input is flipped when `columnround`
   inputs are random and crafted. Also, the `rest` of the input must be equal for random and crafted inputs.
@@ -108,6 +107,68 @@ lemma carry_diff_columnround_for_any_row_and_value (n : fin 16) :
 begin
   unfold columnround,
   apply carry_diff_rowround_for_any_row_and_value,
+end
+
+/--
+This is the same lemma as `carry_diff_columnround_for_any_row_and_value` but using the sorted salsa20 matrix
+from the `columnround'` function.
+-/
+lemma carry_diff_columnround_for_any_row_and_value' (n : fin 16) :
+  diff_carried_prop_n (matrix_to_list (columnround' RANDOM_INPUT)) (matrix_to_list (columnround' CRAFTED_INPUT)) n :=
+begin
+  unfold diff_carried_prop_n,
+  unfold matrix_to_list,
+  unfold input_random,
+  unfold input_crafted,
+  unfold columnround',
+  unfold columnround_input,
+  unfold columnround_output,
+  unfold columnround,
+  unfold rowround,
+  unfold rowround_single,
+
+  cases n,
+
+  cases n_val,
+  apply qr0_difference_is_carried,
+  cases n_val,
+  apply qr3_difference_is_carried,
+  cases n_val,
+  apply qr2_difference_is_carried,
+  cases n_val,
+  apply qr1_difference_is_carried,
+  tauto,
+  cases n_val,
+  apply qr1_difference_is_carried,
+  tauto,
+  cases n_val,
+  apply qr0_difference_is_carried,
+  cases n_val,
+  apply qr3_difference_is_carried,
+  cases n_val,
+  apply qr2_difference_is_carried,
+  cases n_val,
+  apply qr2_difference_is_carried,
+  cases n_val,
+  apply qr1_difference_is_carried,
+  tauto,
+  cases n_val,
+  apply qr0_difference_is_carried,
+  cases n_val,
+  apply qr3_difference_is_carried,
+  cases n_val,
+  apply qr3_difference_is_carried,
+  cases n_val,
+  apply qr2_difference_is_carried,
+  cases n_val,
+  apply qr1_difference_is_carried,
+  tauto,
+  cases n_val,
+  apply qr0_difference_is_carried,
+
+  norm_num at *,
+  rw n_succ_16 at n_property,
+  exact n_property,
 end
 
 /-- Get the difference property of `columnround` given a position `n` for a random and crafted inputs. -/
@@ -131,11 +192,5 @@ begin
   apply rowround_difference_is_carried,
 end
 
-/-!
-### Note
-
-- We don't need to prove that the difference is carried theorems hold using `columnround'` because the
-difference properties are on each element, independent of the order they have in the output matrix.
--/
 
 end columnround

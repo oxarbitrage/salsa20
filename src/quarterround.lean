@@ -457,6 +457,39 @@ lemma qr0_difference_is_carried :
     rest (qr0 m n o p) = rest (qr0 (craft m) (craft n) (craft o) (craft p)) :=
 by apply qrX_difference_is_carried m n o p qr0
 
+/-- Proves that any `qrX` applied after `quarterrround` carries the difference. -/
+lemma qrX_after_quarterround_difference_is_carried (m' n' o' p' : bitvec word_len) (f : qrX)
+(h1 : m' = qr0 m n o p) (h2 : n' = qr1 m n o p) (h3 : o' = qr2 m n o p) (h4 : p' = qr3 m n o p)
+(h5 : craft m' = qr0 (craft m) (craft n) (craft o) (craft p))
+(h6 : craft n' = qr1 (craft m) (craft n) (craft o) (craft p))
+(h7 : craft o' = qr2 (craft m) (craft n) (craft o) (craft p))
+(h8 : craft p' = qr3 (craft m) (craft n) (craft o) (craft p)) :
+  (msb (f (qr0 m n o p) (qr1 m n o p) (qr2 m n o p) (qr3 m n o p)) ≠
+    msb
+      (f 
+        (qr0 (craft m) (craft n) (craft o) (craft p))
+        (qr1 (craft m) (craft n) (craft o) (craft p))
+        (qr2 (craft m) (craft n) (craft o) (craft p))
+        (qr3 (craft m) (craft n) (craft o) (craft p))
+      )
+   ) ∧
+   (rest (f (qr0 m n o p) (qr1 m n o p) (qr2 m n o p) (qr3 m n o p)) =
+      rest
+        (f 
+          (qr0 (craft m) (craft n) (craft o) (craft p))
+          (qr1 (craft m) (craft n) (craft o) (craft p))
+          (qr2 (craft m) (craft n) (craft o) (craft p))
+          (qr3 (craft m) (craft n) (craft o) (craft p))
+        )
+   ) :=
+begin
+  rw [←h1, ←h2, ←h3, ←h4, ←h5, ←h6, ←h7, ←h8],
+  apply qrX_difference_is_carried,
+end
+
+/-- Distributive property of `craft` -/
+axiom craft_distrib (f : qrX) : craft (f m n o p) = f (craft m) (craft n) (craft o) (craft p)
+
 /-- Full `quarterround` carries the difference when fed with crafted data. -/
 lemma quarterround_difference_is_carried :
   -- z0 only changes in the msb

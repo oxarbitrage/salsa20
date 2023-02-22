@@ -141,7 +141,7 @@ local notation `RANDOM_INPUT` := input_random m₀ m₁ m₂ m₃ m₄ m₅ m₆
 local notation `CRAFTED_INPUT` := input_crafted m₀ m₁ m₂ m₃ m₄ m₅ m₆ m₇ m₈ m₉ m₁₀ m₁₁ m₁₂ m₁₃ m₁₄ m₁₅
 
 /-!
-  ## Property
+  ### Property
 
   Differences are carried iff the `msb` of each input is flipped when `rowround`
   inputs are random and crafted. Also, the `rest` of the input must be equal for random and crafted inputs.
@@ -181,6 +181,63 @@ begin
     cases n_val,
     apply qr3_difference_is_carried,
   },
+  norm_num at *,
+  rw n_succ_16 at n_property,
+  exact n_property,
+end
+
+@[simp] lemma carry_diff_rowround_for_any_row_and_value' (n : fin 16) :
+  diff_carried_prop_n (matrix_to_list (rowround' RANDOM_INPUT)) (matrix_to_list (rowround' CRAFTED_INPUT)) n :=
+begin
+  unfold diff_carried_prop_n,
+  unfold matrix_to_list,
+  unfold input_random,
+  unfold input_crafted,
+  unfold rowround',
+  unfold rowround_output,
+  unfold rowround_input,
+  unfold rowround,
+  unfold rowround_single,
+
+  cases n,
+
+  cases n_val,
+  apply qr0_difference_is_carried,
+  cases n_val,
+  apply qr1_difference_is_carried,
+  tauto,
+  cases n_val,
+  apply qr2_difference_is_carried,
+  cases n_val,
+  apply qr3_difference_is_carried,
+  cases n_val,
+  apply qr3_difference_is_carried,
+  cases n_val,
+  apply qr0_difference_is_carried,
+  cases n_val,
+  apply qr1_difference_is_carried,
+  tauto,
+  cases n_val,
+  apply qr2_difference_is_carried,
+  cases n_val,
+  apply qr2_difference_is_carried,
+  cases n_val,
+  apply qr3_difference_is_carried,
+  cases n_val,
+  apply qr0_difference_is_carried,
+  cases n_val,
+  apply qr1_difference_is_carried,
+  tauto,
+  cases n_val,
+  apply qr1_difference_is_carried,
+  tauto,
+  cases n_val,
+  apply qr2_difference_is_carried,
+  cases n_val,
+  apply qr3_difference_is_carried,
+  cases n_val,
+  apply qr0_difference_is_carried,
+
   norm_num at *,
   rw n_succ_16 at n_property,
   exact n_property,

@@ -18,8 +18,8 @@ namespace core
 
 /-- Apply double round 10 times to a reduced input. -/
 def doubleround_10 (X : matrixType): matrixType := 
-  doubleround $ doubleround $ doubleround $ doubleround $ doubleround $ doubleround $ doubleround 
-    $ doubleround $ doubleround $ doubleround $ X
+  doubleround' $ doubleround' $ doubleround' $ doubleround' $ doubleround' $ doubleround' $ doubleround'
+    $ doubleround' $ doubleround' $ doubleround' $ X
 
 /-- Do addition modulo 2^32 of the reduced input and the doubleround of the reduced input. -/
 def core (X : matrixType) : matrixType := mod_matrix (doubleround_10 X) X
