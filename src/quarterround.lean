@@ -244,7 +244,7 @@ end
 We will define a category `C` that represent all tuples of 4 numbers inside the 2³² space.
 
 Consider each element object of `C` as any four numbers (y₀ y₁ y₂ y₃) that is used for a `quarterround`
-input or any fou number output (z₀ z₁ z₂ z₃).
+input or any four number output (z₀ z₁ z₂ z₃).
 -/
 
 universes u
@@ -262,7 +262,7 @@ local notation `qr⁻¹` := qr_inv
 variable I : qr ≅ qr⁻¹
 
 /-- It is easy to see that `qr⁻¹` after `qr` produces the original object.  -/
-lemma qr_inv_is_inverse_of_qr' : I.hom ≫ I.inv = 𝟙 qr :=
+lemma qr_inv_is_inverse_of_qr : I.hom ≫ I.inv = 𝟙 qr :=
 begin
   exact I.hom_inv_id',
 end

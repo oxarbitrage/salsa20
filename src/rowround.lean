@@ -2,10 +2,15 @@ import params
 import quarterround
 import utils
 
+import category_theory.category.basic
+import category_theory.core
+
 open params
 open operations
 open quarterround
 open utils
+
+open category_theory
 
 namespace rowround
 
@@ -80,6 +85,75 @@ end
 It should be used in `doubleround`. -/
 @[simp] def rowround_inv' := 
   rowround_output (rowround_inv (rowround_input M))
+
+/-! ## Isomorphism -/
+
+/-- The identity of a `rowround` function given a sequence is the sequence. -/
+@[simp] def id_rowround (seq : matrixType) := seq
+
+/-- The identity of a `rowround_inv` function given a sequence is the sequence. -/
+@[simp] def id_rowround_inv (seq : matrixType) := seq
+
+/-- Isomorphism condition 1: `f ∘ g = id_f` -/
+@[simp] lemma isomorphism1 (seq : matrixType) : (rowround_inv ∘ rowround) seq = id_rowround seq :=
+begin
+  finish,
+end
+
+/-- Isomorphism condition 2: `g ∘ f = id_g` -/
+@[simp] lemma isomorphism2 (seq : matrixType) : (rowround ∘ rowround_inv) seq = id_rowround_inv seq :=
+begin
+  finish,
+end
+
+/-- Two categories are isomrphic if `f ∘ g = id_f` and `g ∘ f = id_g`. -/
+@[simp] theorem rowround_is_isomorphic (seq : matrixType) :
+  (rowround_inv ∘ rowround) seq = id_rowround seq ∧
+  (rowround ∘ rowround_inv) seq = id_rowround_inv seq :=
+begin
+  simp only [isomorphism1, eq_self_iff_true, isomorphism2, and_self],
+end
+
+/-! ## Category theory
+
+We will define a category `C` that represent numbers (`vecType`) inside the 2³² space.
+We also will define a category `C × C × C × C` that represent 16 numbers (`matrixType`) inside the 2³² space.
+-/
+
+universes u
+
+/-- `C` is the category that represent any 4 number tuple from 0 up to 2³² and `C × C × C × C`
+is the category of four `C`s.
+-/
+variables {C : Type u} [category C] [category (C × C × C × C)]
+
+/-- There are morphisms to get single `C`s from `C × C × C × C`.
+For example, this can represent `Z.fst`, `Z.snd.fst`, etc.
+-/
+variable extractor :  C × C × C × C ⟶ C
+
+/-- In `quarterround.lean` we defined `qr` and `qr_inv` to be of the form `C ⟶ C` so we can bring those
+types here. -/
+variables qr qr_inv : C ⟶ C
+
+/-- `cat_rowround` and `cat_rowround_inv` are types that will:
+- take a morphism from `C × C × C × C` to `C`, `extractor` has this type.
+- take a morphism from `C` to `C`, `qr` or `qr_inv` has this type.
+- returns a new element of `C × C × C × C`.
+-/
+variables cat_rowround cat_rowround_inv : (C × C × C × C ⟶ C) → (C ⟶ C) → C × C × C × C
+
+/- Just some notation. -/
+local notation `cat_rowround⁻¹` := cat_rowround_inv
+
+/-- There is an isomoprhism between `cat_rowround` used with `qr` and `cat_rowround⁻¹` used with `qr_inv`. -/
+variable I : cat_rowround extractor qr ≅ cat_rowround⁻¹ extractor qr_inv
+
+/-- It is easy to see that `cat_rowround⁻¹` after `cat_rowround` produces the original object. -/
+lemma rowround_inv_is_inverse_of_rowround' : I.hom ≫ I.inv = 𝟙 (cat_rowround extractor qr) :=
+begin
+  exact I.hom_inv_id',
+end
 
 /-!
   ## Invariance
