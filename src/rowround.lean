@@ -136,14 +136,17 @@ variable extractor :  C × C × C × C ⟶ C
 types here. -/
 variables qr qr_inv : C ⟶ C
 
+/- Notation for rowround type. -/
+local notation `rowroundType` := (C × C × C × C ⟶ C) → (C ⟶ C) → C × C × C × C
+
 /-- `cat_rowround` and `cat_rowround_inv` are types that will:
 - take a morphism from `C × C × C × C` to `C`, `extractor` has this type.
 - take a morphism from `C` to `C`, `qr` or `qr_inv` has this type.
 - returns a new element of `C × C × C × C`.
 -/
-variables cat_rowround cat_rowround_inv : (C × C × C × C ⟶ C) → (C ⟶ C) → C × C × C × C
+variables cat_rowround cat_rowround_inv : rowroundType
 
-/- Just some notation. -/
+/- Notation for inverse. -/
 local notation `cat_rowround⁻¹` := cat_rowround_inv
 
 /-- There is an isomoprhism between `cat_rowround` used with `qr` and `cat_rowround⁻¹` used with `qr_inv`. -/
@@ -154,6 +157,11 @@ lemma rowround_inv_is_inverse_of_rowround' : I.hom ≫ I.inv = 𝟙 (cat_rowroun
 begin
   exact I.hom_inv_id',
 end
+
+/-- A collission happens when two different values are given to the `rowroundType` morphism and the same result is
+obtained. -/
+def collission := ∃ (rowround1 rowround2 : rowroundType) [fact (rowround1 ≠ rowround2)],
+  rowround1 extractor qr = rowround2 extractor qr
 
 /-!
   ## Invariance
