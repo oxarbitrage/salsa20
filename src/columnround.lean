@@ -45,6 +45,34 @@ It should be used in `doubleround`. -/
   columnround_output (columnround_inv (columnround_input M))
 
 
+/-! ## Isomorphism -/
+
+/-- The identity of a `columnround` function given a sequence is the sequence. -/
+@[simp] def id_columnround (seq : matrixType) := seq
+
+/-- The identity of a `columnround_inv` function given a sequence is the sequence. -/
+@[simp] def id_columnround_inv (seq : matrixType) := seq
+
+/-- Isomorphism condition 1: `f ∘ g = id_f` -/
+@[simp] lemma isomorphism1 (seq : matrixType) : (columnround_inv ∘ columnround) seq = id_columnround seq :=
+begin
+  finish,
+end
+
+/-- Isomorphism condition 2: `g ∘ f = id_g` -/
+@[simp] lemma isomorphism2 (seq : matrixType) : (columnround ∘ columnround_inv) seq = id_columnround_inv seq :=
+begin
+  finish,
+end
+
+/-- Two categories are isomrphic if `f ∘ g = id_f` and `g ∘ f = id_g`. -/
+@[simp] theorem columnround_is_isomorphic (seq : matrixType) :
+  (columnround_inv ∘ columnround) seq = id_columnround seq ∧
+  (columnround ∘ columnround_inv) seq = id_columnround_inv seq :=
+begin
+  simp only [isomorphism1, eq_self_iff_true, isomorphism2, and_self],
+end
+
 /-!
   ## Invariance
 
