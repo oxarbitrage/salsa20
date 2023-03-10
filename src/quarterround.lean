@@ -219,16 +219,18 @@ end
 /-- The identity of a `quarterround_inv` function given a sequence is the sequence. -/
 @[simp] def id_quarterround_inv (seq : vecType) := seq
 
-/-- Isomorphism condition 1 `f ∘ g = id_f` -/
-@[simp] lemma isomorphism1 (seq : vecType) : (quarterround_inv ∘ quarterround) seq = id_quarterround seq :=
+/-- Isomorphism condition 1 : `f ∘ g = id_f` -/
+@[simp] lemma isomorphism_left (seq : vecType) : (quarterround_inv ∘ quarterround) seq = id_quarterround seq :=
 begin
-  finish,
+  simp only [quarterround_inv, quarterround, id_quarterround, function.comp_app, qr0_is_inv, qr1_is_inv, qr2_is_inv, qr3_is_inv,
+  prod.mk.eta],
 end
 
-/-- Isomorphism condition 2 `g ∘ f = id_g` -/
-@[simp] lemma isomorphism2 (seq : vecType) : (quarterround ∘ quarterround_inv) seq = id_quarterround_inv seq :=
+/-- Isomorphism condition 2 : `g ∘ f = id_g` -/
+@[simp] lemma isomorphism_right (seq : vecType) : (quarterround ∘ quarterround_inv) seq = id_quarterround_inv seq :=
 begin
-  finish,
+  simp only [quarterround, quarterround_inv, id_quarterround_inv, function.comp_app, qr0_inv_is_inv, qr1_inv_is_inv,
+  qr2_inv_is_inv, qr3_inv_is_inv, prod.mk.eta],
 end
 
 /-- Two categories are isomrphic if `f ∘ g = id_f` and `g ∘ f = id_g`. -/
@@ -236,7 +238,7 @@ end
   (quarterround_inv ∘ quarterround) seq = id_quarterround seq ∧
   (quarterround ∘ quarterround_inv) seq = id_quarterround_inv seq :=
 begin
-  simp only [isomorphism1, eq_self_iff_true, isomorphism2, and_self],
+  simp only [isomorphism_left, eq_self_iff_true, isomorphism_right, and_self],
 end
 
 /-! ## Category theory
