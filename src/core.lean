@@ -12,21 +12,80 @@ namespace core
 /-!
   # Core
 
-  The `hash` and `core` functions, the non existing inverse and the `collision` theorems.
+  - The `doubleround10` function and its inverse.
+  - The `hash` and `core` functions, the non existing inverse.
+  - The `collision` theorems.
 -/
 
-
 /-- Apply double round 10 times to a reduced input. -/
-def doubleround_10 (X : matrixType): matrixType := 
+@[simp] def doubleround_10 (X : matrixType): matrixType :=
   doubleround' $ doubleround' $ doubleround' $ doubleround' $ doubleround' $ doubleround' $ doubleround'
     $ doubleround' $ doubleround' $ doubleround' $ X
 
+/-- Inverse of `doubleround_10`. -/
+@[simp] def doubleround_10_inv (X : matrixType): matrixType :=
+  doubleround_inv' $ doubleround_inv' $ doubleround_inv' $ doubleround_inv' $ doubleround_inv'
+  $ doubleround_inv' $ doubleround_inv' $ doubleround_inv' $ doubleround_inv' $ doubleround_inv' $ X
+
+/-!
+## Isomorphism of the doubleround_10 function
+
+https://en.wikipedia.org/wiki/Isomorphism#Category_theoretic_view
+
+> In category theory, given a category C, an isomorphism is a morphism `f : a ⟶ b` that has an inverse
+> morphism `g : b ⟶  a` , that is, `f ∘ g = 𝟙 b` and `g ∘ f = 𝟙 a`.
+
+-/
+
+/-- The identity of a `doubleround_10` morphism given a sequence is the sequence. -/
+@[simp] def id_doubleround_10 (seq : matrixType) := seq
+
+/-- The identity of a `doubleround⁻¹` morphism given a sequence is the sequence. -/
+@[simp] def id_doubleround_10_inv (seq : matrixType) := seq
+
+/-- Isomorphism condition 1 : `doubleround_10⁻¹ ∘ doubleround_10 = 𝟙 doubleround_10` -/
+@[simp] lemma isomorphism_left (seq : matrixType) : (doubleround_10_inv ∘ doubleround_10) seq =
+  id_doubleround_10 seq :=
+begin
+  simp only [doubleround_10_inv, doubleround_10, id_doubleround_10, columnround_output, columnround.columnround_inv,
+  columnround_input, columnround.columnround_inv', rowround.rowround_inv', doubleround_inv', function.comp_app,
+  rowround_output, rowround.rowround, rowround_input, rowround.rowround', columnround.columnround', doubleround',
+  columnround.columnround, rowround.rowround_single, quarterround.quarterround, rowround.rowround_inv,
+  rowround.rowround_single_inv, quarterround.quarterround_inv, quarterround.qr0_is_inv, quarterround.qr1_is_inv,
+  quarterround.qr2_is_inv, quarterround.qr3_is_inv, prod.mk.eta],
+end
+
+/-- Isomorphism condition 2 : `doubleround_10 ∘ doubleround_10⁻¹ = 𝟙 doubleround_10⁻¹` -/
+@[simp] lemma isomorphism_right (seq : matrixType) : (doubleround_10 ∘ doubleround_10_inv) seq =
+  id_doubleround_10_inv seq :=
+begin
+  simp only [doubleround_10, doubleround_10_inv, id_doubleround_10_inv, rowround_output, rowround.rowround, rowround_input,
+  rowround.rowround', columnround.columnround', doubleround', function.comp_app, columnround_output,
+  columnround.columnround_inv, columnround_input, columnround.columnround_inv', rowround.rowround_inv',
+  doubleround_inv', rowround.rowround_inv, rowround.rowround_single_inv, prod.mk.eta, quarterround.quarterround_inv,
+  columnround.columnround, rowround.rowround_single, quarterround.quarterround, quarterround.qr0_inv_is_inv,
+  quarterround.qr1_inv_is_inv, quarterround.qr2_inv_is_inv, quarterround.qr3_inv_is_inv],
+end
+
+/-- Two morphism `doubleround_10` and `doubleround_10⁻¹` are isomorphic if:
+- `doubleround_10 ∘ doubleround_10⁻¹ = 𝟙 doubleround_10`, and
+- `doubleround_10⁻¹ ∘ doubleround_10 = 𝟙 doubleround_10⁻¹`.
+-/
+@[simp] theorem doubleround_10_is_isomorphic (seq : matrixType) :
+  (doubleround_10_inv ∘ doubleround_10) seq = id_doubleround_10 seq ∧
+  (doubleround_10 ∘ doubleround_10_inv) seq = id_doubleround_10_inv seq :=
+begin
+  simp only [isomorphism_left, eq_self_iff_true, isomorphism_right, and_self],
+end
+
+/-!
+## Core and hash definitions
+-/
 /-- Do addition modulo 2^32 of the reduced input and the doubleround of the reduced input. -/
 def core (X : matrixType) : matrixType := mod_matrix (doubleround_10 X) X
 
 /-- Do the hash. -/
 def hash (X : matrix64Type) : matrix64Type := aument (core (reduce X))
-
 
 /-!
   ## Hash does not have an inverse.

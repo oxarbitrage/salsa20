@@ -94,16 +94,18 @@ It should be used in `doubleround`. -/
 /-- The identity of a `rowround_inv` function given a sequence is the sequence. -/
 @[simp] def id_rowround_inv (seq : matrixType) := seq
 
-/-- Isomorphism condition 1: `f ∘ g = id_f` -/
-@[simp] lemma isomorphism1 (seq : matrixType) : (rowround_inv ∘ rowround) seq = id_rowround seq :=
+/-- Isomorphism condition 1 : `f ∘ g = id_f` -/
+@[simp] lemma isomorphism_left (seq : matrixType) : (rowround_inv ∘ rowround) seq = id_rowround seq :=
 begin
-  finish,
+  simp only [rowround_inv, rowround, id_rowround, rowround_single_inv, function.comp_app, rowround_single, quarterround,
+  quarterround_inv, qr0_is_inv, qr1_is_inv, qr2_is_inv, qr3_is_inv, prod.mk.eta],
 end
 
-/-- Isomorphism condition 2: `g ∘ f = id_g` -/
-@[simp] lemma isomorphism2 (seq : matrixType) : (rowround ∘ rowround_inv) seq = id_rowround_inv seq :=
+/-- Isomorphism condition 2 : `g ∘ f = id_g` -/
+@[simp] lemma isomorphism_right (seq : matrixType) : (rowround ∘ rowround_inv) seq = id_rowround_inv seq :=
 begin
-  finish,
+  simp only [rowround, rowround_inv, id_rowround_inv, rowround_single, function.comp_app, rowround_single_inv, quarterround_inv,
+  quarterround, qr0_inv_is_inv, qr1_inv_is_inv, qr2_inv_is_inv, qr3_inv_is_inv, prod.mk.eta],
 end
 
 /-- Two categories are isomrphic if `f ∘ g = id_f` and `g ∘ f = id_g`. -/
@@ -111,7 +113,7 @@ end
   (rowround_inv ∘ rowround) seq = id_rowround seq ∧
   (rowround ∘ rowround_inv) seq = id_rowround_inv seq :=
 begin
-  simp only [isomorphism1, eq_self_iff_true, isomorphism2, and_self],
+  simp only [isomorphism_left, eq_self_iff_true, isomorphism_right, and_self],
 end
 
 /-! ## Category theory
