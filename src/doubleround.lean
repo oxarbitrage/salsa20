@@ -54,6 +54,50 @@ begin
   rowround_inv, rowround_single_inv, quarterround_inv, qr0_is_inv, qr1_is_inv, qr2_is_inv, qr3_is_inv, prod.mk.eta],
 end
 
+
+/-!
+## Isomorphism
+
+https://en.wikipedia.org/wiki/Isomorphism#Category_theoretic_view
+
+> In category theory, given a category C, an isomorphism is a morphism `f : a ⟶ b` that has an inverse
+> morphism `g : b ⟶  a` , that is, `f ∘ g = 𝟙 b` and `g ∘ f = 𝟙 a`.
+
+-/
+
+/-- The identity of a `doubleround` morphism given a sequence is the sequence. -/
+@[simp] def id_doubleround (seq : matrixType) := seq
+
+/-- The identity of a `doubleround⁻¹` morphism given a sequence is the sequence. -/
+@[simp] def id_doubleround_inv (seq : matrixType) := seq
+
+/-- Isomorphism condition 1 : `doubleround ∘ doubleround⁻¹ = 𝟙 doubleround` -/
+@[simp] lemma isomorphism_left (seq : matrixType) : (doubleround_inv ∘ doubleround) seq = id_doubleround seq :=
+begin
+  simp only [doubleround_inv, doubleround, id_doubleround, rowround_single_inv, rowround_inv, columnround_inv, function.comp_app,
+  rowround_single, rowround, columnround, quarterround, quarterround_inv, qr0_is_inv, qr1_is_inv, qr2_is_inv,
+  qr3_is_inv, prod.mk.eta],
+end
+
+/-- Isomorphism condition 2 : `doubleround⁻¹ ∘ doubleround = 𝟙 doubleround⁻¹` -/
+@[simp] lemma isomorphism_right (seq : matrixType) : (doubleround ∘ doubleround_inv) seq = id_doubleround_inv seq :=
+begin
+  simp only [doubleround, doubleround_inv, id_doubleround_inv, rowround_single, rowround, columnround, function.comp_app,
+  rowround_single_inv, rowround_inv, columnround_inv, quarterround_inv, quarterround, qr0_inv_is_inv, qr1_inv_is_inv,
+  qr2_inv_is_inv, qr3_inv_is_inv, prod.mk.eta],
+end
+
+/-- Two morphism `doubleround` and `doubleround⁻¹` are isomorphic if:
+- `doubleround ∘ doubleround⁻¹ = 𝟙 doubleround`, and
+- `doubleround⁻¹ ∘ doubleround = 𝟙 doubleround⁻¹`.
+-/
+@[simp] theorem doubleround_is_isomorphic (seq : matrixType) :
+  (doubleround_inv ∘ doubleround) seq = id_doubleround seq ∧
+  (doubleround ∘ doubleround_inv) seq = id_doubleround_inv seq :=
+begin
+  simp only [isomorphism_left, eq_self_iff_true, isomorphism_right, and_self],
+end
+
 /-!
   ## Invariance
 
@@ -108,7 +152,8 @@ local notation `CRAFTED_INPUT` := input_crafted m₀ m₁ m₂ m₃ m₄ m₅ m�
   We prove that given a random and a crafted matrix for `doubleround` as input, the output of each element has
   the property defined above.
 -/
-/-
+
+/--
 Prove that the difference is carried for the first output from the first row of the matrix for random and
 crafted inputs when `rowround` is applied after `columnround`.
 
@@ -137,11 +182,11 @@ begin
   rw ← craft_distrib m₀ m₁ m₂ m₃ qr3,
 end
 
-/-- Proof that the difference is carried after `doubleround` for any row and any value of the input matrices.
-
+/--
+Proof that the difference is carried after `doubleround` for any row and any value of the input matrices.
 Note:
-
-- This lemma just prove this for the first row and the first value but it can be generalized after `rowround_after_columnround_difference_is_carried`.
+- This lemma just prove this for the first row and the first value but it can be generalized after
+`rowround_after_columnround_difference_is_carried`.
 -/
 lemma carry_diff_doubleround_for_any_row_and_value (n : fin 16) (h : n = 0) :
   diff_carried_prop_n (matrix_to_list (doubleround RANDOM_INPUT)) (matrix_to_list (doubleround CRAFTED_INPUT)) n :=
