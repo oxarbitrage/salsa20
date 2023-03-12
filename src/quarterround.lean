@@ -243,25 +243,27 @@ end
 
 /-! ## Category theory
 
-We will define a category `C` that represent all tuples of 4 numbers inside the 2³² space.
+We will define a category `C` that represent all numbers inside the 2³² space.
+Also, we define a `C × C × C × C` category that represent all tuples of 4 numbers inside the 2³² space.
 
-Consider each element object of `C` as any four numbers (y₀ y₁ y₂ y₃) that is used for a `quarterround`
-input or any four number output (z₀ z₁ z₂ z₃).
+We can consider each element object of `C × C × C × C` as any four numbers (y₀, y₁, y₂, y₃)
+that is used for a `quarterround` input or output (z₀, z₁, z₂, z₃).
 -/
 
 universes u
 
-/-- For us, `C` is the category that represent any 4 number tuple from 0 up to 2³². -/
-variables {C : Type u} [category C]
+/-- For us, `C` is the category that represent any 4 number tuple from 0 up to 2³² and
+`C × C × C × C` is just four of those numbers. -/
+variables {C : Type u} [category C] [category (C × C × C × C)]
 
-/-- There are morphisms from `C` to `C` that we name `qr` and `qr_inv`. -/
-variables qr qr_inv : C ⟶ C
+/-- There are morphisms from `C × C × C × C` to `C × C × C × C` that we name `qr` and `qr_inv`. -/
+variables qr qr_inv : C × C × C × C ⟶ C × C × C × C
 
 /- Just some notation. -/
 local notation `qr⁻¹` := qr_inv
 
 /-- The isomorphism between `qr` and `qr⁻¹`. -/
-variable I : qr ≅ qr⁻¹
+variable I : qr ≅ qr_inv
 
 /-- It is easy to see that `qr⁻¹` after `qr` produces the original object.  -/
 lemma qr_inv_is_inverse_of_qr : I.hom ≫ I.inv = 𝟙 qr :=
@@ -270,7 +272,7 @@ begin
 end
 
 /-- A collission happens when two different values are given to the `qr` morphism and the same result is obtained. -/
-def collission (qr : C ⟶ C) := ∃ (a b : C) [fact (a ≠ b)], qr a = qr b
+def collission := ∃ (a b : C × C × C × C) [fact (a ≠ b)], qr a = qr b
 
 /-!
   ## Invariance
