@@ -82,33 +82,35 @@ end
 ## Core and hash definitions
 -/
 /-- Do addition modulo 2^32 of the reduced input and the doubleround of the reduced input. -/
-def core (X : matrixType) : matrixType := mod_matrix (doubleround_10 X) X
+@[simp] def core (X : matrixType) : matrixType := mod_matrix (doubleround_10 X) X
 
 /-- Do the hash. -/
 def hash (X : matrix64Type) : matrix64Type := aument (core (reduce X))
 
 /-!
-  ## Hash does not have an inverse.
+## Isomorphism of the core function do not exists
 
-  ### TODO:
+### TODO:
 
-  It should be easy to prove or assume the MOD operation is not reversible.
-  Then `mod_as_matrix` is irreversible and `hash` is irreverisble.
-
-  Another approach will be to treat `hash` and `hash_inv` as a generic function, assume or prove they are not
-  bijective and then assume or prove functions that are not bijective do not have an inverse.
-
-  Hash as a generic function that returns the same type as its input.
-  variable hash' : matrix64Type → matrix64Type 
-
-  A potential generic inverse of the hash that returns the same type as its input.
-  variable hash_inv : matrix64Type → matrix64Type 
-
-  -- Hash function is not bijective then inverse does not exist.
-  -- TODO: prove or assume hash is not bijective.
-  -- TODO: prove or assume a non bijective function does not have an inverse.
-  lemma hash_has_no_inverse (A : matrix64Type) : ¬ hash'.bijective → ¬hash_inv (hash' A) = A  
+We know `mod_matrix⁻¹` is not a function (proved in `inv_of_mod_matrix_is_not_a_function`) but
+i was not able to use that for formalization of `core⁻¹` yet.
 -/
+
+/-- The identity of a `core` morphism given a sequence is the sequence. -/
+@[simp] def id_core (seq : matrixType) := seq
+
+/-- The identity of a `core⁻¹` morphism given a sequence is the sequence. -/
+@[simp] def id_core_inv (seq : matrixType) := seq
+
+/-- No isomrphism exists as none of the conditions apply :
+- `core⁻¹ ∘ core = 𝟙 core` = false
+- `core ∘ core⁻¹ = 𝟙 core` = false
+-/
+@[simp] lemma no_isomorphism_core (seq : matrixType) : ¬ ∃ (core_inv1 core_inv2 : matrixType → matrixType),
+  (core_inv1 ∘ core) seq = id_core seq ∧ (core ∘ core_inv2) seq = id_core seq :=
+begin
+  sorry,
+end
 
 /-!
   ## Invariance

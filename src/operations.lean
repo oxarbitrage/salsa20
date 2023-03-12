@@ -59,6 +59,22 @@ axiom double_mod : ∀ a, a MOD a = 2 * a
 axiom modular_magic (h1 : a < two_31) (h2 : b = a MOD two_31) : 2 * a = 2 * b
 axiom mod_self : a MOD a = 2 * a
 
+lemma inv_of_mod_is_not_a_function : ∃ (a b c d : bitvec word_len), a MOD b = c MOD d :=
+begin
+  use (bitvec.of_nat word_len 1),
+  use (bitvec.of_nat word_len 5),
+  use (bitvec.of_nat word_len 3),
+  use (bitvec.of_nat word_len 3),
+
+  unfold mod,
+  unfold max_bitvec,
+  unfold params.mod,
+  rw word_len,
+  unfold bitvec.of_nat,
+  norm_num,
+  refl,
+end
+
 /-! ## XOR axioms -/
 
 axiom xor_zero : a XOR ZERO = a
@@ -66,7 +82,7 @@ axiom xor_inv : a XOR a  = ZERO
 axiom xor_assoc : (a XOR b) XOR c = a XOR (b XOR c)
 
 -- Tag all axioms with simp
-attribute [simp] zero_rotl mod_neg neg_mod double_mod modular_magic mod_self xor_zero xor_inv xor_assoc
+attribute [simp] zero_rotl mod_neg neg_mod double_mod modular_magic mod_self xor_zero xor_inv xor_assoc inv_of_mod_is_not_a_function
 
 /-! ## Operation definitions -/
 

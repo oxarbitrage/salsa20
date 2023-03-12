@@ -201,7 +201,7 @@ Modular 2^32 addition of 4x4 matrices by doing Aᵢⱼ + Bᵢⱼ
 The `MOD` operation (modulo 2^32 addition) is the key to make the salsa20 hash function irreversible.
 Everything is reversible except for this addition.
 -/
-def mod_matrix (A B : matrixType) : matrixType := (
+@[simp] def mod_matrix (A B : matrixType) : matrixType := (
   (
     A.fst.fst          MOD B.fst.fst,
     A.fst.snd.fst      MOD B.fst.snd.fst,
@@ -227,6 +227,13 @@ def mod_matrix (A B : matrixType) : matrixType := (
     A.snd.snd.snd.snd.snd.snd  MOD B.snd.snd.snd.snd.snd.snd
   )
 )
+
+/-- The inverse of a `mod_matrix` operation is not a function. -/
+@[simp] lemma inv_of_mod_matrix_is_not_a_function : ∃ (A B C D : matrixType), mod_matrix A B = mod_matrix C D :=
+begin
+  simp only [mod_matrix, prod.mk.inj_iff, prod.exists, exists_and_distrib_left, exists_and_distrib_right,
+  inv_of_mod_is_not_a_function, and_true],
+end
 
 /-- We define the xor of a matrix to be the xor of each individual bitvector of matrix A and matrix B. -/
 def xor_matrix (A B : matrixType) : matrixType := (
