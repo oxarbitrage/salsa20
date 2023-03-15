@@ -76,6 +76,40 @@ begin
   simp only [isomorphism_left, eq_self_iff_true, isomorphism_right, and_self],
 end
 
+
+/-! ## Category theory
+
+-/
+
+universes u
+variables {C : Type u}
+local notation `V` := C × C × C × C
+
+/-- A columnround structure is four `quarterroundType`s. -/
+structure columnroundType (T : Type*) :=
+(columnround1 : (quarterroundType T) ⟶ T ⟶ T)
+(columnround2 : (quarterroundType T) ⟶ T ⟶ T)
+(columnround3 : (quarterroundType T) ⟶ T ⟶ T)
+(columnround4 : (quarterroundType T) ⟶ T ⟶ T)
+
+/- A `columnround` is an instance of `columnroundType` -/
+def cat_columnround := rowroundType
+
+/- A `columnround_inv` is an instance of `columnroundType` -/
+def cat_columnround_inv := rowroundType
+
+/- Notation for inverse. -/
+local notation `cat_columnround⁻¹` := cat_columnround_inv
+
+/-- There is an isomoprhism between `cat_columnround` and `cat_columnround⁻¹`. -/
+variable I : cat_columnround V ≅ cat_columnround⁻¹ V
+
+/-- It is easy to see that `cat_columnround⁻¹` after `cat_columnround` produces the original object. -/
+lemma columnround_inv_is_inverse_of_rowround : I.hom ≫ I.inv = 𝟙 (cat_columnround V) :=
+begin
+  exact I.hom_inv_id',
+end
+
 /-!
   ## Invariance
 

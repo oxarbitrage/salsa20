@@ -118,59 +118,36 @@ end
 
 /-! ## Category theory
 
-We will define a category `C` that represent numbers inside the 2³² space.
-We also will define a category `C × C × C × C` that represent 4 numbers (`vecType`) inside the 2³² space.
-In addition to that, we define a category  `(C × C × C × C) × (C × C × C × C) × (C × C × C × C) × (C × C × C × C)`
-that represent 16 numbers (`matrixType`) inside the 2³² space.
 -/
 
 universes u
+variables {C : Type u}
+local notation `V` := C × C × C × C
 
-/-- `C` is the category that represent any 4 number tuple from 0 up to 2³² and `C × C × C × C`
-is the category of four `C`s.
-Then `(C × C × C × C) × (C × C × C × C) × (C × C × C × C) × (C × C × C × C)` is the category of
-four `(C × C × C × C)`
--/
-variables {C : Type u} [category C] [category (C × C × C × C)]
-  [category ((C × C × C × C) × (C × C × C × C) × (C × C × C × C) × (C × C × C × C))]
+/-- A rowround structure is four `quarterroundType`s. -/
+structure rowroundType (T : Type*) :=
+(rowround1 : (quarterroundType T) ⟶ T ⟶ T)
+(rowround2 : (quarterroundType T) ⟶ T ⟶ T)
+(rowround3 : (quarterroundType T) ⟶ T ⟶ T)
+(rowround4 : (quarterroundType T) ⟶ T ⟶ T)
 
-/-- There are morphisms to get `C × C × C × C` from
-`(C × C × C × C) × (C × C × C × C) × (C × C × C × C) × (C × C × C × C)`. -/
-variable extractor : (C × C × C × C) × (C × C × C × C) × (C × C × C × C) × (C × C × C × C) ⟶ C × C × C × C
+/- A `rowround` is an instance of `rowroundType` -/
+def cat_rowround := rowroundType
 
-/-- In `quarterround.lean` we defined `qr` and `qr_inv` to be of the form `C × C × C × C ⟶ C × C × C × C`
-so we can bring those types here. -/
-variables qr qr_inv : C × C × C × C ⟶ C × C × C × C
-
-/- Notation for rowround type. -/
-local notation `rowroundType` :=
-  ((C × C × C × C) × (C × C × C × C) × (C × C × C × C) × (C × C × C × C) ⟶ (C × C × C × C))
-    → (C × C × C × C ⟶ C × C × C × C) → C × C × C × C
-
-/-- `cat_rowround` and `cat_rowround_inv` are types that will:
-- take a morphism from `(C × C × C × C) × (C × C × C × C) × (C × C × C × C) × (C × C × C × C)`
-to `C × C × C × C`, `extractor` has this type.
-- take a morphism from `C × C × C × C` to `C × C × C × C`, `qr` or `qr_inv` has this type.
-- returns a new element of `C × C × C × C`.
--/
-variables cat_rowround cat_rowround_inv : rowroundType
+/- A `rowround_inv` is an instance of `rowroundType` -/
+def cat_rowround_inv := rowroundType
 
 /- Notation for inverse. -/
 local notation `cat_rowround⁻¹` := cat_rowround_inv
 
-/-- There is an isomoprhism between `cat_rowround` used with `qr` and `cat_rowround⁻¹` used with `qr_inv`. -/
-variable I : cat_rowround extractor qr ≅ cat_rowround_inv extractor qr_inv
+/-- There is an isomoprhism between `cat_rowround` and `cat_rowround⁻¹`. -/
+variable I : cat_rowround V ≅ cat_rowround⁻¹ V
 
 /-- It is easy to see that `cat_rowround⁻¹` after `cat_rowround` produces the original object. -/
-lemma rowround_inv_is_inverse_of_rowround : I.hom ≫ I.inv = 𝟙 (cat_rowround extractor qr) :=
+lemma rowround_inv_is_inverse_of_rowround : I.hom ≫ I.inv = 𝟙 (cat_rowround V) :=
 begin
   exact I.hom_inv_id',
 end
-
-/-- A collission happens when two different values are given to the `rowroundType` morphism and the same result is
-obtained. -/
-def collission := ∃ (rowround1 rowround2 : rowroundType) [fact (rowround1 ≠ rowround2)],
-  rowround1 extractor qr = rowround2 extractor qr
 
 /-!
   ## Invariance

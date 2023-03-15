@@ -243,36 +243,42 @@ end
 
 /-! ## Category theory
 
-We will define a category `C` that represent all numbers inside the 2³² space.
-Also, we define a `C × C × C × C` category that represent all tuples of 4 numbers inside the 2³² space.
-
-We can consider each element object of `C × C × C × C` as any four numbers (y₀, y₁, y₂, y₃)
-that is used for a `quarterround` input or output (z₀, z₁, z₂, z₃).
 -/
 
 universes u
+variables {C : Type u}
 
-/-- For us, `C` is the category that represent any 4 number tuple from 0 up to 2³² and
-`C × C × C × C` is just four of those numbers. -/
-variables {C : Type u} [category C] [category (C × C × C × C)]
+/--
+Represents a `quarterround` or `quarterround_inv` where building block operations are
+fields of the structure.
+-/
+structure quarterroundType (T : Type*) :=
+/- Represents `z₁ = y₁ ⊕ ((y₀ + y₃) <<< 7)` or `y₁ = z₁ ⊕ ((y₀ + y₃) <<< 7)` -/
+(qr1 : (T → T → T) ⟶ T)
+/- Represents `z₂ = y₂ ⊕ ((z₁ + y₀) <<< 9)` or `y₂ = z₂ ⊕ ((z₁ + y₀) <<< 9)` -/
+(qr2 : (T → T → T) ⟶ T)
+/- Represents `z₃ = y₃ ⊕ ((z₂ + z₁) <<< 13)` or `y₃ = z₃ ⊕ ((z₂ + z₁) <<< 13)` -/
+(qr3 : (T → T → T) ⟶ T)
+/- Represents `z₀ = y₀ ⊕ ((z₃ + z₂) <<< 18)` or `y₀ = z₀ ⊕ ((z₃ + z₂) <<< 18)` -/
+(qr0 : (T → T → T) ⟶ T)
 
-/-- There are morphisms from `C × C × C × C` to `C × C × C × C` that we name `qr` and `qr_inv`. -/
-variables qr qr_inv : C × C × C × C ⟶ C × C × C × C
+/-- `cat_quarterround` is an instance of `quarterroundType` -/
+def cat_quarterround := quarterroundType
 
-/- Just some notation. -/
-local notation `qr⁻¹` := qr_inv
+/-- `cat_quarterround_inv` is an instance of `quarterroundType` -/
+def cat_quarterround_inv := quarterroundType
 
-/-- The isomorphism between `qr` and `qr⁻¹`. -/
-variable I : qr ≅ qr_inv
+/- Just some notation for inverse. -/
+local notation `cat_quarterround⁻¹` := cat_quarterround_inv
 
-/-- It is easy to see that `qr⁻¹` after `qr` produces the original object.  -/
-lemma qr_inv_is_inverse_of_qr : I.hom ≫ I.inv = 𝟙 qr :=
+/-- The isomorphism between `cat_quarterround` and `cat_quarterround⁻¹`. -/
+variable I : cat_quarterround C ≅ cat_quarterround⁻¹ C
+
+/-- It is easy to see that `cat_quarterround⁻¹` after `cat_quarterround` produces the original object.  -/
+lemma qr_inv_is_inverse_of_qr : I.hom ≫ I.inv = 𝟙 (quarterroundType C) :=
 begin
   exact I.hom_inv_id',
 end
-
-/-- A collission happens when two different values are given to the `qr` morphism and the same result is obtained. -/
-def collission := ∃ (a b : C × C × C × C) [fact (a ≠ b)], qr a = qr b
 
 /-!
   ## Invariance

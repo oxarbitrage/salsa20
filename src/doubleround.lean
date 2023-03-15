@@ -1,12 +1,17 @@
 import rowround
 import columnround
 
+import category_theory.category.basic
+import category_theory.core
+
 open params
 open operations
 open quarterround
 open rowround
 open columnround
 open utils
+
+open category_theory
 
 namespace doubleround
 
@@ -96,6 +101,47 @@ end
   (doubleround ∘ doubleround_inv) seq = id_doubleround_inv seq :=
 begin
   simp only [isomorphism_left, eq_self_iff_true, isomorphism_right, and_self],
+end
+
+/-! ## Category theory
+
+-/
+
+universes u
+variables {C : Type u}
+local notation `V` := C × C × C × C
+
+/-- A `doubleroundType` structure is four `columnroundType ≫ rowroundType`s. -/
+structure doubleroundType  (T : Type*) (c : columnroundType T) (r : rowroundType T)
+  (q: quarterroundType T) :=
+(doubleround1 : T ⟶ T := c.columnround1 q ≫ r.rowround1 q)
+(doubleround2 : T ⟶ T := c.columnround2 q ≫ r.rowround2 q)
+(doubleround3 : T ⟶ T := c.columnround3 q ≫ r.rowround3 q)
+(doubleround4 : T ⟶ T := c.columnround4 q ≫ r.rowround4 q)
+
+/-- rowround ≫ columnround -/
+def cat_doubleround := doubleroundType V
+
+/-- columnround⁻¹ ≫ rowround⁻¹ -/
+def cat_doubleround_inv := doubleroundType V
+
+/- Notation for inverse. -/
+local notation `cat_doubleround⁻¹` := cat_doubleround_inv
+
+/-- An instance of `columnroundType `-/
+variable columnround_instance : columnroundType V
+/-- An instance of `rowroundType` -/
+variable rowround_instance : rowroundType V
+
+/-- There is an isomoprhism between `cat_doubleround` and `cat_doubleround⁻¹`. -/
+variable I : cat_doubleround columnround_instance rowround_instance ≅
+  cat_doubleround⁻¹ columnround_instance rowround_instance
+
+/-- It is easy to see that `cat_doubleround⁻¹` after `cat_doubleround` produces the original object. -/
+lemma doubleround_inv_is_inverse_of_doubleround : I.hom ≫ I.inv =
+  𝟙 (cat_doubleround columnround_instance rowround_instance) :=
+begin
+  exact I.hom_inv_id',
 end
 
 /-!
