@@ -1,10 +1,15 @@
 import rowround
 
+import category_theory.category.basic
+import category_theory.core
+
 open params
 open operations
 open quarterround
 open rowround
 open utils
+
+open category_theory
 
 namespace columnround
 
@@ -81,34 +86,35 @@ end
 
 -/
 
+namespace category
+
 universes u
-variables {C : Type u}
-local notation `V` := C × C × C × C
 
-/-- A columnround structure is four `quarterroundType`s. -/
-structure columnroundType (T : Type*) :=
-(columnround1 : (quarterroundType T) ⟶ T ⟶ T)
-(columnround2 : (quarterroundType T) ⟶ T ⟶ T)
-(columnround3 : (quarterroundType T) ⟶ T ⟶ T)
-(columnround4 : (quarterroundType T) ⟶ T ⟶ T)
+/- A `MAT` is 16 numbers. -/
+variables {MAT : Type u} [category (MAT)]
 
-/- A `columnround` is an instance of `columnroundType` -/
-def cat_columnround := rowroundType
+/-- `X` is an element of the category. `X ⟶ X` is also a category. -/
+variables (X : MAT) [category (X ⟶ X)]
 
-/- A `columnround_inv` is an instance of `columnroundType` -/
-def cat_columnround_inv := rowroundType
+/-- `columnround` is a morphism, takes 16 numbers and output 16. -/
+variable columnround : X ⟶ X
+
+/-- `columnround` is a morphism, takes 16 numbers and output 16. -/
+variable columnround_inv : X ⟶ X
 
 /- Notation for inverse. -/
-local notation `cat_columnround⁻¹` := cat_columnround_inv
+local notation `columnround⁻¹` := columnround_inv
 
-/-- There is an isomoprhism between `cat_columnround` and `cat_columnround⁻¹`. -/
-variable I : cat_columnround V ≅ cat_columnround⁻¹ V
+/-- There is an isomoprhism between `columnround` and `columnround⁻¹`. -/
+variable I : columnround ≅ columnround⁻¹
 
-/-- It is easy to see that `cat_columnround⁻¹` after `cat_columnround` produces the original object. -/
-lemma columnround_inv_is_inverse_of_rowround : I.hom ≫ I.inv = 𝟙 (cat_columnround V) :=
+/-- It is easy to see that `columnround⁻¹` after `columnround` produces the original object. -/
+lemma columnround_inv_is_inverse_of_columnround : I.hom ≫ I.inv = 𝟙 (columnround) :=
 begin
   exact I.hom_inv_id',
 end
+
+end category
 
 /-!
   ## Invariance

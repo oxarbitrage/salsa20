@@ -120,34 +120,35 @@ end
 
 -/
 
+namespace category
+
 universes u
-variables {C : Type u}
-local notation `V` := C × C × C × C
 
-/-- A rowround structure is four `quarterroundType`s. -/
-structure rowroundType (T : Type*) :=
-(rowround1 : (quarterroundType T) ⟶ T ⟶ T)
-(rowround2 : (quarterroundType T) ⟶ T ⟶ T)
-(rowround3 : (quarterroundType T) ⟶ T ⟶ T)
-(rowround4 : (quarterroundType T) ⟶ T ⟶ T)
+/- A `MAT` is 16 numbers. -/
+variables {MAT : Type u} [category (MAT)]
 
-/- A `rowround` is an instance of `rowroundType` -/
-def cat_rowround := rowroundType
+/-- `X` is an element of the category. `X ⟶ X` is also a category. -/
+variables (X : MAT) [category (X ⟶ X)]
 
-/- A `rowround_inv` is an instance of `rowroundType` -/
-def cat_rowround_inv := rowroundType
+/-- `rowround` is a morphism, takes 16 numbers and output 16. -/
+variable rowround : X ⟶ X
+
+/-- `rowround_inv` is a morphism, takes 16 numbers and output 16. -/
+variable rowround_inv : X ⟶ X
 
 /- Notation for inverse. -/
-local notation `cat_rowround⁻¹` := cat_rowround_inv
+local notation `rowround⁻¹` := rowround_inv
 
-/-- There is an isomoprhism between `cat_rowround` and `cat_rowround⁻¹`. -/
-variable I : cat_rowround V ≅ cat_rowround⁻¹ V
+/-- There is an isomoprhism between `rowround` and `rowround⁻¹`. -/
+variable I : rowround ≅ rowround⁻¹
 
-/-- It is easy to see that `cat_rowround⁻¹` after `cat_rowround` produces the original object. -/
-lemma rowround_inv_is_inverse_of_rowround : I.hom ≫ I.inv = 𝟙 (cat_rowround V) :=
+/-- It is easy to see that `rowround⁻¹` after `rowround` produces the original object. -/
+lemma rowround_inv_is_inverse_of_rowround : I.hom ≫ I.inv = 𝟙 (rowround) :=
 begin
   exact I.hom_inv_id',
 end
+
+end category
 
 /-!
   ## Invariance

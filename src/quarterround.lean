@@ -245,40 +245,35 @@ end
 
 -/
 
+namespace category
+
 universes u
-variables {C : Type u}
 
-/--
-Represents a `quarterround` or `quarterround_inv` where building block operations are
-fields of the structure.
--/
-structure quarterroundType (T : Type*) :=
-/- Represents `z₁ = y₁ ⊕ ((y₀ + y₃) <<< 7)` or `y₁ = z₁ ⊕ ((y₀ + y₃) <<< 7)` -/
-(qr1 : (T → T → T) ⟶ T)
-/- Represents `z₂ = y₂ ⊕ ((z₁ + y₀) <<< 9)` or `y₂ = z₂ ⊕ ((z₁ + y₀) <<< 9)` -/
-(qr2 : (T → T → T) ⟶ T)
-/- Represents `z₃ = y₃ ⊕ ((z₂ + z₁) <<< 13)` or `y₃ = z₃ ⊕ ((z₂ + z₁) <<< 13)` -/
-(qr3 : (T → T → T) ⟶ T)
-/- Represents `z₀ = y₀ ⊕ ((z₃ + z₂) <<< 18)` or `y₀ = z₀ ⊕ ((z₃ + z₂) <<< 18)` -/
-(qr0 : (T → T → T) ⟶ T)
+/- A `VEC` is 4 numbers. -/
+variables {VEC : Type u} [category (VEC)]
 
-/-- `cat_quarterround` is an instance of `quarterroundType` -/
-def cat_quarterround := quarterroundType
+/-- `X` is an element of the category. `X ⟶ X` is also a category. -/
+variables (X : VEC) [category (X ⟶ X)]
 
-/-- `cat_quarterround_inv` is an instance of `quarterroundType` -/
-def cat_quarterround_inv := quarterroundType
+/-- `quarterround` is a morphism, takes 4 numbers and output 4. -/
+variable quarterround : X ⟶ X
+
+/-- `quarterround_inv` is a morphism, takes 4 numbers and output 4. -/
+variable quarterround_inv : X ⟶ X
 
 /- Just some notation for inverse. -/
-local notation `cat_quarterround⁻¹` := cat_quarterround_inv
+local notation `quarterround⁻¹` := quarterround_inv
 
-/-- The isomorphism between `cat_quarterround` and `cat_quarterround⁻¹`. -/
-variable I : cat_quarterround C ≅ cat_quarterround⁻¹ C
+/-- The isomorphism between `quarterround` and `quarterround⁻¹`. -/
+variable I : quarterround ≅ quarterround⁻¹
 
-/-- It is easy to see that `cat_quarterround⁻¹` after `cat_quarterround` produces the original object.  -/
-lemma qr_inv_is_inverse_of_qr : I.hom ≫ I.inv = 𝟙 (quarterroundType C) :=
+/-- It is easy to see that `quarterround⁻¹` after `quarterround` produces the original object.  -/
+lemma quarterround_inv_is_inverse_of_quarterround : I.hom ≫ I.inv = 𝟙 quarterround :=
 begin
   exact I.hom_inv_id',
 end
+
+end category
 
 /-!
   ## Invariance

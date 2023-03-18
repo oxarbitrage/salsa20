@@ -1,11 +1,16 @@
 import doubleround
 import littleendian
 
+import category_theory.category.basic
+import category_theory.core
+
 open doubleround
 open littleendian
 open operations
 open params
 open utils
+
+open category_theory
 
 namespace core
 
@@ -78,58 +83,6 @@ begin
   simp only [isomorphism_left, eq_self_iff_true, isomorphism_right, and_self],
 end
 
-/-! ## Category theory of the `doubleround10` function
-
--/
-
-universes u
-variables {C : Type u}
-local notation `V` := C × C × C × C
-
-/-- A `doubleround10Type` structure is 10 `doubleroundType ≫ doubleroundType`s. -/
-structure doubleround10Type  (T : Type*) (c : columnround.columnroundType T) (r : rowround.rowroundType T)
-  (q: quarterround.quarterroundType T) (d1 d2 d3 d4 d5 d6 d7 d8 d9 d10: doubleround.doubleroundType T c r q) :=
-(doubleround10_1 : T ⟶ T := d1.doubleround1 ≫ d1.doubleround2 ≫ d1.doubleround3 ≫ d1.doubleround4)
-(doubleround10_2 : T ⟶ T := d2.doubleround1 ≫ d2.doubleround2 ≫ d2.doubleround3 ≫ d2.doubleround4)
-(doubleround10_3 : T ⟶ T := d3.doubleround1 ≫ d3.doubleround2 ≫ d3.doubleround3 ≫ d3.doubleround4)
-(doubleround10_4 : T ⟶ T := d4.doubleround1 ≫ d4.doubleround2 ≫ d4.doubleround3 ≫ d4.doubleround4)
-(doubleround10_5 : T ⟶ T := d5.doubleround1 ≫ d5.doubleround2 ≫ d5.doubleround3 ≫ d5.doubleround4)
-(doubleround10_6 : T ⟶ T := d6.doubleround1 ≫ d6.doubleround2 ≫ d6.doubleround3 ≫ d6.doubleround4)
-(doubleround10_7 : T ⟶ T := d7.doubleround1 ≫ d7.doubleround2 ≫ d7.doubleround3 ≫ d7.doubleround4)
-(doubleround10_8 : T ⟶ T := d8.doubleround1 ≫ d8.doubleround2 ≫ d8.doubleround3 ≫ d8.doubleround4)
-(doubleround10_9 : T ⟶ T := d9.doubleround1 ≫ d9.doubleround2 ≫ d9.doubleround3 ≫ d9.doubleround4)
-(doubleround10_10 : T ⟶ T := d10.doubleround1 ≫ d10.doubleround2 ≫ d10.doubleround3 ≫ d10.doubleround4)
-
-/-- doubleround ≫ doubleround ≫ doubleround ≫ doubleround ≫ doubleround ≫ doubleround ≫ doubleround ≫ doubleround
-≫ doubleround ≫ doubleround -/
-def cat_doubleround10 := doubleround10Type V
-
-/-- doubleround⁻¹ ≫ doubleround⁻¹ ≫ doubleround⁻¹ ≫ doubleround⁻¹ ≫ doubleround⁻¹ ≫ doubleround⁻¹ ≫ doubleround⁻¹
-≫ doubleround⁻¹ ≫ doubleround⁻¹ ≫ doubleround⁻¹  -/
-def cat_doubleround10_inv := doubleround10Type V
-
-/- Notation for inverse. -/
-local notation `cat_doubleround10⁻¹` := cat_doubleround10_inv
-
-/-- An instance of `columnroundType `-/
-variable columnround_instance : columnround.columnroundType V
-/-- An instance of `rowroundType` -/
-variable rowround_instance : rowround.rowroundType V
-/-- An instance of `quarterroundType` -/
-variable quarterround_instance : quarterround.quarterroundType V
-
-def doubleround_instance := doubleround.doubleroundType V
-
-/-- There is an isomoprhism between `cat_doubleround` and `cat_doubleround⁻¹`. -/
-variable I : cat_doubleround10 columnround_instance rowround_instance quarterround_instance ≅
-  cat_doubleround10⁻¹ columnround_instance rowround_instance quarterround_instance
-
-/-- It is easy to see that `cat_doubleround⁻¹` after `cat_doubleround` produces the original object. -/
-lemma doubleround_inv_is_inverse_of_doubleround : I.hom ≫ I.inv =
-  𝟙 (cat_doubleround10 columnround_instance rowround_instance quarterround_instance) :=
-begin
-  exact I.hom_inv_id',
-end
 
 /-!
 ## Core and hash definitions
@@ -139,6 +92,74 @@ end
 
 /-- Do the hash. -/
 def hash (X : matrix64Type) : matrix64Type := aument (core (reduce X))
+
+/-! ## Category theory
+
+-/
+
+namespace category
+
+universes u
+
+/- A `MAT` is 16 numbers. -/
+variables {MAT : Type u} [category (MAT)]
+
+/-- `X` is an element of the category. `X ⟶ X` is also a category. -/
+variables (X : MAT) [category (X ⟶ X)]
+
+/-- These are all morphisms from `X` to `X`. -/
+variables rowround columnround rowround_inv columnround_inv : X ⟶ X
+
+/- Notation for inverse. -/
+local notation `rowround⁻¹` := rowround_inv
+
+/- Notation for inverse. -/
+local notation `columnround⁻¹` := columnround_inv
+
+def doubleround10 := category.doubleround X rowround columnround ≫ 
+  category.doubleround X rowround columnround ≫ 
+  category.doubleround X rowround columnround ≫
+  category.doubleround X rowround columnround ≫
+  category.doubleround X rowround columnround ≫
+  category.doubleround X rowround columnround ≫
+  category.doubleround X rowround columnround ≫
+  category.doubleround X rowround columnround ≫
+  category.doubleround X rowround columnround ≫
+  category.doubleround X rowround columnround 
+
+def doubleround10_inv := category.doubleround_inv X columnround⁻¹ rowround⁻¹ ≫
+  category.doubleround_inv X columnround⁻¹ rowround⁻¹ ≫
+  category.doubleround_inv X columnround⁻¹ rowround⁻¹ ≫
+  category.doubleround_inv X columnround⁻¹ rowround⁻¹ ≫
+  category.doubleround_inv X columnround⁻¹ rowround⁻¹ ≫
+  category.doubleround_inv X columnround⁻¹ rowround⁻¹ ≫
+  category.doubleround_inv X columnround⁻¹ rowround⁻¹ ≫
+  category.doubleround_inv X columnround⁻¹ rowround⁻¹ ≫
+  category.doubleround_inv X columnround⁻¹ rowround⁻¹ ≫
+  category.doubleround_inv X columnround⁻¹ rowround⁻¹
+
+/- Notation for inverse. -/
+local notation `doubleround10⁻¹` := doubleround10_inv
+
+/-- There is an isomoprhism between `doubleround10` and `doubleround10⁻¹`. -/
+variable I : doubleround10 X rowround columnround ≅ doubleround10⁻¹ X columnround_inv rowround_inv
+
+/-- It is easy to see that `doubleround10⁻¹` after `doubleround10` produces the original object. -/
+lemma doubleround10_inv_is_inverse_of_doubleround10 : I.hom ≫ I.inv = 𝟙 (doubleround10 X rowround columnround) :=
+begin
+  exact I.hom_inv_id',
+end
+
+variable mod_matrix : (MAT → (X ⟶ X)) → MAT
+
+def core := mod_matrix (λ a : MAT, doubleround10 X rowround columnround)
+
+lemma no_inverse : ¬ ∃ core_inv : MAT → MAT, core_inv (core X rowround columnround mod_matrix) = X :=
+begin
+  sorry,
+end
+
+end category
 
 /-!
 ## Isomorphism of the core function do not exists

@@ -107,42 +107,44 @@ end
 
 -/
 
+namespace category
+
 universes u
-variables {C : Type u}
-local notation `V` := C × C × C × C
 
-/-- A `doubleroundType` structure is four `columnroundType ≫ rowroundType`s. -/
-structure doubleroundType  (T : Type*) (c : columnroundType T) (r : rowroundType T)
-  (q: quarterroundType T) :=
-(doubleround1 : T ⟶ T := c.columnround1 q ≫ r.rowround1 q)
-(doubleround2 : T ⟶ T := c.columnround2 q ≫ r.rowround2 q)
-(doubleround3 : T ⟶ T := c.columnround3 q ≫ r.rowround3 q)
-(doubleround4 : T ⟶ T := c.columnround4 q ≫ r.rowround4 q)
+/- A `MAT` is 16 numbers. -/
+variables {MAT : Type u} [category (MAT)]
 
-/-- rowround ≫ columnround -/
-def cat_doubleround := doubleroundType V
+/-- `X` is an element of the category. `X ⟶ X` is also a category. -/
+variables (X : MAT) [category (X ⟶ X)]
 
-/-- columnround⁻¹ ≫ rowround⁻¹ -/
-def cat_doubleround_inv := doubleroundType V
+/-- These are all morphisms from `X` to `X`. -/
+variables rowround columnround rowround_inv columnround_inv : X ⟶ X
 
 /- Notation for inverse. -/
-local notation `cat_doubleround⁻¹` := cat_doubleround_inv
+local notation `rowround⁻¹` := rowround_inv
 
-/-- An instance of `columnroundType `-/
-variable columnround_instance : columnroundType V
-/-- An instance of `rowroundType` -/
-variable rowround_instance : rowroundType V
+/- Notation for inverse. -/
+local notation `columnround⁻¹` := columnround_inv
 
-/-- There is an isomoprhism between `cat_doubleround` and `cat_doubleround⁻¹`. -/
-variable I : cat_doubleround columnround_instance rowround_instance ≅
-  cat_doubleround⁻¹ columnround_instance rowround_instance
+/-- `doubleround` is `rowround` followed by `columnround`. -/
+def doubleround := rowround ≫ columnround
 
-/-- It is easy to see that `cat_doubleround⁻¹` after `cat_doubleround` produces the original object. -/
-lemma doubleround_inv_is_inverse_of_doubleround : I.hom ≫ I.inv =
-  𝟙 (cat_doubleround columnround_instance rowround_instance) :=
+/-- `doubleround_inv` is `columnround⁻¹` followed by `rowround⁻¹`. -/
+def doubleround_inv := columnround⁻¹ ≫ rowround⁻¹
+
+/- Notation for inverse. -/
+local notation `doubleround⁻¹` := doubleround_inv
+
+/-- There is an isomoprhism between `doubleround` and `doubleround⁻¹`. -/
+variable I : doubleround X rowround columnround ≅ doubleround⁻¹ X columnround rowround
+
+/-- It is easy to see that `dubleround⁻¹` after `doubleround` produces the original object. -/
+lemma doubleround_inv_is_inverse_of_doubleround : I.hom ≫ I.inv = 𝟙 (doubleround X rowround columnround) :=
 begin
   exact I.hom_inv_id',
 end
+
+end category
 
 /-!
   ## Invariance
