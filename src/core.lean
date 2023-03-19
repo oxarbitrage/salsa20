@@ -104,11 +104,8 @@ universes u
 /- A `MAT` is 16 numbers. -/
 variables {MAT : Type u} [category (MAT)]
 
-/-- `X` is an element of the category. `X ⟶ X` is also a category. -/
-variables (X : MAT) [category (X ⟶ X)]
-
 /-- These are all morphisms from `X` to `X`. -/
-variables rowround columnround rowround_inv columnround_inv : X ⟶ X
+variables rowround columnround rowround_inv columnround_inv : MAT → MAT
 
 /- Notation for inverse. -/
 local notation `rowround⁻¹` := rowround_inv
@@ -116,48 +113,46 @@ local notation `rowround⁻¹` := rowround_inv
 /- Notation for inverse. -/
 local notation `columnround⁻¹` := columnround_inv
 
-def doubleround10 := category.doubleround X rowround columnround ≫ 
-  category.doubleround X rowround columnround ≫ 
-  category.doubleround X rowround columnround ≫
-  category.doubleround X rowround columnround ≫
-  category.doubleround X rowround columnround ≫
-  category.doubleround X rowround columnround ≫
-  category.doubleround X rowround columnround ≫
-  category.doubleround X rowround columnround ≫
-  category.doubleround X rowround columnround ≫
-  category.doubleround X rowround columnround 
+def doubleround10 := category.doubleround rowround columnround ∘
+  category.doubleround rowround columnround ∘
+  category.doubleround rowround columnround ∘
+  category.doubleround rowround columnround ∘
+  category.doubleround rowround columnround ∘
+  category.doubleround rowround columnround ∘
+  category.doubleround rowround columnround ∘
+  category.doubleround rowround columnround ∘
+  category.doubleround rowround columnround ∘
+  category.doubleround rowround columnround
 
-def doubleround10_inv := category.doubleround_inv X columnround⁻¹ rowround⁻¹ ≫
-  category.doubleround_inv X columnround⁻¹ rowround⁻¹ ≫
-  category.doubleround_inv X columnround⁻¹ rowround⁻¹ ≫
-  category.doubleround_inv X columnround⁻¹ rowround⁻¹ ≫
-  category.doubleround_inv X columnround⁻¹ rowround⁻¹ ≫
-  category.doubleround_inv X columnround⁻¹ rowround⁻¹ ≫
-  category.doubleround_inv X columnround⁻¹ rowround⁻¹ ≫
-  category.doubleround_inv X columnround⁻¹ rowround⁻¹ ≫
-  category.doubleround_inv X columnround⁻¹ rowround⁻¹ ≫
-  category.doubleround_inv X columnround⁻¹ rowround⁻¹
+def doubleround10_inv := category.doubleround_inv columnround⁻¹ rowround⁻¹ ∘
+  category.doubleround_inv columnround⁻¹ rowround⁻¹ ∘
+  category.doubleround_inv columnround⁻¹ rowround⁻¹ ∘
+  category.doubleround_inv columnround⁻¹ rowround⁻¹ ∘
+  category.doubleround_inv columnround⁻¹ rowround⁻¹ ∘
+  category.doubleround_inv columnround⁻¹ rowround⁻¹ ∘
+  category.doubleround_inv columnround⁻¹ rowround⁻¹ ∘
+  category.doubleround_inv columnround⁻¹ rowround⁻¹ ∘
+  category.doubleround_inv columnround⁻¹ rowround⁻¹ ∘
+  category.doubleround_inv columnround⁻¹ rowround⁻¹
 
 /- Notation for inverse. -/
 local notation `doubleround10⁻¹` := doubleround10_inv
 
 /-- There is an isomoprhism between `doubleround10` and `doubleround10⁻¹`. -/
-variable I : doubleround10 X rowround columnround ≅ doubleround10⁻¹ X columnround_inv rowround_inv
+variable I : doubleround10 rowround columnround ≅ doubleround10⁻¹ columnround_inv rowround_inv
 
 /-- It is easy to see that `doubleround10⁻¹` after `doubleround10` produces the original object. -/
-lemma doubleround10_inv_is_inverse_of_doubleround10 : I.hom ≫ I.inv = 𝟙 (doubleround10 X rowround columnround) :=
+lemma doubleround10_inv_is_inverse_of_doubleround10 : I.hom ≫ I.inv = 𝟙 (doubleround10 rowround columnround) :=
 begin
   exact I.hom_inv_id',
 end
 
-variable mod_matrix : (MAT → (X ⟶ X)) → MAT
+/-- The `mod_matrix` function takes 2 matrices and do modulo addition of each element. -/
+variable mod_matrix : (MAT → (MAT → MAT)) → MAT
 
-def core := mod_matrix (λ a : MAT, doubleround10 X rowround columnround)
-
-lemma no_inverse : ¬ ∃ core_inv : MAT → MAT, core_inv (core X rowround columnround mod_matrix) = X :=
-begin
-  sorry,
-end
+/-- The `core` function use the `doubleround10` and the original matrix and do
+`mod_matrix` with them. -/
+def core := mod_matrix (λ a : MAT, doubleround10 rowround columnround)
 
 end category
 

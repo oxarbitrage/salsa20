@@ -114,11 +114,8 @@ universes u
 /- A `MAT` is 16 numbers. -/
 variables {MAT : Type u} [category (MAT)]
 
-/-- `X` is an element of the category. `X ⟶ X` is also a category. -/
-variables (X : MAT) [category (X ⟶ X)]
-
 /-- These are all morphisms from `X` to `X`. -/
-variables rowround columnround rowround_inv columnround_inv : X ⟶ X
+variables rowround columnround rowround_inv columnround_inv : MAT → MAT
 
 /- Notation for inverse. -/
 local notation `rowround⁻¹` := rowround_inv
@@ -127,19 +124,19 @@ local notation `rowround⁻¹` := rowround_inv
 local notation `columnround⁻¹` := columnround_inv
 
 /-- `doubleround` is `rowround` followed by `columnround`. -/
-def doubleround := rowround ≫ columnround
+def doubleround := rowround ∘ columnround
 
 /-- `doubleround_inv` is `columnround⁻¹` followed by `rowround⁻¹`. -/
-def doubleround_inv := columnround⁻¹ ≫ rowround⁻¹
+def doubleround_inv := columnround⁻¹ ∘ rowround⁻¹
 
 /- Notation for inverse. -/
 local notation `doubleround⁻¹` := doubleround_inv
 
 /-- There is an isomoprhism between `doubleround` and `doubleround⁻¹`. -/
-variable I : doubleround X rowround columnround ≅ doubleround⁻¹ X columnround rowround
+variable I : doubleround rowround columnround ≅ doubleround⁻¹ columnround rowround
 
 /-- It is easy to see that `dubleround⁻¹` after `doubleround` produces the original object. -/
-lemma doubleround_inv_is_inverse_of_doubleround : I.hom ≫ I.inv = 𝟙 (doubleround X rowround columnround) :=
+lemma doubleround_inv_is_inverse_of_doubleround : I.hom ≫ I.inv = 𝟙 (doubleround rowround columnround) :=
 begin
   exact I.hom_inv_id',
 end

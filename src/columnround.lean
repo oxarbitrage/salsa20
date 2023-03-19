@@ -93,14 +93,11 @@ universes u
 /- A `MAT` is 16 numbers. -/
 variables {MAT : Type u} [category (MAT)]
 
-/-- `X` is an element of the category. `X ⟶ X` is also a category. -/
-variables (X : MAT) [category (X ⟶ X)]
+/-- `columnround` is a morphism, takes 16 numbers and output 16. -/
+variable columnround : MAT → MAT
 
 /-- `columnround` is a morphism, takes 16 numbers and output 16. -/
-variable columnround : X ⟶ X
-
-/-- `columnround` is a morphism, takes 16 numbers and output 16. -/
-variable columnround_inv : X ⟶ X
+variable columnround_inv : MAT → MAT
 
 /- Notation for inverse. -/
 local notation `columnround⁻¹` := columnround_inv

@@ -252,14 +252,11 @@ universes u
 /- A `VEC` is 4 numbers. -/
 variables {VEC : Type u} [category (VEC)]
 
-/-- `X` is an element of the category. `X ⟶ X` is also a category. -/
-variables (X : VEC) [category (X ⟶ X)]
-
 /-- `quarterround` is a morphism, takes 4 numbers and output 4. -/
-variable quarterround : X ⟶ X
+variable quarterround : VEC → VEC
 
 /-- `quarterround_inv` is a morphism, takes 4 numbers and output 4. -/
-variable quarterround_inv : X ⟶ X
+variable quarterround_inv : VEC → VEC
 
 /- Just some notation for inverse. -/
 local notation `quarterround⁻¹` := quarterround_inv
