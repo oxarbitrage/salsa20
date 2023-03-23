@@ -102,9 +102,9 @@ namespace category
 universes u
 
 /- A `MAT` is 16 numbers. -/
-variables {MAT : Type u} [category (MAT)]
+variables {MAT : Type u} [small_category (MAT)]
 
-/-- These are all morphisms from `X` to `X`. -/
+/-- These are all morphisms from `MAT` to `MAT`. -/
 variables rowround columnround rowround_inv columnround_inv : MAT → MAT
 
 /- Notation for inverse. -/
@@ -113,6 +113,8 @@ local notation `rowround⁻¹` := rowround_inv
 /- Notation for inverse. -/
 local notation `columnround⁻¹` := columnround_inv
 
+/-- `doubleround10` is taking the outout of `doubleround` as an input of a new `doubleround`.
+Repeat the process 10 times by composition. -/
 def doubleround10 := category.doubleround rowround columnround ∘
   category.doubleround rowround columnround ∘
   category.doubleround rowround columnround ∘
@@ -124,6 +126,7 @@ def doubleround10 := category.doubleround rowround columnround ∘
   category.doubleround rowround columnround ∘
   category.doubleround rowround columnround
 
+/-- The inverse of the `doubleround10`. -/
 def doubleround10_inv := category.doubleround_inv columnround⁻¹ rowround⁻¹ ∘
   category.doubleround_inv columnround⁻¹ rowround⁻¹ ∘
   category.doubleround_inv columnround⁻¹ rowround⁻¹ ∘
@@ -147,39 +150,54 @@ begin
   exact I.hom_inv_id',
 end
 
-/-- The `mod_matrix` function takes 2 matrices and do modulo addition of each element. -/
+/-- The `mod_matrix` function takes 2 matrices and do modulo addition element by element. -/
 variable mod_matrix : (MAT → (MAT → MAT)) → MAT
 
-/-- The `core` function use the `doubleround10` and the original matrix and do
-`mod_matrix` with them. -/
-def core := mod_matrix (λ a : MAT, doubleround10 rowround columnround)
+/-- The `mod_matrix` is not injective property.
+TODO: prove. modulo 32 addition is not injective → matrix operation is not injective.
+-/
+constant mod_matrix_is_not_injective : ¬ mod_matrix.injective
+
+/-- The `mod_matrix` is not bijective because it is not injective (see `mod_matrix_is_not_injective`). -/
+lemma mod_matrix_is_not_bijective : ¬ mod_matrix.bijective → (¬ mod_matrix.injective ∨ ¬ mod_matrix.surjective) :=
+begin
+  intro a,
+  fconstructor,
+  apply mod_matrix_is_not_injective,
+end
+
+/-- The `mod matrix` function is not bijective so it is not isomorphic. -/
+constant mod_matrix_is_not_isomorphic :
+  ∃ mod_matrix_inv : (MAT → (MAT → MAT)) → MAT, (mod_matrix ≅ mod_matrix_inv) → false
+
+/-- The `core` function use the output of the `doubleround10` function with input `A` and do
+`mod_matrix` with it and `A`. -/
+def core := mod_matrix (λ A : MAT, doubleround10 rowround columnround)
+
+/-- The `core` function is not injective.
+TODO: prove. `mod_matrix` is used in `core` and it is not injective → `core` is not injective.
+-/
+constant core_is_not_injective : ¬ (core rowround columnround).injective
+
+/-- The `core` function is not bijective because it is not injective (see `core_is_not_injective`) -/
+lemma core_is_not_bijective : ¬ (core rowround columnround).bijective →
+  (¬ (core rowround columnround).injective ∨ ¬ (core rowround columnround).surjective) :=
+begin
+  intro a,
+  fconstructor,
+  apply core_is_not_injective,
+end
+
+/- Notation for the `core` type. -/
+local notation `CORE_TYPE` := (MAT → MAT) → (MAT → MAT) → ((MAT → MAT → MAT) → MAT) → MAT
+
+/-- `core` is not isomorphic because it is not bijective.
+TODO: prove. need to find the conection (or create an axiom) such that, if bijective → isomorphic.
+-/
+constant core_is_not_isomorphic : ∃ core_inv : CORE_TYPE,
+  (core rowround columnround ≅ core_inv rowround columnround) → false
 
 end category
-
-/-!
-## Isomorphism of the core function do not exists
-
-### TODO:
-
-We know `mod_matrix⁻¹` is not a function (proved in `inv_of_mod_matrix_is_not_a_function`) but
-i was not able to use that for formalization of `core⁻¹` yet.
--/
-
-/-- The identity of a `core` morphism given a sequence is the sequence. -/
-@[simp] def id_core (seq : matrixType) := seq
-
-/-- The identity of a `core⁻¹` morphism given a sequence is the sequence. -/
-@[simp] def id_core_inv (seq : matrixType) := seq
-
-/-- No isomrphism exists as none of the conditions apply :
-- `core⁻¹ ∘ core = 𝟙 core` = false
-- `core ∘ core⁻¹ = 𝟙 core` = false
--/
-@[simp] lemma no_isomorphism_core (seq : matrixType) : ¬ ∃ (core_inv1 core_inv2 : matrixType → matrixType),
-  (core_inv1 ∘ core) seq = id_core seq ∧ (core ∘ core_inv2) seq = id_core seq :=
-begin
-  sorry,
-end
 
 /-!
   ## Invariance
