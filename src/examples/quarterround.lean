@@ -206,8 +206,6 @@ end
 lemma example3_qr3 :
   qr3 0x00000000 0x00000001 0x00000000 0x00000000 = 0x00402000 :=
 begin
-  apply example2_qr3,
-
   rw qr3,
   rw qr1,
   rw qr2,
