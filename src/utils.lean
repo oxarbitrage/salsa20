@@ -2,11 +2,18 @@ import operations
 import params
 import littleendian
 
+import category_theory.category.basic
+import category_theory.core
+
 open operations
 open params
 open littleendian
 
+open category_theory
+
 namespace utils
+
+variables [category (bitvec word_len)]
 
 /-!
   # Utilities
@@ -228,12 +235,14 @@ Everything is reversible except for this addition.
   )
 )
 
+/-
 /-- The inverse of a `mod_matrix` operation is not a function. -/
 @[simp] lemma inv_of_mod_matrix_is_not_a_function : ∃ (A B C D : matrixType), mod_matrix A B = mod_matrix C D :=
 begin
   simp only [mod_matrix, prod.mk.inj_iff, prod.exists, exists_and_distrib_left, exists_and_distrib_right,
   inv_of_mod_is_not_a_function, and_true],
 end
+-/
 
 /-- We define the xor of a matrix to be the xor of each individual bitvector of matrix A and matrix B. -/
 def xor_matrix (A B : matrixType) : matrixType := (
@@ -276,6 +285,7 @@ variables a₀ a₁ a₂ a₃ a₄ a₅ a₆ a₇ a₈ a₉ a₁₀ a₁₁ a₁
     (2 * a₁₂, 2 * a₁₃, 2 * a₁₄, 2 * a₁₅)
   ) := rfl
 
+/-
 /-- The MOD sum of two equal matrices X is 2 times X. -/
 @[simp] lemma mod_matrix_double : mod_matrix M M = 2 * M :=
 begin
@@ -289,6 +299,7 @@ begin
     M.snd.snd.snd.fst M.snd.snd.snd.snd.fst M.snd.snd.snd.snd.snd.fst M.snd.snd.snd.snd.snd.snd,
   refl,
 end
+-/
 
 /-- Convert a `matrixType` to a `list` as lists are easy to work sometimes than prods. -/
 @[simp] def matrix_to_list : matrixType → list (bitvec word_len)

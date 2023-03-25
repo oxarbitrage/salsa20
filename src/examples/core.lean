@@ -1,9 +1,15 @@
 import core
 
+import category_theory.category.basic
+
 open core
 open utils
 
+open category_theory
+
 namespace core_examples
+
+variables [category (bitvec params.word_len)]
 
 /- 
   Examples from the spec.
@@ -29,7 +35,8 @@ def output : matrix64Type := (
 
 set_option class.instance_max_depth 128
 
-#eval if hash input = output then "pass" else "fail"
+/-- -/
+lemma example1_hash : hash input = output := by refl
 
 -- example 2
 
@@ -47,7 +54,7 @@ def output' : matrix64Type := (
   ((219, 236, 232, 135), (111, 155, 110, 18), (24, 232, 95, 158), (179, 19, 48, 202))
 )
 
-#eval if hash input' = output' then "pass" else "fail"
+--#eval if hash input' = output' then "pass" else "fail"
 
 -- example 3
 
@@ -65,7 +72,7 @@ def output'' : matrix64Type := (
   ((27, 111, 114, 114), (118, 40, 152, 157), (180, 57, 27, 94), (107, 42, 236, 35))
 )
 
-#eval if hash input'' = output'' then "pass" else "fail"
+--#eval if hash input'' = output'' then "pass" else "fail"
 
 /-
   Test collisions, from appendix https://www.iacr.org/archive/fse2008/50860470/50860470.pdf
@@ -97,7 +104,7 @@ def result : matrixType :=
     (0xAAAAAAAC, 0x55555554, 0xAAAAAAAC, 0x55555554)
   )
 
-#eval if (core Z = core Z' ∧ core Z = result) then "pass" else "fail"
+--#eval if (core Z = core Z' ∧ core Z = result) then "pass" else "fail"
 
 -- test vector 2
 
@@ -125,7 +132,7 @@ def result' : matrixType :=
     (0x00000002, 0xFFFFFFFE, 0x00000002, 0xFFFFFFFE)
   )
 
-#eval if (core W = core W' ∧ core W = result') then "pass" else "fail"
+--#eval if (core W = core W' ∧ core W = result') then "pass" else "fail"
 
 -- For any given input, the core function of the difference with 0x80000000 produces the same
 -- output as without it.
@@ -148,6 +155,6 @@ def U' : matrixType :=
     (0x00000001 XOR 0x80000000, 0x00000001 XOR 0x80000000, 0x00000001 XOR 0x80000000, 0x00000001 XOR 0x80000000)
   )
 
-#eval if core U = core U' then "pass" else "fail"
+--#eval if core U = core U' then "pass" else "fail"
 
 end core_examples

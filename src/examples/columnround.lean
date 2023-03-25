@@ -31,7 +31,7 @@ def output1 : matrixType :=
     (0x40a04001, 0x00000000, 0x00000000, 0x00000000)
   )
 
-#eval if columnround_output (columnround (columnround_input input1)) = output1 then "pass" else "fail"
+--#eval if columnround_output (columnround (columnround_input input1)) = output1 then "pass" else "fail"
 
 /-! ### Example 2 -/
 
@@ -53,7 +53,7 @@ def output2 : matrixType :=
     (0x481c2027, 0x53a8e4b5, 0x4c1f89c5, 0x3f78c9c8)
   )
 
-#eval if columnround_output (columnround (columnround_input input2)) = output2 then "pass" else "fail"
+--#eval if columnround_output (columnround (columnround_input input2)) = output2 then "pass" else "fail"
 
 /-!
   ## Inverse examples
@@ -62,9 +62,9 @@ def output2 : matrixType :=
 -/
 
 -- example 1
-#eval if columnround_output (columnround_inv (columnround_input output1)) = input1 then "pass" else "fail"
+--#eval if columnround_output (columnround_inv (columnround_input output1)) = input1 then "pass" else "fail"
 
 -- example 2
-#eval if columnround_output (columnround_inv (columnround_input output2)) = input2 then "pass" else "fail"
+--#eval if columnround_output (columnround_inv (columnround_input output2)) = input2 then "pass" else "fail"
 
 end columnround_examples

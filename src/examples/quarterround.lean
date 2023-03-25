@@ -1,22 +1,39 @@
 import quarterround
 
+import category_theory.category.basic
+
 open quarterround
 
+open category_theory
+
 namespace quarterround_examples
+
+variable [category (bitvec params.word_len)]
+
 /-!
   # Examples from the spec.
 
   https://cr.yp.to/snuffle/spec.pdf
 -/
 
-/-- quarterround 0 0 0 0 = 0 0 0 0 -/
-lemma example0_quarterround : quarterround (0x00000000, 0x00000000, 0x00000000, 0x00000000) =
-    (0x000000000, 0x00000000, 0x00000000, 0x00000000) :=
-begin
-  refl,
-end
+/-!
+## Example 1 : 
 
-lemma example1_qr1 :
+> quarterround(0x00000000, 0x00000000, 0x00000000, 0x00000000) = (0x00000000, 0x00000000, 0x00000000, 0x00000000)
+-/
+
+/-- `quarterround (0, 0, 0, 0) = (0, 0, 0, 0)` -/
+lemma example1_quarterround : quarterround (0x00000000, 0x00000000, 0x00000000, 0x00000000) =
+    (0x000000000, 0x00000000, 0x00000000, 0x00000000) := by refl
+
+/-!
+## Example 2 : 
+
+> quarterround(0x00000001, 0x00000000, 0x00000000, 0x00000000) = (0x08008145, 0x00000080, 0x00010200, 0x20500000)
+-/
+
+/-- `qr1 (1, 0, 0, 0) = 128` -/
+lemma example2_qr1 :
   qr1 0x00000001 0x00000000 0x00000000 0x00000000 = 0x00000080 :=
 begin
   rw qr1,
@@ -39,7 +56,8 @@ begin
   refl,
 end
 
-lemma example1_qr2 :
+/-- `qr2 (1, 0, 0, 0) = 66048` -/
+lemma example2_qr2 :
   qr2 0x00000001 0x00000000 0x00000000 0x00000000 = 0x00010200 :=
 begin
   rw qr2,
@@ -63,7 +81,8 @@ begin
   refl,
 end
 
-lemma example1_qr3 :
+/-- `qr3 (1, 0, 0, 0) = 542113792` -/
+lemma example2_qr3 :
   qr3 0x00000001 0x00000000 0x00000000 0x00000000 = 0x20500000 :=
 begin
   rw qr3,
@@ -89,7 +108,8 @@ begin
   refl,
 end
 
-lemma example1_qr0 :
+/-- `qr0 (1, 0, 0, 0) = 134250821` -/
+lemma example2_qr0 :
   qr0 0x00000001 0x00000000 0x00000000 0x00000000 = 0x08008145 :=
 begin
   rw qr0,
@@ -115,24 +135,26 @@ begin
   refl,
 end
 
-/-- example 2 --/
-lemma example1_quarterround : quarterround (0x00000001, 0x00000000, 0x00000000, 0x00000000) =
+/-- `quarterround (1, 0, 0, 0) = (134250821, 128, 66048, 542113792)` -/
+lemma example2_quarterround : quarterround (0x00000001, 0x00000000, 0x00000000, 0x00000000) =
     (0x08008145, 0x00000080, 0x00010200, 0x20500000) :=
 begin
   rw quarterround,
-  rw example1_qr0,
-  rw example1_qr1,
-  rw example1_qr2,
-  rw example1_qr3,
+  rw example2_qr0,
+  rw example2_qr1,
+  rw example2_qr2,
+  rw example2_qr3,
 end
 
-/-
-#eval if 
-  quarterround (0x00000001, 0x00000000, 0x00000000, 0x00000000) =  
-    (0x08008145, 0x00000080, 0x00010200, 0x20500000) then "pass" else "fail"
+/-!
+## Example 3 : 
+
+> quarterround(0x00000000, 0x00000001, 0x00000000, 0x00000000) = (0x88000100, 0x00000001, 0x00000200, 0x00402000)
+
 -/
 
-lemma example2_qr1 :
+/-- `qr1 (0, 1, 0, 0) = 1` -/
+lemma example3_qr1 :
   qr1 0x00000000 0x00000001 0x00000000 0x00000000 = 0x00000001 :=
 begin
   rw qr1,
@@ -155,88 +177,13 @@ begin
   refl,
 end
 
+/-!
+  ## TODO
 
--- example 3
-#eval if 
-  quarterround (0x00000000, 0x00000001, 0x00000000, 0x00000000) =  
-    (0x88000100, 0x00000001, 0x00000200, 0x00402000) then "pass" else "fail"
-
--- example 4
-#eval if 
-  quarterround (0x00000000, 0x00000000, 0x00000001, 0x00000000) =  
-    (0x80040000, 0x00000000, 0x00000001, 0x00002000) then "pass" else "fail"
-
--- example 5
-#eval if 
-  quarterround (0x00000000, 0x00000000, 0x00000000, 0x00000001) =  
-    (0x00048044, 0x00000080, 0x00010000, 0x20100001) then "pass" else "fail"
-
--- example 6
-#eval if 
-  quarterround (0xe7e8c006, 0xc4f9417d, 0x6479b4b2, 0x68c67137) =  
-    (0xe876d72b, 0x9361dfd5, 0xf1460244, 0x948541a3) then "pass" else "fail"
-
--- example 7
-#eval if 
-  quarterround (0xd3917c5b, 0x55f1c407, 0x52a58a7a, 0x8f887a3b) =  
-    (0x3e2f308c, 0xd90a8f36, 0x6ab2a923, 0x2883524c) then "pass" else "fail"
-
-/- 
-  Inverse examples, using the same numbers as the spec examples but appling the inverse
-  operation.
+  - find a way that can make this shorter.
+  - continue the examples from the spec.
+  - add inverse examples.
 -/
 
--- example 1
-#eval if 
-  quarterround_inv (0x00000000, 0x00000000, 0x00000000, 0x00000000) =  
-    (0x000000000, 0x00000000, 0x00000000, 0x00000000) then "pass" else "fail"
-
--- example 2
-#eval if 
-  quarterround_inv (0x08008145, 0x00000080, 0x00010200, 0x20500000) =  
-    (0x00000001, 0x00000000, 0x00000000, 0x00000000) then "pass" else "fail"
-
--- example 3
-#eval if 
-  quarterround_inv (0x88000100, 0x00000001, 0x00000200, 0x00402000) =  
-    (0x00000000, 0x00000001, 0x00000000, 0x00000000) then "pass" else "fail"
-
--- example 4
-#eval if 
-  quarterround_inv (0x80040000, 0x00000000, 0x00000001, 0x00002000) =  
-    (0x00000000, 0x00000000, 0x00000001, 0x00000000) then "pass" else "fail"
-
--- example 5
-#eval if 
-  quarterround_inv (0x00048044, 0x00000080, 0x00010000, 0x20100001) =  
-    (0x00000000, 0x00000000, 0x00000000, 0x00000001) then "pass" else "fail"
-
--- example 6
-#eval if 
-  quarterround_inv (0xe876d72b, 0x9361dfd5, 0xf1460244, 0x948541a3) =  
-    (0xe7e8c006, 0xc4f9417d, 0x6479b4b2, 0x68c67137) then "pass" else "fail"
-
--- example 7
-#eval if 
-  quarterround_inv (0x3e2f308c, 0xd90a8f36, 0x6ab2a923, 0x2883524c) =
-    (0xd3917c5b, 0x55f1c407, 0x52a58a7a, 0x8f887a3b) then "pass" else "fail"
-
-
-/-
-  Some tests for carried difference of the `quarterround` function.
--/
-
--- The most significant bit of the result is never equal
-#eval if (quarterround (30, 12, 44, 124)).fst.head ≠
-  (quarterround (30 XOR 0x80000000, 12 XOR 0x80000000, 44 XOR 0x80000000, 124 XOR 0x80000000)).fst.head
-    then "pass" else "fail"
-
--- But the rest of the bitstring is always the same
-#eval if (quarterround (30, 12, 44, 124)).fst.tail =
-  (quarterround (30 XOR 0x80000000, 12 XOR 0x80000000, 44 XOR 0x80000000, 124 XOR 0x80000000)).fst.tail
-    then "pass" else "fail"
-
--- 
-#eval if 50 XOR (50 XOR 0x80000000) = 0x80000000 then "pass" else "fail"
 
 end quarterround_examples

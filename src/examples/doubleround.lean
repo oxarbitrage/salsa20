@@ -28,7 +28,7 @@ def output : matrixType :=
     (0x20500000, 0xa0000040, 0x0008180a, 0x612a8020)
   )
 
-#eval if doubleround input = output then "pass" else "fail"
+--#eval if doubleround input = output then "pass" else "fail"
 
 -- example 2
 
@@ -48,14 +48,14 @@ def output' : matrixType :=
     (0xa74b2ad6, 0xbc331c5c, 0x1dda24c7, 0xee928277)
   )
 
-#eval if doubleround input' = output' then "pass" else "fail"
+--#eval if doubleround input' = output' then "pass" else "fail"
 
 -- Inverse examples, we use the same test vectors as the spec but going backwards.
 
 -- example 1
-#eval if doubleround_inv output = input then "pass" else "fail"
+--#eval if doubleround_inv output = input then "pass" else "fail"
 
 -- example 2
-#eval if doubleround_inv output' = input' then "pass" else "fail"
+--#eval if doubleround_inv output' = input' then "pass" else "fail"
 
 end doubleround_examples

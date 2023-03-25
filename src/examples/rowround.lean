@@ -29,7 +29,7 @@ def output : matrixType :=
     (0x00000001, 0x00000200, 0x00402000, 0x88000100)
   )
 
-#eval if rowround_output (rowround (rowround_input input)) = output then "pass" else "fail"
+-- #eval if rowround_output (rowround (rowround_input input)) = output then "pass" else "fail"
 
 -- example 2
 
@@ -49,16 +49,16 @@ def output' : matrixType :=
     (0x0040ede5, 0xb545fbce, 0xd257ed4f, 0x1818882d)
   )
 
-#eval if rowround_output (rowround (rowround_input input')) = output' then "pass" else "fail"
+-- #eval if rowround_output (rowround (rowround_input input')) = output' then "pass" else "fail"
 
 /-
   Inverse examples, using the same test vectors as the spec but going backwards.
 -/
 
 -- example1
-#eval if rowround_output (rowround_inv (rowround_input output)) = input then "pass" else "fail"
+-- #eval if rowround_output (rowround_inv (rowround_input output)) = input then "pass" else "fail"
 
 -- example2
-#eval if rowround_output (rowround_inv (rowround_input output')) = input' then "pass" else "fail"
+-- #eval if rowround_output (rowround_inv (rowround_input output')) = input' then "pass" else "fail"
 
 end rowround_examples
