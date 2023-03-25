@@ -177,6 +177,98 @@ begin
   refl,
 end
 
+/-- `qr2 (0, 1, 0, 0) = 512` -/
+lemma example3_qr2 :
+  qr2 0x00000000 0x00000001 0x00000000 0x00000000 = 0x00000200 :=
+begin
+  rw qr2,
+  rw qr1,
+  repeat { rw operations.operation },
+  repeat { rw operations.operation_rhs },
+  repeat { rw operations.xor },
+  repeat { rw operations.mod },
+  repeat { rw operations.rotl },
+  rw params.max_bitvec,
+  rw params.mod,
+  rw params.word_len,
+  rw bitvec.of_nat,
+  rw bitvec.shl,
+  rw bitvec.ushr,
+  rw bitvec.fill_shr,
+  repeat { rw bitvec.of_nat },
+
+  norm_num,
+
+  refl,
+end
+
+/-- `qr3 (0, 1, 0, 0) = 4202496` -/
+lemma example3_qr3 :
+  qr3 0x00000000 0x00000001 0x00000000 0x00000000 = 0x00402000 :=
+begin
+  apply example2_qr3,
+
+  rw qr3,
+  rw qr1,
+  rw qr2,
+  rw qr1,
+  repeat { rw operations.operation },
+  repeat { rw operations.operation_rhs },
+  repeat { rw operations.xor },
+  repeat { rw operations.mod },
+  repeat { rw operations.rotl },
+  rw params.max_bitvec,
+  rw params.mod,
+  rw params.word_len,
+  rw bitvec.of_nat,
+  rw bitvec.shl,
+  rw bitvec.ushr,
+  rw bitvec.fill_shr,
+  repeat { rw bitvec.of_nat },
+
+  norm_num,
+
+  refl,
+end
+
+/-- `qr0 (0, 1, 0, 0) = 2281701632` -/
+lemma example3_qr0 :
+  qr0 0x00000000 0x00000001 0x00000000 0x00000000 = 0x88000100 :=
+begin
+  rw qr0,
+  rw qr3,
+  rw qr2,
+  rw qr1,
+  repeat { rw operations.operation },
+  repeat { rw operations.operation_rhs },
+  repeat { rw operations.xor },
+  repeat { rw operations.mod },
+  repeat { rw operations.rotl },
+  rw params.max_bitvec,
+  rw params.mod,
+  rw params.word_len,
+  rw bitvec.of_nat,
+  rw bitvec.shl,
+  rw bitvec.ushr,
+  rw bitvec.fill_shr,
+  repeat { rw bitvec.of_nat },
+
+  norm_num,
+
+  refl,
+end
+
+/-- `quarterround (0, 1, 0, 0) = (2281701632, 1, 512, 4202496)` -/
+lemma example3_quarterround : quarterround (0x00000000, 0x00000001, 0x00000000, 0x00000000) =
+    (0x88000100, 0x00000001, 0x00000200, 0x00402000) :=
+begin
+  rw quarterround,
+  rw example3_qr0,
+  rw example3_qr1,
+  rw example3_qr2,
+  rw example3_qr3,
+end
+
 /-!
   ## TODO
 
