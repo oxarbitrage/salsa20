@@ -27,34 +27,26 @@ variable [category (bitvec word_len)]
 lemma example_xor : bitvec.xor (bitvec.of_nat word_len 0xc0a8787e)
   (bitvec.of_nat word_len 0x9fd1161d) = 0x5f796e63 :=
 begin
-  rw word_len,
-  unfold bitvec.of_nat,
-  norm_num,
+  rw [word_len, bitvec.of_nat],
+  norm_num1,
   refl,
 end
 
 /-- 0xc0a8787e + 0x9fd1161d = 0x60798e9b -/
 lemma example_mod : 0xc0a8787e MOD 0x9fd1161d = 0x60798e9b :=
 begin
-  unfold operations.mod,
-  unfold params.max_bitvec,
-  rw params.mod,
-  rw word_len,
-  unfold bitvec.of_nat,
-  norm_num,
+  rw [operations.mod, params.max_bitvec, params.mod, word_len],
+  dunfold bitvec.of_nat,
+  norm_num1,
   refl,
 end
 
 /-- 0xc0a8787e <<< 5 = 0x150f0fd8 -/
 lemma example_rotl : (rotl (bitvec.of_nat word_len 0xc0a8787e) 5) = 0x150f0fd8 :=
 begin
-  unfold operations.rotl,
-  unfold bitvec.shl,
-  unfold bitvec.ushr,
-  rw word_len,
-  unfold bitvec.of_nat,
-  unfold bitvec.fill_shr,
-  norm_num,
+  rw [rotl, bitvec.shl, bitvec.ushr, bitvec.fill_shr, word_len],
+  dunfold bitvec.of_nat,
+  norm_num1,
   refl,
 end
 
@@ -65,8 +57,8 @@ lemma example_inverse_xor : bitvec.xor (bitvec.of_nat word_len 0x5f796e63)
   (bitvec.of_nat word_len 0x9fd1161d) = 0xc0a8787e :=
 begin
   rw word_len,
-  unfold bitvec.of_nat,
-  norm_num,
+  dunfold bitvec.of_nat,
+  norm_num1,
   refl,
 end
 
@@ -74,13 +66,9 @@ end
 lemma example_rotl_inv : rotl_inv (bitvec.of_nat word_len 0x150f0fd8) 5 =
   0xc0a8787e :=
 begin
-  unfold rotl_inv,
-  unfold bitvec.shl,
-  unfold bitvec.ushr,
-  rw word_len,
-  unfold bitvec.of_nat,
-  unfold bitvec.fill_shr,
-  norm_num,
+  rw [rotl_inv, bitvec.shl, bitvec.ushr, bitvec.fill_shr, word_len],
+  dunfold bitvec.of_nat,
+  norm_num1,
   refl,
 end
 
