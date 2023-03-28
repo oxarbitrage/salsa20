@@ -33,105 +33,54 @@ lemma example1_quarterround : quarterround (0x00000000, 0x00000000, 0x00000000, 
 -/
 
 /-- `qr1 (1, 0, 0, 0) = 128` -/
-lemma example2_qr1 :
-  qr1 0x00000001 0x00000000 0x00000000 0x00000000 = 0x00000080 :=
+lemma example2_qr1 : qr1 0x00000001 0x00000000 0x00000000 0x00000000 = 0x00000080 :=
 begin
-  rw qr1,
-  rw operations.operation,
-  rw operations.operation_rhs,
-  rw operations.xor,
-  rw operations.mod,
-  rw operations.rotl,
-  rw params.max_bitvec,
-  rw params.mod,
-  rw params.word_len,
-  rw bitvec.of_nat,
-  rw bitvec.shl,
-  rw bitvec.ushr,
-  rw bitvec.fill_shr,
-  repeat { rw bitvec.of_nat },
-
-  norm_num,
-
+  rw [qr1, operations.operation, operations.operation_rhs, operations.xor, operations.mod,
+    operations.rotl, params.max_bitvec, params.mod, params.word_len, bitvec.of_nat,
+    bitvec.shl, bitvec.ushr, bitvec.fill_shr],
+  dunfold bitvec.of_nat,
+  norm_num1,
   refl,
 end
 
 /-- `qr2 (1, 0, 0, 0) = 66048` -/
-lemma example2_qr2 :
-  qr2 0x00000001 0x00000000 0x00000000 0x00000000 = 0x00010200 :=
+lemma example2_qr2 : qr2 0x00000001 0x00000000 0x00000000 0x00000000 = 0x00010200 :=
 begin
-  rw qr2,
-  rw qr1,
-  repeat { rw operations.operation },
-  repeat { rw operations.operation_rhs },
-  repeat { rw operations.xor },
-  repeat { rw operations.mod },
-  repeat { rw operations.rotl },
-  rw params.max_bitvec,
-  rw params.mod,
-  rw params.word_len,
-  rw bitvec.of_nat,
-  rw bitvec.shl,
-  rw bitvec.ushr,
-  rw bitvec.fill_shr,
-  repeat { rw bitvec.of_nat },
-
+  rw [qr2, qr1],
+  repeat { 
+    rw [operations.operation, operations.operation_rhs, operations.xor, operations.mod, operations.rotl] 
+  },
+  rw [params.max_bitvec, params.mod, params.word_len, bitvec.of_nat, bitvec.shl, bitvec.ushr, bitvec.fill_shr],
+  dunfold bitvec.of_nat,
   norm_num,
-
   refl,
 end
 
 /-- `qr3 (1, 0, 0, 0) = 542113792` -/
-lemma example2_qr3 :
-  qr3 0x00000001 0x00000000 0x00000000 0x00000000 = 0x20500000 :=
+lemma example2_qr3 : qr3 0x00000001 0x00000000 0x00000000 0x00000000 = 0x20500000 :=
 begin
-  rw qr3,
-  rw qr1,
-  rw qr2,
-  rw qr1,
-  repeat { rw operations.operation },
-  repeat { rw operations.operation_rhs },
-  repeat { rw operations.xor },
-  repeat { rw operations.mod },
-  repeat { rw operations.rotl },
-  rw params.max_bitvec,
-  rw params.mod,
-  rw params.word_len,
-  rw bitvec.of_nat,
-  rw bitvec.shl,
-  rw bitvec.ushr,
-  rw bitvec.fill_shr,
-  repeat { rw bitvec.of_nat },
-
+  rw [qr3, qr1, qr2, qr1],
+  -- TODO: This is the same as `example2_qr2`
+  repeat { 
+    rw [operations.operation, operations.operation_rhs, operations.xor, operations.mod, operations.rotl] 
+  },
+  rw [params.max_bitvec, params.mod, params.word_len, bitvec.of_nat, bitvec.shl, bitvec.ushr, bitvec.fill_shr],
+  dunfold bitvec.of_nat,
   norm_num,
-
   refl,
 end
 
 /-- `qr0 (1, 0, 0, 0) = 134250821` -/
-lemma example2_qr0 :
-  qr0 0x00000001 0x00000000 0x00000000 0x00000000 = 0x08008145 :=
+lemma example2_qr0 : qr0 0x00000001 0x00000000 0x00000000 0x00000000 = 0x08008145 :=
 begin
-  rw qr0,
-  rw qr3,
-  rw qr2,
-  rw qr1,
-  repeat { rw operations.operation },
-  repeat { rw operations.operation_rhs },
-  repeat { rw operations.xor },
-  repeat { rw operations.mod },
-  repeat { rw operations.rotl },
-  rw params.max_bitvec,
-  rw params.mod,
-  rw params.word_len,
-  rw bitvec.of_nat,
-  rw bitvec.shl,
-  rw bitvec.ushr,
-  rw bitvec.fill_shr,
-  repeat { rw bitvec.of_nat },
-
+  rw [qr0, qr3, qr2, qr1],
+  -- TODO: This is the same as `example2_qr2`
+  repeat { 
+    rw [operations.operation, operations.operation_rhs, operations.xor, operations.mod, operations.rotl] 
+  },
+  rw [params.max_bitvec, params.mod, params.word_len, bitvec.of_nat, bitvec.shl, bitvec.ushr, bitvec.fill_shr],
+  dunfold bitvec.of_nat,
   norm_num,
-
   refl,
 end
 
@@ -139,11 +88,7 @@ end
 lemma example2_quarterround : quarterround (0x00000001, 0x00000000, 0x00000000, 0x00000000) =
     (0x08008145, 0x00000080, 0x00010200, 0x20500000) :=
 begin
-  rw quarterround,
-  rw example2_qr0,
-  rw example2_qr1,
-  rw example2_qr2,
-  rw example2_qr3,
+  rw [quarterround, example2_qr0, example2_qr1, example2_qr2, example2_qr3],
 end
 
 /-!
@@ -154,105 +99,56 @@ end
 -/
 
 /-- `qr1 (0, 1, 0, 0) = 1` -/
-lemma example3_qr1 :
-  qr1 0x00000000 0x00000001 0x00000000 0x00000000 = 0x00000001 :=
+lemma example3_qr1 : qr1 0x00000000 0x00000001 0x00000000 0x00000000 = 0x00000001 :=
 begin
-  rw qr1,
-  rw operations.operation,
-  rw operations.operation_rhs,
-  rw operations.xor,
-  rw operations.mod,
-  rw operations.rotl,
-  rw params.max_bitvec,
-  rw params.mod,
-  rw params.word_len,
-  rw bitvec.of_nat,
-  rw bitvec.shl,
-  rw bitvec.ushr,
-  rw bitvec.fill_shr,
-  repeat { rw bitvec.of_nat },
-
-  norm_num,
-
+  -- TODO: this is the exact same proof as `example2_qr1`.
+  rw [qr1, operations.operation, operations.operation_rhs, operations.xor, operations.mod,
+    operations.rotl, params.max_bitvec, params.mod, params.word_len, bitvec.of_nat,
+    bitvec.shl, bitvec.ushr, bitvec.fill_shr],
+  dunfold bitvec.of_nat,
+  norm_num1,
   refl,
 end
 
 /-- `qr2 (0, 1, 0, 0) = 512` -/
-lemma example3_qr2 :
-  qr2 0x00000000 0x00000001 0x00000000 0x00000000 = 0x00000200 :=
+lemma example3_qr2 : qr2 0x00000000 0x00000001 0x00000000 0x00000000 = 0x00000200 :=
 begin
-  rw qr2,
-  rw qr1,
-  repeat { rw operations.operation },
-  repeat { rw operations.operation_rhs },
-  repeat { rw operations.xor },
-  repeat { rw operations.mod },
-  repeat { rw operations.rotl },
-  rw params.max_bitvec,
-  rw params.mod,
-  rw params.word_len,
-  rw bitvec.of_nat,
-  rw bitvec.shl,
-  rw bitvec.ushr,
-  rw bitvec.fill_shr,
-  repeat { rw bitvec.of_nat },
-
+  -- TODO: this is the exact same proof as `example2_qr2`.
+  rw [qr2, qr1],
+  repeat { 
+    rw [operations.operation, operations.operation_rhs, operations.xor, operations.mod, operations.rotl] 
+  },
+  rw [params.max_bitvec, params.mod, params.word_len, bitvec.of_nat, bitvec.shl, bitvec.ushr, bitvec.fill_shr],
+  dunfold bitvec.of_nat,
   norm_num,
-
   refl,
 end
 
 /-- `qr3 (0, 1, 0, 0) = 4202496` -/
-lemma example3_qr3 :
-  qr3 0x00000000 0x00000001 0x00000000 0x00000000 = 0x00402000 :=
+lemma example3_qr3 : qr3 0x00000000 0x00000001 0x00000000 0x00000000 = 0x00402000 :=
 begin
-  rw qr3,
-  rw qr1,
-  rw qr2,
-  rw qr1,
-  repeat { rw operations.operation },
-  repeat { rw operations.operation_rhs },
-  repeat { rw operations.xor },
-  repeat { rw operations.mod },
-  repeat { rw operations.rotl },
-  rw params.max_bitvec,
-  rw params.mod,
-  rw params.word_len,
-  rw bitvec.of_nat,
-  rw bitvec.shl,
-  rw bitvec.ushr,
-  rw bitvec.fill_shr,
-  repeat { rw bitvec.of_nat },
-
+  -- TODO: this is the exact same proof as `example2_qr3`.
+  rw [qr3, qr1, qr2, qr1],
+  repeat { 
+    rw [operations.operation, operations.operation_rhs, operations.xor, operations.mod, operations.rotl] 
+  },
+  rw [params.max_bitvec, params.mod, params.word_len, bitvec.of_nat, bitvec.shl, bitvec.ushr, bitvec.fill_shr],
+  dunfold bitvec.of_nat,
   norm_num,
-
   refl,
 end
 
 /-- `qr0 (0, 1, 0, 0) = 2281701632` -/
-lemma example3_qr0 :
-  qr0 0x00000000 0x00000001 0x00000000 0x00000000 = 0x88000100 :=
+lemma example3_qr0 : qr0 0x00000000 0x00000001 0x00000000 0x00000000 = 0x88000100 :=
 begin
-  rw qr0,
-  rw qr3,
-  rw qr2,
-  rw qr1,
-  repeat { rw operations.operation },
-  repeat { rw operations.operation_rhs },
-  repeat { rw operations.xor },
-  repeat { rw operations.mod },
-  repeat { rw operations.rotl },
-  rw params.max_bitvec,
-  rw params.mod,
-  rw params.word_len,
-  rw bitvec.of_nat,
-  rw bitvec.shl,
-  rw bitvec.ushr,
-  rw bitvec.fill_shr,
-  repeat { rw bitvec.of_nat },
-
+  -- TODO: This is the same as `example2_qr0`
+  rw [qr0, qr3, qr2, qr1],
+  repeat { 
+    rw [operations.operation, operations.operation_rhs, operations.xor, operations.mod, operations.rotl] 
+  },
+  rw [params.max_bitvec, params.mod, params.word_len, bitvec.of_nat, bitvec.shl, bitvec.ushr, bitvec.fill_shr],
+  dunfold bitvec.of_nat,
   norm_num,
-
   refl,
 end
 
@@ -260,11 +156,7 @@ end
 lemma example3_quarterround : quarterround (0x00000000, 0x00000001, 0x00000000, 0x00000000) =
     (0x88000100, 0x00000001, 0x00000200, 0x00402000) :=
 begin
-  rw quarterround,
-  rw example3_qr0,
-  rw example3_qr1,
-  rw example3_qr2,
-  rw example3_qr3,
+  rw [quarterround, example3_qr0, example3_qr1, example3_qr2, example3_qr3],
 end
 
 /-!
@@ -274,6 +166,5 @@ end
   - continue the examples from the spec.
   - add inverse examples.
 -/
-
 
 end quarterround_examples

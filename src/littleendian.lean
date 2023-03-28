@@ -2,11 +2,13 @@ import types
 
 import category_theory.category.basic
 import category_theory.core
+import data.nat.digits
 
 open params
 open types
 
 open category_theory
+open nat
 
 namespace littleendian
 
@@ -18,36 +20,29 @@ variables [category (bitvec word_len)]
   The `littleendian` function and its inverse.
 -/
 
-/-- If b = (b₀, b₁, b₂, b₃) then
-littleendian(b) = b₀ + (2^8)*b₁ + (2^16)*b₂ + (2^24)*b₃ -/
-def littleendian (b : vecType) : bitvec word_len := 
-  bitvec.of_nat word_len (
-    b.fst.to_nat + (2^8) * b.snd.fst.to_nat + (2^16) * b.snd.snd.fst.to_nat + (2^24) * b.snd.snd.snd.to_nat
-  )
+/- Needed for `littleendian`, `of_digits`. -/
+variables [semiring (list ℕ)]
 
-/--
-  The inverse of little-endian is indeed the function that sends a word (32 bits) 
-  back to the sequence of 4 bytes in a little endian way, so the least significant
-  byte goes first, and the most significant byte goes last. 
-  So it maps 𝑤 to w & 0xff, (w >> 8) & 0xff, (w >> 16) & 0xff, (w >> 24) & 0xff
-
-  https://crypto.stackexchange.com/a/22314
+/-- Lean library has `of_digits` code for this so we use it. 
+TODO : Explain why it works with base 256.
 -/
-def littleendian_inv (w : bitvec word_len) : vecType :=
-  (
-    bitvec.of_nat word_len $ bitvec.to_nat $ bitvec.and w 0xff,
-    bitvec.of_nat word_len $ bitvec.to_nat $ (bitvec.ushr w 8).and 0xff,
-    bitvec.of_nat word_len $ bitvec.to_nat $ (bitvec.ushr w 16).and 0xff, 
-    bitvec.of_nat word_len $ bitvec.to_nat $ (bitvec.ushr w 24).and 0xff
-  )
+def littleendian (l : list ℕ) : list ℕ := of_digits 256 l
 
-/- Just some notation for inverses. -/
+/-- Lean library has `digits` code for this so we use it. 
+TODO : Explain why it works with base 256.
+-/
+def littleendian_inv (l : list ℕ) : list ℕ := digits 256 (l.nth 0).iget
+
+/-- Define a category for functions from `list ℕ` to `list ℕ`-/
+variable [category (list ℕ → list ℕ)]
+
+/- Just some notation for inverse. -/
 local notation `littleendian⁻¹` := littleendian_inv
 
-/- TODO: FIX, does not work because the return type is different for each function.
-/-- The `littleendian` function is invertible. -/
+/-- We assume there is an isomorphism between `littleindian` and `littleendian⁻¹`.
+In other words, `littleendian` function is invertible and the inverse is `littleendian⁻¹`. -/
 lemma littleendian_is_inv (I : littleendian ≅ littleendian⁻¹) : I.hom ≫ I.inv = 𝟙 littleendian :=
   by rw [iso.hom_inv_id]
--/
+
 
 end littleendian
