@@ -24,52 +24,26 @@ variable [category (bitvec word_len)]
 -/
 
 /-- 0xc0a8787e ⊕ 0x9fd1161d = 0x5f796e63 -/
-lemma example_xor : bitvec.xor (bitvec.of_nat word_len 0xc0a8787e)
-  (bitvec.of_nat word_len 0x9fd1161d) = 0x5f796e63 :=
-begin
-  rw [word_len, bitvec.of_nat],
-  norm_num1,
-  refl,
-end
+lemma example_xor : xor (0xc0a8787e, 0x9fd1161d) = 0x5f796e63 := by refl
 
 /-- 0xc0a8787e + 0x9fd1161d = 0x60798e9b -/
-lemma example_mod : 0xc0a8787e MOD 0x9fd1161d = 0x60798e9b :=
+lemma example_mod : mod (0xc0a8787e, 0x9fd1161d) = 0x60798e9b :=
 begin
   rw [operations.mod, params.max_bitvec, params.mod, word_len],
-  dunfold bitvec.of_nat,
+  unfold bitvec.of_nat,
   norm_num1,
   refl,
 end
 
 /-- 0xc0a8787e <<< 5 = 0x150f0fd8 -/
-lemma example_rotl : (rotl (bitvec.of_nat word_len 0xc0a8787e) 5) = 0x150f0fd8 :=
-begin
-  rw [rotl, bitvec.shl, bitvec.ushr, bitvec.fill_shr, word_len],
-  dunfold bitvec.of_nat,
-  norm_num1,
-  refl,
-end
+lemma example_rotl : rotl5 0xc0a8787e = 0x150f0fd8 := by refl
 
 /-! # Inverse examples -/
 
 /-- 0x5f796e63 ⊕ 0x9fd1161d = 0xc0a8787e -/
-lemma example_inverse_xor : bitvec.xor (bitvec.of_nat word_len 0x5f796e63)
-  (bitvec.of_nat word_len 0x9fd1161d) = 0xc0a8787e :=
-begin
-  rw word_len,
-  dunfold bitvec.of_nat,
-  norm_num1,
-  refl,
-end
+lemma example_inverse_xor : xor (0x5f796e63, 0x9fd1161d) = 0xc0a8787e := by refl
 
 /-- 0x150f0fd8 <<<⁻¹ 5 = 0xc0a8787e -/
-lemma example_rotl_inv : rotl_inv (bitvec.of_nat word_len 0x150f0fd8) 5 =
-  0xc0a8787e :=
-begin
-  rw [rotl_inv, bitvec.shl, bitvec.ushr, bitvec.fill_shr, word_len],
-  dunfold bitvec.of_nat,
-  norm_num1,
-  refl,
-end
+lemma example_rotl_inv : rotl5_inv 0x150f0fd8 = 0xc0a8787e := by refl
 
 end operations_examples

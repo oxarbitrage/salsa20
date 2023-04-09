@@ -27,6 +27,10 @@ Converts a bitvec into another bitvec of the same length by appling rotation ope
 - Input and output objects of any rotate operations are isomorphic.
 -/
 
+/-- The rotate operation in a bitvec with a shift of 5. Only used in an example. -/
+def rotl5 : bitvec word_len → bitvec word_len
+| a := (a.shl 5).or (a.ushr (word_len - 5))
+
 /-- The rotate operation in a bitvec with a shift of 7. -/
 def rotl7 : bitvec word_len → bitvec word_len
 | a := (a.shl 7).or (a.ushr (word_len - 7))
@@ -43,51 +47,52 @@ def rotl13 : bitvec word_len → bitvec word_len
 def rotl18 : bitvec word_len → bitvec word_len
 | a := (a.shl 18).or (a.ushr (word_len - 18))
 
-/-- Inverse of the `rotl7` opoeration. -/
+/-- Inverse of the `rotl5` operation. Only used in an example. -/
+def rotl5_inv : bitvec word_len → bitvec word_len
+| a := (a.ushr 5).or (a.shl (word_len - 5))
+
+/-- Inverse of the `rotl7` operation. -/
 def rotl7_inv : bitvec word_len → bitvec word_len
 | a := (a.ushr 7).or (a.shl (word_len - 7))
 
-/-- Inverse of the `rotl9` opoeration. -/
+/-- Inverse of the `rotl9` operation. -/
 def rotl9_inv : bitvec word_len → bitvec word_len
 | a := (a.ushr 9).or (a.shl (word_len - 9))
 
-/-- Inverse of the `rotl13` opoeration. -/
+/-- Inverse of the `rotl13` operation. -/
 def rotl13_inv : bitvec word_len → bitvec word_len
 | a := (a.ushr 13).or (a.shl (word_len - 13))
 
-/-- Inverse of the `rotl18` opoeration. -/
+/-- Inverse of the `rotl18` operation. -/
 def rotl18_inv : bitvec word_len → bitvec word_len
 | a := (a.ushr 18).or (a.shl (word_len - 18))
 
 -- Notation for the inverses.
+local notation `rotl5⁻¹` := rotl5_inv
 local notation `rotl7⁻¹` := rotl7_inv
 local notation `rotl9⁻¹` := rotl9_inv
 local notation `rotl13⁻¹` := rotl13_inv
 local notation `rotl18⁻¹` := rotl18_inv
 
+/-- `rotl5⁻¹` after `rotl5` produces the identity given isomorphism.  -/
+lemma rotl5_inv_is_inverse_of_rotl5 (I : rotl5 ≅ rotl5⁻¹): I.hom ≫ I.inv = 𝟙 rotl5 := 
+  by exact I.hom_inv_id'
+
 /-- `rotl7⁻¹` after `rotl7` produces the identity given isomorphism.  -/
-lemma rotl7_inv_is_inverse_of_rotl7 (I : rotl7 ≅ rotl7⁻¹): I.hom ≫ I.inv = 𝟙 rotl7 :=
-begin
-  exact I.hom_inv_id',
-end
+lemma rotl7_inv_is_inverse_of_rotl7 (I : rotl7 ≅ rotl7⁻¹): I.hom ≫ I.inv = 𝟙 rotl7 := 
+  by exact I.hom_inv_id'
 
 /-- `rotl9⁻¹` after `rotl9` produces the identity given isomorphism.  -/
-lemma rotl9_inv_is_inverse_of_rotl9 (I : rotl9 ≅ rotl9⁻¹): I.hom ≫ I.inv = 𝟙 rotl9 :=
-begin
-  exact I.hom_inv_id',
-end
+lemma rotl9_inv_is_inverse_of_rotl9 (I : rotl9 ≅ rotl9⁻¹): I.hom ≫ I.inv = 𝟙 rotl9 := 
+  by exact I.hom_inv_id'
 
 /-- `rotl13⁻¹` after `rotl13` produces the identity given isomorphism.  -/
-lemma rotl13_inv_is_inverse_of_rotl13 (I : rotl13 ≅ rotl13⁻¹): I.hom ≫ I.inv = 𝟙 rotl13 :=
-begin
-  exact I.hom_inv_id',
-end
+lemma rotl13_inv_is_inverse_of_rotl13 (I : rotl13 ≅ rotl13⁻¹): I.hom ≫ I.inv = 𝟙 rotl13 := 
+  by exact I.hom_inv_id'
 
 /-- `rotl18⁻¹` after `rotl18` produces the identity given isomorphism.  -/
 lemma rotl18_inv_is_inverse_of_rotl18 (I : rotl18 ≅ rotl18⁻¹): I.hom ≫ I.inv = 𝟙 rotl18 :=
-begin
-  exact I.hom_inv_id',
-end
+  by exact I.hom_inv_id'
 
 /-!
 ## Add
