@@ -12,71 +12,114 @@ namespace operations
 variable [category (bitvec word_len)]
 
 /-!
-  # Operations
+# Operations
 
-  Building blocks operations.
+Building blocks operations.
 
-  The salsa20 cipher is built fully with add-rotate-XOR operations.
+The salsa20 cipher is built fully with add-rotate-XOR operations.
 
-  ## Building blocks operations and the relation with their inverses
+## Rotate
+
+Converts a bitvec into another bitvec of the same length by appling rotation operations at the bit level. 
+
+- [Example implementation](https://github.com/alexwebr/salsa20/blob/master/salsa20.c#L6)
+- [Diagram](https://q.uiver.app/?q=WzAsMixbMCwwLCJhIl0sWzAsMywiYiJdLFswLDEsInJvdGwiLDIseyJjdXJ2ZSI6Mn1dLFsxLDAsInJvdGxeey0xfSIsMix7ImN1cnZlIjoyfV1d)
+- Input and output objects of any rotate operations are isomorphic.
 -/
 
-/-- Rotate operation implemented as https://github.com/alexwebr/salsa20/blob/master/salsa20.c#L6 -/
-def rotl : bitvec word_len → ℕ → bitvec word_len
-| a shift := (a.shl shift).or (a.ushr (word_len - shift))
+/-- The rotate operation in a bitvec with a shift of 7. -/
+def rotl7 : bitvec word_len → bitvec word_len
+| a := (a.shl 7).or (a.ushr (word_len - 7))
 
-/-- Inverse of the rotate operation (`rotl`). -/
-def rotl_inv : bitvec word_len → ℕ → bitvec word_len
-| a shift := (a.ushr shift).or (a.shl (word_len - shift))
+/-- The rotate operation in a bitvec with a shift of 9. -/
+def rotl9 : bitvec word_len → bitvec word_len
+| a := (a.shl 9).or (a.ushr (word_len - 9))
 
-local notation `rotl⁻¹` := rotl_inv
+/-- The rotate operation in a bitvec with a shift of 13. -/
+def rotl13 : bitvec word_len → bitvec word_len
+| a := (a.shl 13).or (a.ushr (word_len - 13))
 
-/-- `rotl⁻¹` after `rotl` produces the identity.  -/
-lemma rotl_inv_is_inverse_of_rotl (I : rotl ≅ rotl⁻¹): I.hom ≫ I.inv = 𝟙 rotl :=
+/-- The rotate operation in a bitvec with a shift of 18. -/
+def rotl18 : bitvec word_len → bitvec word_len
+| a := (a.shl 18).or (a.ushr (word_len - 18))
+
+/-- Inverse of the `rotl7` opoeration. -/
+def rotl7_inv : bitvec word_len → bitvec word_len
+| a := (a.ushr 7).or (a.shl (word_len - 7))
+
+/-- Inverse of the `rotl9` opoeration. -/
+def rotl9_inv : bitvec word_len → bitvec word_len
+| a := (a.ushr 9).or (a.shl (word_len - 9))
+
+/-- Inverse of the `rotl13` opoeration. -/
+def rotl13_inv : bitvec word_len → bitvec word_len
+| a := (a.ushr 13).or (a.shl (word_len - 13))
+
+/-- Inverse of the `rotl18` opoeration. -/
+def rotl18_inv : bitvec word_len → bitvec word_len
+| a := (a.ushr 18).or (a.shl (word_len - 18))
+
+-- Notation for the inverses.
+local notation `rotl7⁻¹` := rotl7_inv
+local notation `rotl9⁻¹` := rotl9_inv
+local notation `rotl13⁻¹` := rotl13_inv
+local notation `rotl18⁻¹` := rotl18_inv
+
+/-- `rotl7⁻¹` after `rotl7` produces the identity given isomorphism.  -/
+lemma rotl7_inv_is_inverse_of_rotl7 (I : rotl7 ≅ rotl7⁻¹): I.hom ≫ I.inv = 𝟙 rotl7 :=
 begin
   exact I.hom_inv_id',
 end
 
-/-- Bitwise modulo addition implemented as https://stackoverflow.com/a/19760152 -/
-def mod : bitvec word_len → bitvec word_len → bitvec word_len
-| a b := (bitvec.and (a + b) (max_bitvec))
+/-- `rotl9⁻¹` after `rotl9` produces the identity given isomorphism.  -/
+lemma rotl9_inv_is_inverse_of_rotl9 (I : rotl9 ≅ rotl9⁻¹): I.hom ≫ I.inv = 𝟙 rotl9 :=
+begin
+  exact I.hom_inv_id',
+end
+
+/-- `rotl13⁻¹` after `rotl13` produces the identity given isomorphism.  -/
+lemma rotl13_inv_is_inverse_of_rotl13 (I : rotl13 ≅ rotl13⁻¹): I.hom ≫ I.inv = 𝟙 rotl13 :=
+begin
+  exact I.hom_inv_id',
+end
+
+/-- `rotl18⁻¹` after `rotl18` produces the identity given isomorphism.  -/
+lemma rotl18_inv_is_inverse_of_rotl18 (I : rotl18 ≅ rotl18⁻¹): I.hom ≫ I.inv = 𝟙 rotl18 :=
+begin
+  exact I.hom_inv_id',
+end
+
+/-!
+## Add
+
+Converts a pair of bitvecs into a single bitvec of the same length by appling bitwise modulo addition. 
+
+- [Example implementation](https://stackoverflow.com/a/19760152)
+- [Diagram](https://q.uiver.app/?q=WzAsMixbMCwwLCIoYSwgYikiXSxbMCwzLCJjIl0sWzAsMSwibW9kIl1d)
+- Input and output objects of the mod operation are not isomoprhic. No inverse exist.
+-/
+
+/-- Modulo addition operation. -/
+@[simp] def mod : (bitvec word_len × bitvec word_len) → bitvec word_len
+| (a, b) := (bitvec.and (a + b) (max_bitvec))
+
+/-!
+## XOR
+
+Converts a pair of bitvecs into a single bitvec of the same length by appling bitwise XOR. 
+
+- [Diagram](https://q.uiver.app/?q=WzAsMixbMCwwLCIoYSwgYikiXSxbMCwzLCJjIl0sWzAsMSwibW9kIl1d)
+- Input and output objects of the xor operation are isomoprhic. XOR is its own inverse.
+-/
 
 /-- The salsa20 xor operation is just bitwise xor. -/
-def xor : bitvec word_len → bitvec word_len → bitvec word_len
-| a b := a.xor b
+def xor : (bitvec word_len × bitvec word_len) → bitvec word_len
+| (a, b) := a.xor b
 
 /-- `xor` after `xor` produces the identity.  -/
 lemma xor_is_inverse_of_xor (I : xor ≅ xor): I.hom ≫ I.inv = 𝟙 xor :=
 begin
   exact I.hom_inv_id',
 end
-
--- Some notation:
-notation  ` ZERO `        := bitvec.zero word_len
-infix     ` ROTL `  : 90  := rotl
-infix     ` ROTL⁻¹ `: 90  := rotl_inv
-
-infix     ` MOD `   : 90  := mod
-
-infix     ` XOR `   : 90  := xor
-
-/-! ## Operation as a combination of building block operations -/
-
-/-- We split the salsa20 operations in 2 terms, one at each side of the XOR. This is the right hand side. -/
-def operation_rhs (b c : bitvec word_len) (shift : ℕ ): bitvec word_len := (b MOD c) ROTL shift
-
-/-- With the split done in `operation_rhs`, an operation is just a XOR of 2 bitvectors. -/
-def operation : bitvec word_len → bitvec word_len → bitvec word_len
-| a b := a XOR b
-
-/-! ## Operation lemmas -/
-
--- some notation for operations:
-infix   ` OP `   : 90   := operation
-notation `OP_RHS`       := operation_rhs
-
-/-- OP is just XOR, so each operation is its own inverse. -/
-lemma operation_inverse (I : operation ≅ operation) : I.hom ≫ I.inv = 𝟙 operation :=
-  by rw [iso.hom_inv_id]
 
 end operations

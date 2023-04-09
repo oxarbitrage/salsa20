@@ -10,15 +10,100 @@ open types
 
 open category_theory
 
+open_locale category_theory.Type
+
 namespace quarterround
 
 variables [category (bitvec word_len)]
 
 /-!
-  # Quarterround
+# Quarterround
 
-  The `quarterround` function, its pieces and the relation with the inverses.
+The `quarterround` function takes a tuple of 4 bitvecs and return a tuple of the same type
+after applying the diagram.
+
+- [Diagram](https://q.uiver.app/?q=WzAsMjYsWzUsMCwiKHkwLCB5MSwgeTIsIHkzKSJdLFsxLDEsInkwIl0sWzMsMSwieTEiXSxbNywxLCJ5MiJdLFs5LDEsInkzIl0sWzUsMiwiKHkwLCB5MykiXSxbNSw0LCJtb2RyZXMxIl0sWzMsNSwiKHkxLCByb3RscmVzMSkiXSxbNyw1LCJyb3RscmVzMSJdLFszLDcsInoxIixbMzAwLDYwLDYwLDFdXSxbMSw4LCIoejEsIHkwKSJdLFsxLDEwLCJtb2RyZXMyIl0sWzgsMTAsInJvdGxyZXMyIl0sWzEwLDgsIih5Miwgcm90bHJlczIpIl0sWzgsOCwiejIiLFszMDAsNjAsNjAsMV1dLFsxMiw2LCIoejIsIHoxKSJdLFsxMiw4LCJtb2RyZXMzIl0sWzE1LDgsInJvdGxyZXMzIl0sWzE1LDYsIih5Mywgcm90bHJlczMpIl0sWzE3LDYsInozIixbMzAwLDYwLDYwLDFdXSxbMTIsMTEsIih6MywgejIpIl0sWzksMTEsIm1vZHJlczAiXSxbNiwxMSwicm90bHJlczAiXSxbMCwxMSwiKHkwLCByb3RscmVzMCkiXSxbMCwxMywiejAiLFszMDAsNjAsNjAsMV1dLFs1LDEzLCIoejAsIHoxLCB6MiwgejMpIixbMjQwLDYwLDYwLDFdXSxbMCwxLCJmaXJzdCIsMV0sWzAsMiwic2Vjb25kIiwxXSxbMCwzLCJ0aGlyZCIsMV0sWzAsNCwiZm91cnRoIiwxXSxbNCw1LCJidWlsZG1vZDEiLDFdLFsxLDUsImJ1aWxkbW9kMSIsMV0sWzUsNiwibW9kIl0sWzIsNywiYnVpbGR4b3IxIiwxXSxbOCw3LCJidWlsZHhvcjEiLDFdLFs3LDksInhvciJdLFsxLDEwLCJidWlsZG1vZDIiLDFdLFsxMCwxMV0sWzMsMTMsIiIsMSx7ImN1cnZlIjotNH1dLFsxMywxNCwieG9yIiwyLHsibGV2ZWwiOjJ9XSxbNiw4LCJyb3RsNyIsMV0sWzksMTAsImJ1aWxkbW9kMiIsMV0sWzExLDEyLCJyb3RsMTMiLDFdLFsxMiwxMywiIiwxLHsiY3VydmUiOjR9XSxbMTQsMTVdLFs5LDE1XSxbMTUsMTYsIm1vZCIsMix7ImxldmVsIjoyfV0sWzE2LDE3LCJyb3RsMTMiLDJdLFsxNywxOF0sWzQsMThdLFsxOCwxOSwieG9yIiwyLHsibGV2ZWwiOjJ9XSxbMTksMjAsIiIsMix7ImN1cnZlIjotM31dLFsxNCwyMF0sWzIwLDIxLCJtb2QiLDIseyJsZXZlbCI6Mn1dLFsyMSwyMiwicm90bDE4IiwyXSxbMjIsMjNdLFsxLDIzXSxbMjMsMjRdLFsyNCwyNSwiIiwyLHsiY29sb3VyIjpbMjQwLDYwLDYwXX1dLFsxNCwyNSwiIiwyLHsiY3VydmUiOjQsImNvbG91ciI6WzI0MCw2MCw2MF19XSxbMTksMjUsIiIsMix7ImNvbG91ciI6WzI0MCw2MCw2MF19XSxbOSwyNSwiIiwyLHsiY29sb3VyIjpbMjQwLDYwLDYwXX1dLFswLDI1LCJxdWFydGVycm91bmQiLDIseyJjdXJ2ZSI6MiwiY29sb3VyIjpbMCw2MCw2MF0sInN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRhc2hlZCJ9fX0sWzAsNjAsNjAsMV1dLFsyNSwwLCJxdWFydGVycm91bmReey0xfSIsMix7ImN1cnZlIjoyLCJjb2xvdXIiOlswLDYwLDYwXSwic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fSxbMCw2MCw2MCwxXV1d)
+
 -/
+
+/-- Return `y0` given an input vector `(y0, y1, y2, y3)`. -/
+def first : vecType → bitvec word_len
+| input := input.fst
+
+/-- Return `y1` given an input vector `(y0, y1, y2, y3)`. -/
+def second : vecType → bitvec word_len
+| input := input.snd.fst
+
+/-- Return `y2` given an input vector `(y0, y1, y2, y3)`. -/
+def third : vecType → bitvec word_len
+| input := input.snd.snd.fst
+
+/-- Return `y3` given an input vector `(y0, y1, y2, y3)`. -/
+def fourth : vecType → bitvec word_len
+| input := input.snd.snd.snd
+
+/-- Return `(y0, y3)` given an input vector `(y0, y1, y2, y3)`. -/
+def buildmod1 : vecType → (bitvec word_len × bitvec word_len)
+| input := (first input, fourth input)
+
+/-- Return `(y1, rotlres)` given an input vector `(y0, y1, y2, y3)` and `rotlres`. -/
+def buildxor1 : vecType → bitvec word_len → (bitvec word_len × bitvec word_len)
+| input b := ((second input), b)
+
+/-- z₁ = y₁ ⊕ ((y₀ + y₃) <<< 7) -/
+def z1 (input : vecType) := (↾ buildmod1) ≫ mod ≫ rotl7 ≫ (↾ buildxor1 input) ≫ xor
+
+local notation `z1Type` := vecType ⟶ bitvec word_len
+
+/-- `z1` of `(0, 0, 0, 0)` is `0` -/
+lemma z1_zero : z1 (0, 0, 0, 0) (0, 0, 0, 0) = 0 := by refl
+
+/-- Return `(z1, y0)` given an input vector `(y0, y1, y2, y3)` and `z1`. -/
+def buildmod2 : vecType → z1Type → (bitvec word_len × bitvec word_len)
+| input z1 := (z1 input, first input)
+
+/-- Return `(y2, rotlres)` given an input vector `(y0, y1, y2, y3)` and `rotlres`. -/
+def buildxor2 : vecType → bitvec word_len → (bitvec word_len × bitvec word_len)
+| input b := ((third input), b)
+
+/-- z₂ = y₂ ⊕ ((z₁ + y₀) <<< 9) -/
+def z2 (input : vecType) := (↾ buildmod2 input) ≫ mod ≫ rotl9 ≫ (buildxor2 input) ≫ xor
+
+/-- `z2` of `(0, 0, 0, 0)` is `0` -/
+lemma z2_zero : z2 (0, 0, 0, 0) (z1 (0, 0, 0, 0)) = 0 := by refl
+
+local notation `z2Type` := vecType → bitvec word_len ⟶ bitvec word_len
+
+/-- Return `(z2, z1)` given an input vector `(y0, y1, y2, y3)`, `z2` and `z1`. -/
+def buildmod3 : vecType → z2Type → z1Type → (bitvec word_len × bitvec word_len)
+| input z2 z1 := (z2 z1, z1 input)
+
+/-- Return `(y3, rotlres)` given an input vector `(y0, y1, y2, y3)` and `rotlres`. -/
+def buildxor3 : vecType → bitvec word_len → (bitvec word_len × bitvec word_len)
+| input b := ((fourth input), b)
+
+/-- z₃ = y₃ ⊕ ((z₂ + z₁) <<< 13) -/
+def z3 (input : vecType) := (↾ buildmod3 input (z2 input)) ≫ mod ≫ rotl9 ≫ (buildxor3 input) ≫ xor
+
+/-- `z3` of `(0, 0, 0, 0)` is `0` -/
+lemma z3_zero : z3 (0, 0, 0, 0) (z1 (0, 0, 0, 0)) = 0 := by refl
+
+local notation `z3Type` := z1Type ⟶ bitvec word_len
+
+/-- Return `(z3, z2)` given an input vector `(y0, y1, y2, y3)`, `z3` and `z2`. -/
+def buildmod0 : vecType → z3Type → z2Type → (bitvec word_len × bitvec word_len)
+| input z3 z2 := (z3 (z1 input), (z2 first))
+
+/-- Return `(y0, rotlres)` given an input vector `(y0, y1, y2, y3)` and `rotlres`. -/
+def buildxor0 : vecType → bitvec word_len → (bitvec word_len × bitvec word_len)
+| input b := ((first input), b)
+
+/-- z₀ = y₀ ⊕ ((z₃ + z₂) <<< 18) -/
+def z0 (input : vecType) := (↾ buildmod0 input (z2 input)) ≫ mod ≫ rotl9 ≫ (buildxor0 input) ≫ xor
+
+def quarterround (input : vecType) := (z0, z1, z2, z3)
+
+/-
 
 /-! ## Definitions -/
 
@@ -121,5 +206,7 @@ lemma qr_pieces_are_all_invertible (I0 : qr0 ≅ qr0⁻¹) (I1 : qr1 ≅ qr1⁻�
 begin
   simp only [iso.hom_inv_id, eq_self_iff_true, and_self],
 end
+
+-/
 
 end quarterround
