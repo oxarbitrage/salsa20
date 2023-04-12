@@ -32,19 +32,19 @@ def rotl5 : bitvec word_len → bitvec word_len
 | a := (a.shl 5).or (a.ushr (word_len - 5))
 
 /-- The rotate operation in a bitvec with a shift of 7. -/
-def rotl7 : bitvec word_len → bitvec word_len
+@[simp] def rotl7 : bitvec word_len → bitvec word_len
 | a := (a.shl 7).or (a.ushr (word_len - 7))
 
 /-- The rotate operation in a bitvec with a shift of 9. -/
-def rotl9 : bitvec word_len → bitvec word_len
+@[simp] def rotl9 : bitvec word_len → bitvec word_len
 | a := (a.shl 9).or (a.ushr (word_len - 9))
 
 /-- The rotate operation in a bitvec with a shift of 13. -/
-def rotl13 : bitvec word_len → bitvec word_len
+@[simp] def rotl13 : bitvec word_len → bitvec word_len
 | a := (a.shl 13).or (a.ushr (word_len - 13))
 
 /-- The rotate operation in a bitvec with a shift of 18. -/
-def rotl18 : bitvec word_len → bitvec word_len
+@[simp] def rotl18 : bitvec word_len → bitvec word_len
 | a := (a.shl 18).or (a.ushr (word_len - 18))
 
 /-- Inverse of the `rotl5` operation. Only used in an example. -/
@@ -118,7 +118,7 @@ Converts a pair of bitvecs into a single bitvec of the same length by appling bi
 -/
 
 /-- The salsa20 xor operation is just bitwise xor. -/
-def xor : (bitvec word_len × bitvec word_len) → bitvec word_len
+@[simp] def xor : (bitvec word_len × bitvec word_len) → bitvec word_len
 | (a, b) := a.xor b
 
 /-- `xor` after `xor` produces the identity.  -/

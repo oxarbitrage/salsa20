@@ -11,7 +11,7 @@ namespace littleendian_examples
 
 variables [category (bitvec params.word_len)] [semiring (list ℕ)]
 
-/- 
+/-!
   Examples from the spec.
 
   https://cr.yp.to/snuffle/spec.pdf
