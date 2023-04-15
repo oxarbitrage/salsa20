@@ -1,6 +1,5 @@
 import params
 
-import category_theory.category.basic
 import category_theory.core
 
 open params
@@ -29,19 +28,19 @@ Converts a bitvec into another bitvec of the same length by appling left rotatio
 -/
 
 /-- The rotate operation in a bitvec with a shift of 7. -/
-@[simp] def rotl7 : bitvec word_len → bitvec word_len
+def rotl7 : bitvec word_len → bitvec word_len
 | a := (a.shl 7).or (a.ushr (word_len - 7))
 
 /-- The rotate operation in a bitvec with a shift of 9. -/
-@[simp] def rotl9 : bitvec word_len → bitvec word_len
+def rotl9 : bitvec word_len → bitvec word_len
 | a := (a.shl 9).or (a.ushr (word_len - 9))
 
 /-- The rotate operation in a bitvec with a shift of 13. -/
-@[simp] def rotl13 : bitvec word_len → bitvec word_len
+def rotl13 : bitvec word_len → bitvec word_len
 | a := (a.shl 13).or (a.ushr (word_len - 13))
 
 /-- The rotate operation in a bitvec with a shift of 18. -/
-@[simp] def rotl18 : bitvec word_len → bitvec word_len
+def rotl18 : bitvec word_len → bitvec word_len
 | a := (a.shl 18).or (a.ushr (word_len - 18))
 
 /- `rotl7⁻¹` is just the inverse given `rotl7` is isomorphic. -/
@@ -73,7 +72,7 @@ Converts a pair of bitvecs into a single bitvec of the same length by appling bi
 -/
 
 /-- Modulo addition operation. -/
-@[simp] def mod : (bitvec word_len × bitvec word_len) → bitvec word_len
+def mod : (bitvec word_len × bitvec word_len) → bitvec word_len
 | (a, b) := (bitvec.and (a + b) (max_bitvec))
 
 /-!
@@ -86,7 +85,7 @@ Converts a pair of bitvecs into a single bitvec of the same length by appling bi
 -/
 
 /-- The salsa20 xor operation is just bitwise xor. -/
-@[simp] def xor : (bitvec word_len × bitvec word_len) → bitvec word_len
+def xor : (bitvec word_len × bitvec word_len) → bitvec word_len
 | (a, b) := a.xor b
 
 /-- `xor` after `xor` produces the identity.  -/

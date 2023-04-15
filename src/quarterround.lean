@@ -1,23 +1,20 @@
 import operations
 import types
 
-import category_theory.category.basic
-import category_theory.core
-
 open operations
 open params
 open types
 
 open category_theory
-
 open_locale category_theory.Type
+
 
 namespace quarterround
 
 variables [category (bitvec word_len)]
 
 /-!
-# Quarter round diagram and it's inverse.
+# Quarter round
 
 The `quarterround` function takes a 4 bitvec sequence and return a sequence of the same type by applying the 
 quarterround diagram.
@@ -27,97 +24,92 @@ quarterround diagram.
 -/
 
 /-- Return `x0` given an input vector `(x0, x1, x2, x3)`. -/
-@[simp] def first : vecType → bitvec word_len
-| input := input.fst
+def first : vecType → bitvec word_len
+| input := input 0 0
 
 /-- Return `x1` given an input vector `(x0, x1, x2, x3)`. -/
-@[simp] def second : vecType → bitvec word_len
-| input := input.snd.fst
+def second : vecType → bitvec word_len
+| input := input 0 1
 
 /-- Return `x2` given an input vector `(x0, x1, x2, x3)`. -/
-@[simp] def third : vecType → bitvec word_len
-| input := input.snd.snd.fst
+def third : vecType → bitvec word_len
+| input := input 0 2
 
 /-- Return `x3` given an input vector `(x0, x1, x2, x3)`. -/
-@[simp] def fourth : vecType → bitvec word_len
-| input := input.snd.snd.snd
-
-/-!
-## Quarterround construction
-
--/
+def fourth : vecType → bitvec word_len
+| input := input 0 3
 
 /-- Return `(y0, y3)` given an input vector `(y0, y1, y2, y3)`. -/
-@[simp] def buildmod1 : vecType → bitvec word_len → bitvec word_len × bitvec word_len
+def buildmod1 : vecType → bitvec word_len → bitvec word_len × bitvec word_len
 | input _ := (first input, fourth input)
 
 /-- Return `(y1, rotlres)` given an input vector `(y0, y1, y2, y3)` and `rotlres`. -/
-@[simp] def buildxor1 : vecType → bitvec word_len → bitvec word_len × bitvec word_len
+def buildxor1 : vecType → bitvec word_len → bitvec word_len × bitvec word_len
 | input b := (second input, b)
 
 /-- z₁ = y₁ ⊕ ((y₀ + y₃) <<< 7) -/
-@[simp] def z1 (input : vecType) := ↾ buildmod1 input ≫ mod ≫ rotl7 ≫ buildxor1 input ≫ xor
+def z1 (input : vecType) := ↾ buildmod1 input ≫ mod ≫ rotl7 ≫ buildxor1 input ≫ xor
 
 /-- `z1` of `(0, 0, 0, 0)` is `0` -/
-@[simp] lemma z1_zero : z1 (0, 0, 0, 0) 0 = 0 := by refl
+lemma z1_zero : z1 !![0, 0, 0, 0] 0 = 0 := by refl
 
 /-- Return `(z1, y0)` given an input vector `(y0, y1, y2, y3)` and `z1`. -/
-@[simp] def buildmod2 : vecType → bitvec word_len → bitvec word_len × bitvec word_len
+def buildmod2 : vecType → bitvec word_len → bitvec word_len × bitvec word_len
 | input z1 := (z1, first input)
 
 /-- Return `(y2, rotlres)` given an input vector `(y0, y1, y2, y3)` and `rotlres`. -/
-@[simp] def buildxor2 : vecType → bitvec word_len → bitvec word_len × bitvec word_len
+def buildxor2 : vecType → bitvec word_len → bitvec word_len × bitvec word_len
 | input b := (third input, b)
 
 /-- z₂ = y₂ ⊕ ((z₁ + y₀) <<< 9) -/
-@[simp] def z2 (input : vecType) := ↾ buildmod2 input ≫ mod ≫ rotl9 ≫ buildxor2 input ≫ xor
+def z2 (input : vecType) := ↾ buildmod2 input ≫ mod ≫ rotl9 ≫ buildxor2 input ≫ xor
 
 /-- `z2` of `(0, 0, 0, 0)` is `0` -/
-@[simp] lemma z2_zero : z2 (0, 0, 0, 0) 0 = 0 := by refl
+lemma z2_zero : z2 !![0, 0, 0, 0] 0 = 0 := by refl
 
 /-- Return `(z2, z1)` given an input vector `(y0, y1, y2, y3)`, `z2` and `z1`. -/
-@[simp] def buildmod3 : vecType → bitvec word_len → bitvec word_len → bitvec word_len × bitvec word_len
+def buildmod3 : vecType → bitvec word_len → bitvec word_len → bitvec word_len × bitvec word_len
 | input z2 z1 := (z2, z1)
 
 /-- Return `(y3, rotlres)` given an input vector `(y0, y1, y2, y3)` and `rotlres`. -/
-@[simp] def buildxor3 : vecType → bitvec word_len → bitvec word_len × bitvec word_len
+def buildxor3 : vecType → bitvec word_len → bitvec word_len × bitvec word_len
 | input b := (fourth input, b)
 
 /-- z₃ = y₃ ⊕ ((z₂ + z₁) <<< 13) -/
-@[simp] def z3 (input : vecType) := 
+def z3 (input : vecType) := 
   ↾ buildmod3 input (z2 input (z1 input (bitvec.zero word_len))) ≫ mod ≫ rotl13 ≫ buildxor3 input ≫ xor
 
 /-- `z3` of `(0, 0, 0, 0)` is `0` -/
-@[simp] lemma z3_zero : z3 (0, 0, 0, 0) 0 = 0 := by refl
+lemma z3_zero : z3 !![0, 0, 0, 0] 0 = 0 := by refl
 
 /-- Return `(z3, z2)` given an input vector `(y0, y1, y2, y3)`, `z3` and `z2`. -/
-@[simp] def buildmod0 : vecType → bitvec word_len → bitvec word_len → bitvec word_len × bitvec word_len
+def buildmod0 : vecType → bitvec word_len → bitvec word_len → bitvec word_len × bitvec word_len
 | input z3 z2 := (z3 , z2)
 
 /-- Return `(y0, rotlres)` given an input vector `(y0, y1, y2, y3)` and `rotlres`. -/
-@[simp] def buildxor0 : vecType → bitvec word_len → bitvec word_len × bitvec word_len
+def buildxor0 : vecType → bitvec word_len → bitvec word_len × bitvec word_len
 | input b := (first input, b)
 
 /-- z₀ = y₀ ⊕ ((z₃ + z₂) <<< 18) -/
-@[simp] def z0 (input : vecType) := 
+def z0 (input : vecType) := 
   ↾ buildmod0 input (z2 input (z1 input (bitvec.zero word_len))) ≫ mod ≫ rotl18 ≫ buildxor0 input ≫ xor
 
 /-- `z0` of `(0, 0, 0, 0)` is `0` -/
-@[simp] lemma z0_zero : z0 (0, 0, 0, 0) 0 = 0 := by refl
+lemma z0_zero : z0 !![0, 0, 0, 0] 0 = 0 := by refl
 
 /- The full quarterround output built from its components in index order. -/
-@[simp] def quarterround (input : vecType) := (
+def quarterround (input : vecType) := !![
   z0 input (z3 input (z1 input 0)),
   z1 input 0,
   z2 input (z1 input 0),
   z3 input (z1 input 0)
-)
+]
 
 /-- `quarterround` of `(0, 0, 0, 0)` is `(0, 0, 0, 0)` -/
-@[simp] lemma quarterround_zero : quarterround (0, 0, 0, 0) = (0, 0, 0, 0) := by refl
+lemma quarterround_zero : quarterround !![0, 0, 0, 0] = !![0, 0, 0, 0] := by refl
 
 /- `quarterround⁻¹` is just the inverse given `quarterround` is isomorphic. -/
-noncomputable def quarterround_inv (input : vecType) [is_iso (↾ quarterround)] := inv ↾ quarterround
+noncomputable def quarterround_inv [is_iso (↾ quarterround)] := inv ↾ quarterround
 
 local notation `quarterround⁻¹` := quarterround_inv
 

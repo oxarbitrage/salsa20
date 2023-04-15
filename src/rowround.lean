@@ -1,3 +1,4 @@
+
 import params
 import quarterround
 
@@ -5,19 +6,19 @@ import category_theory.category.basic
 import category_theory.core
 
 open params
-open operations
 open quarterround
 
 open category_theory
 
 open_locale category_theory.Type
 
+
 namespace rowround
 
 variables [category (bitvec word_len)]
 
 /-!
-# Row round diagram and it's inverse.
+# Row round
 
 The `rowround` function takes a `matrixType` (tuple of 4 `vecType`s) and return a new `matrixType`
 after following the diagram.
@@ -26,55 +27,50 @@ after following the diagram.
 
 -/
 
-/-- Return `(x0, x1, x2, x3)` given an input matrix `(x0, x1, x2, x3), (x4, x5, x6, x7), (x8, x9, x10, x11), (x12, x13, x14, x15)`. -/
-@[simp] def first : matrixType → vecType
-| input := input.fst
+/-- Return the first row of a `matrixType` -/
+def row1 : matrixType → vecType
+| input := !![(input 0 0), (input 0 1), (input 0 2), (input 0 3)]
 
-/-- Return `(x4, x5, x6, x7)` given an input matrix `(x0, x1, x2, x3), (x4, x5, x6, x7), (x8, x9, x10, x11), (x12, x13, x14, x15)`. -/
-@[simp] def second : matrixType → vecType
-| input := input.snd.fst
+/-- Return the second row of a `matrixType` -/
+def row2 : matrixType → vecType
+| input := !![(input 0 4), (input 0 5), (input 0 6), (input 0 7)]
 
-/-- Return `(x8, x9, x10, x11)` given an input matrix `(x0, x1, x2, x3), (x4, x5, x6, x7), (x8, x9, x10, x11), (x12, x13, x14, x15)`. -/
-@[simp] def third : matrixType → vecType
-| input := input.snd.snd.fst
+/-- Return the third row of a `matrixType` -/
+def row3 : matrixType → vecType
+| input := !![(input 0 8), (input 0 9), (input 0 10), (input 0 11)]
 
-/-- Return `(x12, x13, x14, x15)` given an input matrix `(x0, x1, x2, x3), (x4, x5, x6, x7), (x8, x9, x10, x11), (x12, x13, x14, x15)`. -/
-@[simp] def fourth : matrixType → vecType
-| input := input.snd.snd.snd
-
-/-!
-## Rowround construction
-
--/
+/-- Return the fourth row of a `matrixType` -/
+def row4 : matrixType → vecType
+| input := !![(input 0 12), (input 0 13), (input 0 14), (input 0 15)]
 
 /-- Return `(y0, y1, y2, y3)` given `(y0, y1, y2, y3)`. This function is here
 for completness, there is no need to use it as the output of `first` is already in order. -/
-@[simp] def order1 : vecType → vecType
-| input := (input.fst, input.snd.fst, input.snd.snd.fst, input.snd.snd.snd)
+def order1 : vecType → vecType
+| input := !![(input 0 0), (input 0 1), (input 0 2), (input 0 3)]
 
 /-- Return `(y5, y6, y7, y4)` given `(y4, y5, y6, y7)`. -/
-@[simp] def order2 : vecType → vecType
-| input := (input.snd.fst, input.snd.snd.fst, input.snd.snd.snd, input.fst)
+def order2 : vecType → vecType
+| input := !![(input 1 1), (input 1 2), (input 1 3), (input 1 0)]
 
 /-- Return `(y10, y11, y8, y9)` given `(y8, y9, y10, y11)`. -/
-@[simp] def order3 : vecType → vecType
-| input := (input.snd.snd.fst, input.snd.snd.snd, input.fst, input.snd.fst)
+def order3 : vecType → vecType
+| input := !![(input 2 2), (input 2 3), (input 2 0), (input 2 1)]
 
 /-- Return `(y15, y12, y13, y14)` given `(y12, y13, y14, y15)`. -/
-@[simp] def order4 : vecType → vecType
-| input := (input.snd.snd.snd, input.fst, input.snd.fst, input.snd.snd.fst)
+def order4 : vecType → vecType
+| input := !![(input 3 3), (input 3 0), (input 3 1), (input 3 2)]
 
 /-- Given an input `(y0, y1, y2, y3), (y4, y5, y6, y7), (y8, y9, y10, y11), (y12, y13, y14, y15)` return an
 output `(z0, z1, z2, z3), (z4, z5, z6, z7), (z8, z9, z10, z11), (z12, z13, z14, z15)` applying the rowround
 diagram. -/
 noncomputable def rowround (input : matrixType) [is_iso( ↾ order1)] [is_iso( ↾ order2)] [is_iso( ↾ order3)]
   [is_iso( ↾ order4)] :=
-(
-  (↾ first ≫ order1 ≫ quarterround ≫ inv order1) input,
-  (↾ second ≫ order2 ≫ quarterround ≫ inv order1) input,
-  (↾ third ≫ order3 ≫ quarterround ≫ inv order1) input,
-  (↾ fourth ≫ order4 ≫ quarterround ≫ inv order1) input
-)
+!![
+  (↾ row1 ≫ order1 ≫ quarterround ≫ inv order1) input,
+  (↾ row2 ≫ order2 ≫ quarterround ≫ inv order1) input,
+  (↾ row3 ≫ order3 ≫ quarterround ≫ inv order1) input,
+  (↾ row4 ≫ order4 ≫ quarterround ≫ inv order1) input
+]
 
 /- `rowround⁻¹` is just the inverse given `rowround` is isomorphic. -/
 noncomputable def rowround_inv (input : matrixType) [is_iso (↾ rowround)] := inv ↾ rowround
