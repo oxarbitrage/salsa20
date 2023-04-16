@@ -1,75 +1,67 @@
 import doubleround
-import littleendian
 
-import category_theory.category.basic
 import category_theory.core
 
 open doubleround
-open littleendian
-open operations
+open rowround
 open params
-open utils
+open types
 
 open category_theory
+
+open_locale category_theory.Type
 
 namespace core
 
 variable [category (bitvec word_len)]
 
+--
+variables [is_iso( ↾ order1)] [is_iso( ↾ order2)] [is_iso( ↾ order3)] [is_iso( ↾ order4)]
+
 /-!
   # Core
 
-  - The `doubleround10` function and its inverse.
-  - The `hash` and `core` functions, the non existing inverse.
+  The `core` function takes a `matrixType` and return a new `matrixType` after applying the diagram.
+
+  - [Core Diagram]()
+
 -/
 
 /-- Apply double round 10 times to a reduced input. -/
-@[simp] def doubleround_10 (X : matrixType): matrixType :=
-  doubleround_salsa20 $
-  doubleround_salsa20 $
-  doubleround_salsa20 $
-  doubleround_salsa20 $
-  doubleround_salsa20 $
-  doubleround_salsa20 $
-  doubleround_salsa20 $
-  doubleround_salsa20 $
-  doubleround_salsa20 $
-  doubleround_salsa20 $
-  X
+noncomputable def doubleround10 (X : matrixType) :=
+  (↾ doubleround ≫ ↾ doubleround ≫ ↾ doubleround ≫ ↾ doubleround ≫ ↾ doubleround ≫ 
+  ↾ doubleround ≫ ↾ doubleround ≫ ↾ doubleround ≫ ↾ doubleround ≫ ↾ doubleround) X
 
-/-- Inverse of `doubleround_10`. -/
-@[simp] def doubleround_10_inv (X : matrixType): matrixType :=
-  doubleround_salsa20_inv $
-  doubleround_salsa20_inv $
-  doubleround_salsa20_inv $
-  doubleround_salsa20_inv $
-  doubleround_salsa20_inv $
-  doubleround_salsa20_inv $
-  doubleround_salsa20_inv $
-  doubleround_salsa20_inv $
-  doubleround_salsa20_inv $
-  doubleround_salsa20_inv $
-  X
+noncomputable def doubleround10_inv (input : matrixType) [is_iso (↾ doubleround10)] := inv ↾ doubleround10
 
 /- Just some notation for inverses. -/
-local notation `doubleround_10⁻¹` := doubleround_10_inv
+local notation `doubleround10⁻¹` := doubleround10_inv
 
-/-- The `doubleround` function is invertible. -/
-lemma doubleround_is_inv (I : doubleround_10 ≅ doubleround_10⁻¹) : I.hom ≫ I.inv = 𝟙 doubleround_10 :=
-  by rw [iso.hom_inv_id]
+/-- Do modulo addition for each matrix inverse. -/
+def mod_matrix (X Y : matrixType) := !![
+  operations.mod ((X 0 0), (Y 0 0)),
+  operations.mod ((X 0 1), (Y 0 1)),
+  operations.mod ((X 0 2), (Y 0 2)),
+  operations.mod ((X 0 3), (Y 0 3));
 
-/-!
-## Core and hash definitions
+  operations.mod ((X 1 0), (Y 1 0)),
+  operations.mod ((X 1 1), (Y 1 1)),
+  operations.mod ((X 1 2), (Y 1 2)),
+  operations.mod ((X 1 3), (Y 1 3));
 
-  - There is no isomorphism (≅) between `core` and any `core⁻¹`.
-  - There is no isomorphism (≅) between `hash` and any `hash⁻¹` because the use of `core` and `core⁻¹`.
--/
+  operations.mod ((X 2 0), (Y 2 0)),
+  operations.mod ((X 2 1), (Y 2 1)),
+  operations.mod ((X 2 2), (Y 2 2)),
+  operations.mod ((X 2 3), (Y 2 3));
 
-/-- Do addition modulo 2^32 of the reduced input and the doubleround of the reduced input. -/
-@[simp] def core (X : matrixType) : matrixType := mod_matrix (doubleround_10 X) X
+  operations.mod ((X 3 0), (Y 3 0)),
+  operations.mod ((X 3 1), (Y 3 1)),
+  operations.mod ((X 3 2), (Y 3 2)),
+  operations.mod ((X 3 3), (Y 3 3));
+]
 
-/-- Do the hash. -/
-def hash (X : matrix64Type) : matrix64Type := aument (core (reduce X))
+/-- Do addition modulo 2³² of the input and the doubleround10 of the input. -/
+noncomputable def core (X : matrixType) : matrixType := mod_matrix (doubleround10 X) X
 
 
 end core

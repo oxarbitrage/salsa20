@@ -41,7 +41,8 @@ def row4 (input : matrixType) := !![(input 0 12), (input 0 13), (input 0 14), (i
 
 /-- Return `(y0, y1, y2, y3)` given `(y0, y1, y2, y3)`. This function is here
 for completness, there is no need to use it as the output of `first` is already in order. -/
-def order1 (input : vecType) := !![(input 0 0), (input 0 1), (input 0 2), (input 0 3)]
+def order1 : vecType → vecType 
+| input := !![(input 0 0), (input 0 1), (input 0 2), (input 0 3)]
 
 /-- Return `(y5, y6, y7, y4)` given `(y4, y5, y6, y7)`. -/
 def order2 : vecType → vecType
