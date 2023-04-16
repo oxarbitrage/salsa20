@@ -28,7 +28,7 @@ after following the diagram.
 
 /-- `columnround` is the transponse of a `rowround` output matrix. -/ 
 noncomputable def columnround (input: matrixType) [is_iso( ↾ order1)] [is_iso( ↾ order2)] [is_iso( ↾ order3)]
-  [is_iso( ↾ order4)] := (rowround input)ᵀ
+  [is_iso( ↾ order4)] := rowround inputᵀ
 
 /-- `columnround⁻¹` is just the inverse given `columnround` is isomorphic. -/
 noncomputable def columnround_inv (input : matrixType) [is_iso (↾ columnround)] := inv ↾ columnround

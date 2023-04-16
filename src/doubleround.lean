@@ -1,57 +1,38 @@
-import rowround
 import columnround
 
 import category_theory.category.basic
 import category_theory.core
 
 open params
-open operations
-open quarterround
 open rowround
 open columnround
-open utils
 
 open category_theory
+open_locale category_theory.Type
+open_locale matrix
+
 
 namespace doubleround
 
 variables [category (bitvec word_len)]
 
 /-!
-  # Doubleround
+# Double round
 
-  The `doubleround` function and the relation with its inverse.
+The `doubleround` function takes a `matrixType` and return a new `matrixType` applying the diagram.
+
+- [Doubleround Diagram](https://q.uiver.app/?q=WzAsMyxbMCwwLCIoeDAsIHgxLCB4MiwgeDMpLCAoeDQsIHg1LCB4NiwgeDcpLCAoeDgsIHg5LCB4MTAsIHgxMSksICh4MTIsIHgxMywgeDE0LCB4MTUpIl0sWzAsMiwiKHkwLCB5MSwgeTIsIHkzKSwgKHk0LCB5NSwgeTYsIHk3KSwgKHk4LCB5OSwgeTEwLCB5MTEpLCAoeTEyLCB5MTMsIHkxNCwgeDE1KSJdLFswLDQsIih6MCwgejEsIHoyLCB6MyksICh6NCwgejUsIHo2LCB6NyksICh6OCwgejksIHoxMCwgejExKSwgKHoxMiwgejEzLCB6MTQsIHoxNSkiXSxbMCwxLCJjb2x1bW5yb3VuZCIsMV0sWzEsMiwicm93cm91bmQiLDFdXQ==)
+ 
 -/
 
-/-- doubleround(x) = rowround(columnround(x)) -/
-@[simp] def doubleround (M : matrixType) : matrixType := rowround $ columnround M
+-- 
+variables [is_iso( ↾ order1)] [is_iso( ↾ order2)] [is_iso( ↾ order3)] [is_iso( ↾ order4)]
 
-/--  doubleround_inv(x) = columnround_inv(rowround_inv(x)) -/
-@[simp] def doubleround_inv (M : matrixType) : matrixType := columnround_inv $ rowround_inv M
+/-- `doubleround` is `columnround` followed by `rowround`. -/
+noncomputable def doubleround (input: matrixType) := rowround (columnround input)
 
-/- Just some notation for inverses. -/
-local notation `doubleround⁻¹` := doubleround_inv
-
-/-- The `doubleround` function is invertible. -/
-lemma doubleround_is_inv (I : doubleround ≅ doubleround⁻¹) : I.hom ≫ I.inv = 𝟙 doubleround :=
-  by rw [iso.hom_inv_id]
-
-/--
-A special case of `doubleround` where inputs and outputs are sorted according to the salsa20 spec:
-doubleround'(x) = rowround'(columnround'(x)) -/
-@[simp] def doubleround_salsa20 (M : matrixType) : matrixType := rowround_salsa20 $ columnround_salsa20 M
-
-/--
-A special case of `doubleround_inv` where inputs and outputs are sorted according to the salsa20 spec:
-doubleround_inv'(x) = columnround_inv'(rowround_inv'(x)) -/
-@[simp] def doubleround_salsa20_inv (M : matrixType) : matrixType := columnround_salsa20_inv $ rowround_salsa20_inv M
-
-/- Just some notation for inverses. -/
-local notation `doubleround_salsa20⁻¹` := doubleround_salsa20_inv
-
-/-- The `doubleround` function is invertible. -/
-lemma doubleround_salsa20_is_inv (I : doubleround_salsa20 ≅ doubleround_salsa20⁻¹) : 
-  I.hom ≫ I.inv = 𝟙 doubleround_salsa20 := by rw [iso.hom_inv_id]
+/-- `doubleround⁻¹` is just the inverse given `doubleround` is isomorphic. -/
+noncomputable def doubleround_inv (input : matrixType) [is_iso (↾ doubleround)] := inv ↾ doubleround
 
 
 end doubleround

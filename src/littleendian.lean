@@ -1,11 +1,9 @@
-import types
+import params
 
-import category_theory.category.basic
 import category_theory.core
 import data.nat.digits
 
 open params
-open types
 
 open category_theory
 open nat
