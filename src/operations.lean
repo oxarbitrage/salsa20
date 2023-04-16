@@ -1,7 +1,8 @@
-import params
+import types
 
 import category_theory.core
 
+open types
 open params
 
 open category_theory
@@ -10,7 +11,7 @@ open_locale category_theory.Type
 
 namespace operations
 
-variable [category (bitvec word_len)]
+variable [category (wordType)]
 
 /-!
 # Operations
@@ -28,32 +29,32 @@ Converts a bitvec into another bitvec of the same length by appling left rotatio
 -/
 
 /-- The rotate operation in a bitvec with a shift of 7. -/
-def rotl7 : bitvec word_len → bitvec word_len
+def rotl7 : wordType → wordType
 | a := (a.shl 7).or (a.ushr (word_len - 7))
 
 /-- The rotate operation in a bitvec with a shift of 9. -/
-def rotl9 : bitvec word_len → bitvec word_len
+def rotl9 : wordType → wordType
 | a := (a.shl 9).or (a.ushr (word_len - 9))
 
 /-- The rotate operation in a bitvec with a shift of 13. -/
-def rotl13 : bitvec word_len → bitvec word_len
+def rotl13 : wordType → wordType
 | a := (a.shl 13).or (a.ushr (word_len - 13))
 
 /-- The rotate operation in a bitvec with a shift of 18. -/
-def rotl18 : bitvec word_len → bitvec word_len
+def rotl18 : wordType → wordType
 | a := (a.shl 18).or (a.ushr (word_len - 18))
 
 /- `rotl7⁻¹` is just the inverse given `rotl7` is isomorphic. -/
-noncomputable def rotl7_inv (a : bitvec word_len) [is_iso (↾ rotl7)] := inv ↾ rotl7
+noncomputable def rotl7_inv (a : wordType) [is_iso (↾ rotl7)] := inv ↾ rotl7
 
 /- `rotl9⁻¹` is just the inverse given `rotl9` is isomorphic. -/
-noncomputable def rotl9_inv (a : bitvec word_len) [is_iso (↾ rotl9)] := inv ↾ rotl9
+noncomputable def rotl9_inv (a : wordType) [is_iso (↾ rotl9)] := inv ↾ rotl9
 
 /- `rotl13⁻¹` is just the inverse given `rotl13` is isomorphic. -/
-noncomputable def rotl13_inv (a : bitvec word_len) [is_iso (↾ rotl13)] := inv ↾ rotl13
+noncomputable def rotl13_inv (a : wordType) [is_iso (↾ rotl13)] := inv ↾ rotl13
 
 /- `rotl18⁻¹` is just the inverse given `rotl18` is isomorphic. -/
-noncomputable def rotl18_inv (a : bitvec word_len) [is_iso (↾ rotl18)] := inv ↾ rotl18
+noncomputable def rotl18_inv (a : wordType) [is_iso (↾ rotl18)] := inv ↾ rotl18
 
 -- Notation for the inverses.
 local notation `rotl7⁻¹` := rotl7_inv
@@ -72,7 +73,7 @@ Converts a pair of bitvecs into a single bitvec of the same length by appling bi
 -/
 
 /-- Modulo addition operation. -/
-def mod : (bitvec word_len × bitvec word_len) → bitvec word_len
+def mod : (wordType × wordType) → wordType
 | (a, b) := (bitvec.and (a + b) (max_bitvec))
 
 /-!
@@ -85,7 +86,7 @@ Converts a pair of bitvecs into a single bitvec of the same length by appling bi
 -/
 
 /-- The salsa20 xor operation is just bitwise xor. -/
-def xor : (bitvec word_len × bitvec word_len) → bitvec word_len
+def xor : (wordType × wordType) → wordType
 | (a, b) := a.xor b
 
 /-- `xor` after `xor` produces the identity.  -/

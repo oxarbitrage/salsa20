@@ -1,21 +1,17 @@
-
-import params
 import quarterround
 
 import category_theory.category.basic
 import category_theory.core
 
-open params
 open quarterround
 
 open category_theory
-
 open_locale category_theory.Type
 
 
 namespace rowround
 
-variables [category (bitvec word_len)]
+variables [category (wordType)]
 
 /-!
 # Row round

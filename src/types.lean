@@ -11,6 +11,9 @@ open params
 
 namespace types
 
+-- A bitvec 32
+notation `wordType` := bitvec word_len
+
 -- A 1 x 4 matrix.
 notation `vecType` := matrix (fin 1) (fin 4) (bitvec word_len)
 

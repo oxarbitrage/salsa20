@@ -1,17 +1,16 @@
 import operations
-import types
+
+open category_theory
+open_locale category_theory.Type
 
 open operations
 open params
 open types
 
-open category_theory
-open_locale category_theory.Type
-
 
 namespace quarterround
 
-variables [category (bitvec word_len)]
+variables [category (wordType)]
 
 /-!
 # Quarter round
@@ -24,27 +23,27 @@ quarterround diagram.
 -/
 
 /-- Return `x0` given an input vector `(x0, x1, x2, x3)`. -/
-def first : vecType → bitvec word_len
+def first : vecType → wordType
 | input := input 0 0
 
 /-- Return `x1` given an input vector `(x0, x1, x2, x3)`. -/
-def second : vecType → bitvec word_len
+def second : vecType → wordType
 | input := input 0 1
 
 /-- Return `x2` given an input vector `(x0, x1, x2, x3)`. -/
-def third : vecType → bitvec word_len
+def third : vecType → wordType
 | input := input 0 2
 
 /-- Return `x3` given an input vector `(x0, x1, x2, x3)`. -/
-def fourth : vecType → bitvec word_len
+def fourth : vecType → wordType
 | input := input 0 3
 
 /-- Return `(y0, y3)` given an input vector `(y0, y1, y2, y3)`. -/
-def buildmod1 : vecType → bitvec word_len → bitvec word_len × bitvec word_len
+def buildmod1 : vecType → wordType → wordType × wordType
 | input _ := (first input, fourth input)
 
 /-- Return `(y1, rotlres)` given an input vector `(y0, y1, y2, y3)` and `rotlres`. -/
-def buildxor1 : vecType → bitvec word_len → bitvec word_len × bitvec word_len
+def buildxor1 : vecType → wordType → wordType × wordType
 | input b := (second input, b)
 
 /-- z₁ = y₁ ⊕ ((y₀ + y₃) <<< 7) -/
@@ -54,11 +53,11 @@ def z1 (input : vecType) := ↾ buildmod1 input ≫ mod ≫ rotl7 ≫ buildxor1 
 lemma z1_zero : z1 !![0, 0, 0, 0] 0 = 0 := by refl
 
 /-- Return `(z1, y0)` given an input vector `(y0, y1, y2, y3)` and `z1`. -/
-def buildmod2 : vecType → bitvec word_len → bitvec word_len × bitvec word_len
+def buildmod2 : vecType → wordType → wordType × wordType
 | input z1 := (z1, first input)
 
 /-- Return `(y2, rotlres)` given an input vector `(y0, y1, y2, y3)` and `rotlres`. -/
-def buildxor2 : vecType → bitvec word_len → bitvec word_len × bitvec word_len
+def buildxor2 : vecType → wordType → wordType × wordType
 | input b := (third input, b)
 
 /-- z₂ = y₂ ⊕ ((z₁ + y₀) <<< 9) -/
@@ -68,11 +67,11 @@ def z2 (input : vecType) := ↾ buildmod2 input ≫ mod ≫ rotl9 ≫ buildxor2 
 lemma z2_zero : z2 !![0, 0, 0, 0] 0 = 0 := by refl
 
 /-- Return `(z2, z1)` given an input vector `(y0, y1, y2, y3)`, `z2` and `z1`. -/
-def buildmod3 : vecType → bitvec word_len → bitvec word_len → bitvec word_len × bitvec word_len
+def buildmod3 : vecType → wordType → wordType → wordType × wordType
 | input z2 z1 := (z2, z1)
 
 /-- Return `(y3, rotlres)` given an input vector `(y0, y1, y2, y3)` and `rotlres`. -/
-def buildxor3 : vecType → bitvec word_len → bitvec word_len × bitvec word_len
+def buildxor3 : vecType → wordType → wordType × wordType
 | input b := (fourth input, b)
 
 /-- z₃ = y₃ ⊕ ((z₂ + z₁) <<< 13) -/
@@ -83,11 +82,11 @@ def z3 (input : vecType) :=
 lemma z3_zero : z3 !![0, 0, 0, 0] 0 = 0 := by refl
 
 /-- Return `(z3, z2)` given an input vector `(y0, y1, y2, y3)`, `z3` and `z2`. -/
-def buildmod0 : vecType → bitvec word_len → bitvec word_len → bitvec word_len × bitvec word_len
+def buildmod0 : vecType → wordType → wordType → wordType × wordType
 | input z3 z2 := (z3 , z2)
 
 /-- Return `(y0, rotlres)` given an input vector `(y0, y1, y2, y3)` and `rotlres`. -/
-def buildxor0 : vecType → bitvec word_len → bitvec word_len × bitvec word_len
+def buildxor0 : vecType → wordType → wordType × wordType
 | input b := (first input, b)
 
 /-- z₀ = y₀ ⊕ ((z₃ + z₂) <<< 18) -/

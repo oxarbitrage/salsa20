@@ -1,6 +1,5 @@
 import columnround
 
-import category_theory.category.basic
 import category_theory.core
 
 open params
@@ -14,7 +13,7 @@ open_locale matrix
 
 namespace doubleround
 
-variables [category (bitvec word_len)]
+variables [category (wordType)]
 
 /-!
 # Double round
