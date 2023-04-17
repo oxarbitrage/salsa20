@@ -22,8 +22,7 @@ variables [is_iso( ↾ order1)] [is_iso( ↾ order2)] [is_iso( ↾ order3)] [is_
 
   The `core` function takes a `matrixType` and return a new `matrixType` after applying the diagram.
 
-  - [Core Diagram](https://q.uiver.app/?q=WzAsMyxbMCwwLCIoeDAsIHgxLCB4MiwgeDMpLCAoeDQsIHg1LCB4NiwgeDcpLCAoeDgsIHg5LCB4MTAsIHgxMSksICh4MTIsIHgxMywgeDE0LCB4MTUpIl0sWzQsMCwiKHkwLCB5MSwgeTIsIHkzKSwgKHk0LCB5NSwgeTYsIHk3KSwgKHk4LCB5OSwgeTEwLCB5MTEpLCAoeTEyLCB5MTMsIHkxNCwgeDE1KSJdLFsyLDEsIih6MCwgejEsIHoyLCB6MyksICh6NCwgejUsIHo2LCB6NyksICh6OCwgejksIHoxMCwgejExKSwgKHoxMiwgejEzLCB6MTQsIHoxNSkiXSxbMCwxLCJkb3VibGVyb3VuZDEwIiwxXSxbMSwyLCJtb2RtYXRyaXgiLDFdLFswLDIsIm1vZG1hdHJpeCIsMV1d)
-
+  - [Core Diagram](https://oxarbitrage.github.io/salsa20-docs/diagrams/core.html)
 -/
 
 /-- Apply double round 10 times to an input. -/

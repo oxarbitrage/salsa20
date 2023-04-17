@@ -25,7 +25,7 @@ The salsa20 cipher is built fully with add-rotate-XOR operations.
 Converts a bitvec into another bitvec of the same length by appling left rotations at the bit level. 
 
 - [Example implementation](https://github.com/alexwebr/salsa20/blob/master/salsa20.c#L6)
-- [Diagram](https://q.uiver.app/?q=WzAsMixbMCwwLCJhIl0sWzAsMywiYiJdLFswLDEsInJvdGwiLDIseyJjdXJ2ZSI6Mn1dLFsxLDAsInJvdGxeey0xfSIsMix7ImN1cnZlIjoyfV1d)
+- [Rotate Diagram](https://oxarbitrage.github.io/salsa20-docs/diagrams/rotate.html)
 -/
 
 /-- The rotate operation in a bitvec with a shift of 7. -/
@@ -68,7 +68,7 @@ local notation `rotl18⁻¹` := rotl18_inv
 Converts a pair of bitvecs into a single bitvec of the same length by appling bitwise modulo addition. 
 
 - [Example implementation](https://stackoverflow.com/a/19760152)
-- [Diagram](https://q.uiver.app/?q=WzAsMixbMCwwLCIoYSwgYikiXSxbMCwzLCJjIl0sWzAsMSwibW9kIl1d)
+- [Modulo addition diagram](https://oxarbitrage.github.io/salsa20-docs/diagrams/mod.html)
 - No inverse exist.
 -/
 
@@ -81,7 +81,7 @@ def mod : (wordType × wordType) → wordType
 
 Converts a pair of bitvecs into a single bitvec of the same length by appling bitwise XOR. 
 
-- [Diagram](https://q.uiver.app/?q=WzAsMixbMCwwLCIoYSwgYikiXSxbMCwzLCJjIl0sWzAsMSwibW9kIl1d)
+- [XOR diagram](https://oxarbitrage.github.io/salsa20-docs/diagrams/xor.html)
 - XOR is its own inverse.
 -/
 

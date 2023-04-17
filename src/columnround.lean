@@ -17,8 +17,7 @@ variables [category (wordType)]
 The `columnround` function takes a `matrixType` (tuple of 4 `vecType`s) and return a new `matrixType`
 after following the diagram.
 
-- [Rowround Diagram](https://q.uiver.app/?q=WzAsMyxbMCwwLCIoeDAsIHgxLCB4MiwgeDMpLCAoeDQsIHg1LCB4NiwgeDcpLCAoeDgsIHg5LCB4MTAsIHgxMSksICh4MTIsIHgxMywgeDE0LCB4MTUpIl0sWzAsMiwiKHkwLCB5MSwgeTIsIHkzKSwgKHk0LCB5NSwgeTYsIHk3KSwgKHk4LCB5OSwgeTEwLCB5MTEpLCAoeTEyLCB5MTMsIHkxNCwgeTE1KSJdLFswLDQsIih6MCwgejEsIHoyLCB6MyksICh6NCwgejUsIHo2LCB6NyksICh6OCwgejksIHoxMCwgejExKSwgKHoxMiwgejEzLCB6MTQsIHoxNSkiXSxbMCwxLCJyb3dyb3VuZCIsMV0sWzEsMiwidHJhbnNwb3NlIiwxXV0=)
-
+- [Columnround Diagram](https://oxarbitrage.github.io/salsa20-docs/diagrams/columnround.html)
 -/
 
 --
