@@ -1,6 +1,7 @@
 import doubleround
 
 import category_theory.core
+import category_theory.monad.basic
 
 open doubleround
 open rowround
@@ -9,6 +10,7 @@ open types
 
 open category_theory
 open_locale category_theory.Type
+open category_theory.monad
 
 namespace core
 
@@ -30,11 +32,22 @@ noncomputable def doubleround10 (X : matrixType) :=
   (↾ doubleround ≫ ↾ doubleround ≫ ↾ doubleround ≫ ↾ doubleround ≫ ↾ doubleround ≫ 
   ↾ doubleround ≫ ↾ doubleround ≫ ↾ doubleround ≫ ↾ doubleround ≫ ↾ doubleround) X
 
+variables [is_iso (↾ doubleround10)]
+
 /- The inverse of `doubleround10`. -/
-noncomputable def doubleround10_inv (input : matrixType) [is_iso (↾ doubleround10)] := inv ↾ doubleround10
+noncomputable def doubleround10_inv := inv ↾ doubleround10
 
 /- Just some notation for inverse. -/
 local notation `doubleround10⁻¹` := doubleround10_inv
+
+/-- `matrixType` is a category. -/
+variables [category (matrix (fin 4) (fin 4) wordType)]
+
+/-- `doubleround` and `doubleround⁻¹` are isomorphic. -/
+variable I : doubleround10 ≅ doubleround10⁻¹
+
+/-- `doubleround10` followed by `doubleround10⁻¹` is the identity, so `doubleround10⁻¹` is the inverse. -/
+lemma is_inverse : I.hom ≫ I.inv = 𝟙 doubleround10 := by rw [iso.hom_inv_id]
 
 /-- Do modulo addition for each matrix item. -/
 def mod_matrix (X Y : matrixType) := !![
@@ -58,6 +71,8 @@ def mod_matrix (X Y : matrixType) := !![
   operations.mod ((X 3 2), (Y 3 2)),
   operations.mod ((X 3 3), (Y 3 3));
 ]
+
+-- TODO: `matrixType` with addition (`modmatrix`) form a monoid, monoids has no inverse. 
 
 /-- Do addition modulo 2³² between the input and the `doubleround10` of the input. -/
 noncomputable def core (X : matrixType) : matrixType := mod_matrix (doubleround10 X) X

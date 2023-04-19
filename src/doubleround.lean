@@ -28,10 +28,23 @@ The `doubleround` function takes a `matrixType` and return a new `matrixType` ap
 variables [is_iso( ↾ order1)] [is_iso( ↾ order2)] [is_iso( ↾ order3)] [is_iso( ↾ order4)]
 
 /-- `doubleround` is `columnround` followed by `rowround`. -/
-noncomputable def doubleround (input: matrixType) := (↾ rowround ≫ ↾ columnround) input
+noncomputable def doubleround := (↾ rowround ≫ ↾ columnround)
+
+variable [is_iso (↾ doubleround)]
 
 /-- `doubleround⁻¹` is just the inverse given `doubleround` is isomorphic. -/
-noncomputable def doubleround_inv (input : matrixType) [is_iso (↾ doubleround)] := inv ↾ doubleround
+noncomputable def doubleround_inv := inv ↾ doubleround
+
+local notation `doubleround⁻¹` := doubleround_inv
+
+/-- `matrixType` is a category. -/
+variables [category (matrix (fin 4) (fin 4) wordType)]
+
+/-- `doubleround` and `doubleround⁻¹` are isomorphic. -/
+variable I : doubleround ≅ doubleround⁻¹
+
+/-- `doubleround` followed by `doubleround⁻¹` is the identity, so `doubleround⁻¹` is the inverse. -/
+lemma is_inverse : I.hom ≫ I.inv = 𝟙 doubleround := by rw [iso.hom_inv_id]
 
 
 end doubleround

@@ -15,8 +15,8 @@ variables [category (wordType)]
 /-!
 # Quarter round
 
-The `quarterround` function takes a 4 bitvec sequence and return a sequence of the same type by applying the 
-quarterround diagram.
+The `quarterround` function takes `vecType` (1 by 4 matrix) and return a new `vecType`
+after appliying the quarterround diagram.
 
 - [Quarterround Diagram](https://oxarbitrage.github.io/salsa20-docs/diagrams/quarterround.html)
 
@@ -38,7 +38,8 @@ def third : vecType → wordType
 def fourth : vecType → wordType
 | input := input 0 3
 
-/-- Return `(y0, y3)` given an input vector `(y0, y1, y2, y3)`. -/
+/-- Return `(y0, y3)` given an input vector `(y0, y1, y2, y3)` and a `wordType` that in this case 
+will be ignored but it is here to be compatible with other buildmod functions. -/
 def buildmod1 : vecType → wordType → wordType × wordType
 | input _ := (first input, fourth input)
 
@@ -107,9 +108,21 @@ def quarterround (input : vecType) := !![
 /-- `quarterround` of `(0, 0, 0, 0)` is `(0, 0, 0, 0)` -/
 lemma quarterround_zero : quarterround !![0, 0, 0, 0] = !![0, 0, 0, 0] := by refl
 
-/- `quarterround⁻¹` is just the inverse given `quarterround` is isomorphic. -/
-noncomputable def quarterround_inv [is_iso (↾ quarterround)] := inv ↾ quarterround
+-- The `quarterround` function has an inverse.
+variable [is_iso (↾ quarterround)] 
+
+/- `quarterround⁻¹` is the inverse function given `quarterround` is isomorphic. -/
+noncomputable def quarterround_inv := inv ↾ quarterround
 
 local notation `quarterround⁻¹` := quarterround_inv
+
+/-- Vector is a category -/
+variable [category (matrix (fin 1) (fin 4) wordType)]
+
+/-- `quarterround` and `quarterround⁻¹` are isomorphic when fed with same `input`. -/
+variable I : quarterround ≅ quarterround_inv
+
+/-- `quarterround` followed by `quarterround⁻¹` is the identity, so `quarterround⁻¹` is the inverse. -/
+lemma is_inverse : I.hom ≫ I.inv = 𝟙 quarterround := by rw [iso.hom_inv_id]
 
 end quarterround

@@ -26,7 +26,21 @@ variables [is_iso( ↾ order1)] [is_iso( ↾ order2)] [is_iso( ↾ order3)] [is_
 /-- `columnround` is the transponse of a `rowround` output matrix. -/ 
 noncomputable def columnround (input: matrixType) := rowround inputᵀ
 
+variable [is_iso (↾ columnround)]
+
 /-- `columnround⁻¹` is just the inverse given `columnround` is isomorphic. -/
-noncomputable def columnround_inv (input : matrixType) [is_iso (↾ columnround)] := inv ↾ columnround
+noncomputable def columnround_inv := inv ↾ columnround
+
+local notation `columnround⁻¹` := columnround_inv
+
+/-- `matrixType` is a category. -/
+variables [category (matrix (fin 4) (fin 4) wordType)]
+
+/-- `columnround` and `columnround⁻¹` are isomorphic. -/
+variable I : columnround ≅ columnround⁻¹
+
+/-- `columnround` followed by `columnround⁻¹` is the identity, so `columnround⁻¹` is the inverse. -/
+lemma is_inverse : I.hom ≫ I.inv = 𝟙 columnround := by rw [iso.hom_inv_id]
+
 
 end columnround

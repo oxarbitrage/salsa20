@@ -44,23 +44,43 @@ def rotl13 : wordType → wordType
 def rotl18 : wordType → wordType
 | a := (a.shl 18).or (a.ushr (word_len - 18))
 
+/-- All rotation operation has inverses. -/
+--variables [is_iso (↾ rotl7)] [is_iso (↾ rotl9)] [is_iso (↾ rotl13)] [is_iso (↾ rotl18)]
+
 /- `rotl7⁻¹` is just the inverse given `rotl7` is isomorphic. -/
-noncomputable def rotl7_inv (a : wordType) [is_iso (↾ rotl7)] := inv ↾ rotl7
+noncomputable def rotl7_inv [is_iso (↾ rotl7)] := inv ↾ rotl7
 
 /- `rotl9⁻¹` is just the inverse given `rotl9` is isomorphic. -/
-noncomputable def rotl9_inv (a : wordType) [is_iso (↾ rotl9)] := inv ↾ rotl9
+noncomputable def rotl9_inv [is_iso (↾ rotl9)] := inv ↾ rotl9
 
 /- `rotl13⁻¹` is just the inverse given `rotl13` is isomorphic. -/
-noncomputable def rotl13_inv (a : wordType) [is_iso (↾ rotl13)] := inv ↾ rotl13
+noncomputable def rotl13_inv [is_iso (↾ rotl13)] := inv ↾ rotl13
 
 /- `rotl18⁻¹` is just the inverse given `rotl18` is isomorphic. -/
-noncomputable def rotl18_inv (a : wordType) [is_iso (↾ rotl18)] := inv ↾ rotl18
+noncomputable def rotl18_inv [is_iso (↾ rotl18)] := inv ↾ rotl18
 
 -- Notation for the inverses.
 local notation `rotl7⁻¹` := rotl7_inv
 local notation `rotl9⁻¹` := rotl9_inv
 local notation `rotl13⁻¹` := rotl13_inv
 local notation `rotl18⁻¹` := rotl18_inv
+
+/-- `rotl7⁻¹` is the inverse of `rotl7`.  -/
+lemma rotl7_is_inverse (a : wordType) [is_iso (↾ rotl7)] (I : rotl7 a ≅ rotl7⁻¹ a) : I.hom ≫ I.inv = 𝟙 (rotl7 a) :=
+  by exact I.hom_inv_id'
+
+/-- `rotl9⁻¹` is the inverse of `rotl9`.  -/
+lemma rotl9_is_inverse (a : wordType) [is_iso (↾ rotl9)] (I : rotl9 a ≅ rotl9⁻¹ a) : I.hom ≫ I.inv = 𝟙 (rotl9 a) :=
+  by exact I.hom_inv_id'
+
+/-- `rotl13⁻¹` is the inverse of `rotl13`.  -/
+lemma rotl13_is_inverse (a : wordType) [is_iso (↾ rotl13)] (I : rotl13 a ≅ rotl13⁻¹ a) : I.hom ≫ I.inv = 𝟙 (rotl13 a) :=
+  by exact I.hom_inv_id'
+
+/-- `rotl18⁻¹` is the inverse of `rotl18`.  -/
+lemma rot18_is_inverse (a : wordType) [is_iso (↾ rotl18)] (I : rotl18 a ≅ rotl18⁻¹ a) : I.hom ≫ I.inv = 𝟙 (rotl18 a) :=
+  by exact I.hom_inv_id'
+
 
 /-!
 ## Add
