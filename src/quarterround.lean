@@ -76,7 +76,7 @@ def buildxor3 : vecType → wordType → wordType × wordType
 | input b := (fourth input, b)
 
 /-- z₃ = y₃ ⊕ ((z₂ + z₁) <<< 13) -/
-def z3 (input : vecType) := 
+def z3 (input : vecType) :=
   ↾ buildmod3 input (z2 input (z1 input (bitvec.zero word_len))) ≫ mod ≫ rotl13 ≫ buildxor3 input ≫ xor
 
 /-- `z3` of `(0, 0, 0, 0)` is `0` -/
@@ -109,7 +109,7 @@ def quarterround (input : vecType) := !![
 lemma quarterround_zero : quarterround !![0, 0, 0, 0] = !![0, 0, 0, 0] := by refl
 
 -- The `quarterround` function has an inverse.
-variable [is_iso (↾ quarterround)] 
+variable [is_iso (↾ quarterround)]
 
 /- `quarterround⁻¹` is the inverse function given `quarterround` is isomorphic. -/
 noncomputable def quarterround_inv := inv ↾ quarterround
