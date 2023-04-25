@@ -20,27 +20,34 @@ after following the diagram.
 - [Columnround Diagram](https://oxarbitrage.github.io/salsa20-docs/diagrams/columnround.html)
 -/
 
+
+/-- Transpose of the input matrix. TODO: implement. -/
+def transpose (input : matrixType) : matrixType := input 
+
 --
 variables [is_iso( ↾ order1)] [is_iso( ↾ order2)] [is_iso( ↾ order3)] [is_iso( ↾ order4)]
 
-/-- `columnround` is the transponse of a `rowround` output matrix. -/ 
-noncomputable def columnround (input: matrixType) := rowround inputᵀ
+/-- There is a functor between `vecType` and `wordType`. -/
+variables (F1 : vecType ⥤ wordType)
 
-variable [is_iso (↾ columnround)]
+/-- There is a functor between `matrixType` and `vecType`. -/
+variables (F2 : matrixType ⥤ vecType)
+
+/-- `columnround` defined as a `rowround` of the transpose of the input. -/ 
+noncomputable def columnround (input: matrixType) := (rowround F1 F2) (transpose input) 
+
+variable [is_iso (↾ columnround F1 F2)]
 
 /-- `columnround⁻¹` is just the inverse given `columnround` is isomorphic. -/
-noncomputable def columnround_inv := inv ↾ columnround
+noncomputable def columnround_inv := inv ↾ columnround F1 F2
 
 local notation `columnround⁻¹` := columnround_inv
 
-/-- `matrixType` is a category. -/
-variables [category (matrix (fin 4) (fin 4) wordType)]
-
 /-- `columnround` and `columnround⁻¹` are isomorphic. -/
-variable I : columnround ≅ columnround⁻¹
+variable I : columnround F1 F2 ≅ columnround⁻¹ F1 F2
 
 /-- `columnround` followed by `columnround⁻¹` is the identity, so `columnround⁻¹` is the inverse. -/
-lemma is_inverse : I.hom ≫ I.inv = 𝟙 columnround := by rw [iso.hom_inv_id]
+lemma is_inverse : I.hom ≫ I.inv = 𝟙 (columnround F1 F2) := by rw [iso.hom_inv_id]
 
 
 end columnround

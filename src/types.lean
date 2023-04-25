@@ -15,9 +15,9 @@ namespace types
 notation `wordType` := bitvec word_len
 
 -- A 1 x 4 matrix.
-notation `vecType` := matrix (fin 1) (fin 4) (bitvec word_len)
+notation `vecType` := wordType × wordType × wordType × wordType
 
 -- A 4 x 4 matrix.
-notation `matrixType` := matrix (fin 4) (fin 4) (bitvec word_len)
+notation `matrixType` := vecType × vecType × vecType × vecType
 
 end types
