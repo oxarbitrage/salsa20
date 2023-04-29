@@ -20,4 +20,5 @@ notation `vecType` := wordType × wordType × wordType × wordType
 -- A 4 x 4 matrix.
 notation `matrixType` := vecType × vecType × vecType × vecType
 
+
 end types

@@ -1,126 +1,106 @@
-import operations
-
-open category_theory
-open_locale category_theory.Type
-
-open operations
-open params
-open types
-
+import category_theory.core
 
 namespace quarterround
 
-/-- We have 2 categories, the single bitvectors (`wordType`) and the product of 4 of them (`vecType`). -/
-variables [category (wordType)] [category (vecType)]
+universe u
 
 /-!
-# Quarter round
+# Quarterround
 
-The `quarterround` function takes `vecType` and return a new `vecType` after appliying the quarterround 
-diagram.
+We follow the flow of the quarterround graph to define objects and relations.
+
+We don't care what the functions do but just the objects and relations between them.
 
 - [Quarterround Diagram](https://oxarbitrage.github.io/salsa20-docs/diagrams/quarterround.html)
-
 -/
 
-/-- There is a functor between `vecType` and `wordType`. -/
-variables (F : vecType ⥤ wordType)
+/-- 4 objects that form a quarterround input. -/ 
+variables y₀ y₁ y₂ y₃ : Type u
 
-/-- Return `(xᵢ, 1, 1, 1)` given an input vector `(x₀, x₁, x₂, x₃)` and a position `i`. -/
-def value_at_position (input : vecType) (i : fin 3) : vecType :=
-match i.val with
-| 0 := (input.fst, 1, 1, 1)
-| 1 := (input.snd.fst, 1, 1, 1)
-| 2 := (input.snd.snd.fst, 1, 1, 1)
-| 3 := (input.snd.snd.snd, 1, 1, 1)
-| _ := (1, 1, 1, 1)
-end
+/-- Represents a product of input objects. -/ 
+variable y₀y₁y₂y₃ : Type u
 
-/-- Make `value_at_position` the functor morphism. -/
-def value_at_functor (input : vecType) (pos : fin 3) := F.obj (value_at_position input pos)
+/-- The response of the `mod1` operation as an object of the `Type u` category. -/
+constant m₁ : Type u
 
-/-- Given `(a, o, p, q)` it is safe for us to ignore `o`, `p`, `q` and return just `a`
-if `value_at_position` was used, `o`, `p` and `q` will be all `1` (product identity). -/
-constant shrink (a o p q: wordType) (pos : fin 3) : F.obj (value_at_position (a, o, p, q) pos) = a
+/-- The `mod1` relation given `y₀` and `y₃` objects. -/
+variable mod1 : (y₀y₁y₂y₃ ⟶ y₀) × (y₀y₁y₂y₃ ⟶ y₃) ⟶ m₁
 
-/-- The identity in the `wordType` category. -/
-def id_wordType := 𝟙 wordType
+/-- The response of a `rotl7` operation as an object of the `Type u` category. -/
+variable r₁ : Type u
 
-/-- Make sure `value_at_functor` just return the identity of the first number of the product in the `wordType` category. -/
-lemma just_first (a : wordType) (pos : fin 3) : value_at_functor F (a, 1, 1, 1) pos = id_wordType a :=
-begin
-  rw [value_at_functor, id_wordType],
-  norm_num,
-  rw shrink,
-end
+/-- The `rotl7` operation will get the result of `mod1` as an input and return an `r₁` object of 
+the `Type u` category. -/
+variable rotl7 : m₁ ⟶ r₁
 
-/-- Return `(y0, y3)` given an input vector `(y0, y1, y2, y3)` and a `wordType` that in this case 
-will be ignored but it is here to be compatible with other buildmod functions. -/
-def buildmod1 : vecType → wordType → wordType × wordType
-| input _ := (value_at_functor F input 0, value_at_functor F input 3)
+/-- The result of `xor1` operation betwen `y₁` and `r₁` is an object of the `Type u` category. -/
+constant z₁ : Type u
 
-/-- Return `(y1, rotlres)` given an input vector `(y0, y1, y2, y3)` and `rotlres`. -/
-def buildxor1 : vecType → wordType → wordType × wordType
-| input b := (value_at_functor F input 1, b)
+/-- The `xor1` operation return `z₁`. -/
+variable xor1 : (y₀y₁y₂y₃ ⟶ y₁) × r₁ ⟶ z₁
 
-/-- z₁ = y₁ ⊕ ((y₀ + y₃) <<< 7) -/
-def z1 (input : vecType) := ↾ buildmod1 F input ≫ mod ≫ rotl7 ≫ buildxor1 F input ≫ xor
+/-- The response of the `mod2` operation as an object of the `Type u` category. -/
+constant m₂ : Type u
 
-/-- Return `(z1, y0)` given an input vector `(y0, y1, y2, y3)` and `z1`. -/
-def buildmod2 : vecType → wordType → wordType × wordType
-| input z1 := (z1, value_at_functor F input 0)
+/-- The `mod2` relation given `z₁` and `y₀` objects. -/
+variable mod2 : z₁ × (y₀y₁y₂y₃ ⟶ y₀) ⟶ m₂
 
-/-- Return `(y2, rotlres)` given an input vector `(y0, y1, y2, y3)` and `rotlres`. -/
-def buildxor2 : vecType → wordType → wordType × wordType
-| input b := (value_at_functor F input 2, b)
+/-- The response of a `rotl9` operation as an object of the `Type u` category. -/
+variable r₂ : Type u
 
-/-- z₂ = y₂ ⊕ ((z₁ + y₀) <<< 9) -/
-def z2 (input : vecType) := ↾ buildmod2 F input ≫ mod ≫ rotl9 ≫ buildxor2 F input ≫ xor
+/-- The `rotl9` operation will get the result of `mod2` as an input and return an `r₂` object of 
+the `Type u` category. -/
+variable rotl9 : m₂ ⟶ r₂
 
-/-- Return `(z2, z1)` given an input vector `(y0, y1, y2, y3)`, `z2` and `z1`. -/
-def buildmod3 : vecType → wordType → wordType → wordType × wordType
-| input z2 z1 := (z2, z1)
+/-- The result of `xor2` operation betwen `y₁` and `r₂` is an object of the `Type u` category. -/
+constant z₂ : Type u
 
-/-- Return `(y3, rotlres)` given an input vector `(y0, y1, y2, y3)` and `rotlres`. -/
-def buildxor3 : vecType → wordType → wordType × wordType
-| input b := (value_at_functor F input 3, b)
+/-- The `xor2` operation return `z₂`. -/
+constant xor2 : (y₀y₁y₂y₃ ⟶ y₂) × r₂ ⟶ z₂
 
-/-- z₃ = y₃ ⊕ ((z₂ + z₁) <<< 13) -/
-def z3 (input : vecType) :=
-  ↾ buildmod3 input (z2 F input (z1 F input (bitvec.zero word_len))) ≫ mod ≫ rotl13 ≫ buildxor3 F input ≫ xor
+/-- The response of the `mod3` operation as an object of the `Type u` category. -/
+constant m₃ : Type u
 
-/-- Return `(z3, z2)` given an input vector `(y0, y1, y2, y3)`, `z3` and `z2`. -/
-def buildmod0 : vecType → wordType → wordType → wordType × wordType
-| input z3 z2 := (z3 , z2)
+/-- The `mod3` relation given `z₂` and `z₁` objects. -/
+variable mod3 : z₂ × z₁ ⟶ m₃
 
-/-- Return `(y0, rotlres)` given an input vector `(y0, y1, y2, y3)` and `rotlres`. -/
-def buildxor0 : vecType → wordType → wordType × wordType
-| input b := (value_at_functor F input 0, b)
+/-- The response of a `rotl13` operation as an object of the `Type u` category. -/
+variable r₃ : Type u
 
-/-- z₀ = y₀ ⊕ ((z₃ + z₂) <<< 18) -/
-def z0 (input : vecType) := 
-  ↾ buildmod0 input (z2 F input (z1 F input (bitvec.zero word_len))) ≫ mod ≫ rotl18 ≫ buildxor0 F input ≫ xor
+/-- The `rotl13` operation will get the result of `mod3` as an input and return an `r₃` object of 
+the `Type u` category. -/
+variable rotl13 : m₃ ⟶ r₃
 
-/- The full quarterround output built from its components in index order. -/
-def quarterround (input : vecType) := (
-  z0 F input (z3 F input (z1 F input 0)),
-  z1 F input 0,
-  z2 F input (z1 F input 0),
-  z3 F input (z1 F input 0)
-)
+/-- The result of `xor3` operation betwen `y₃` and `r₃` is an object of the `Type u` category. -/
+constant z₃ : Type u
 
--- The `quarterround` function has an inverse.
-variable [is_iso (↾ quarterround F)]
+/-- The `xor3` operation return `z₃`. -/
+constant xor3 : (y₀y₁y₂y₃ ⟶ y₃) × r₃ ⟶ z₃
 
-/- `quarterround⁻¹` is the inverse function given `quarterround` is isomorphic. -/
-noncomputable def quarterround_inv := inv ↾ quarterround F
+/-- The response of the `mod0` operation as an object of the `Type u` category. -/
+constant m₀ : Type u
 
-local notation `quarterround⁻¹` := quarterround_inv
+/-- The `mod0` relation given `z₃` and `z₂` objects. -/
+constant mod0 : z₃ × z₂ ⟶ m₀
 
-/-- `quarterround` and `quarterround⁻¹` are isomorphic. -/
-variable I : quarterround F ≅ quarterround_inv F
+/-- The response of a `rotl18` operation as an object of the `Type u` category. -/
+constant r₀ : Type u
 
-/-- `quarterround` followed by `quarterround⁻¹` is the identity, so `quarterround⁻¹` is the inverse. -/
-lemma is_inverse : I.hom ≫ I.inv = 𝟙 (quarterround F) := by rw [iso.hom_inv_id]
+/-- The `rotl18` operation will get the result of `mod0` as an input and return an `r₀` object of 
+the `Type u` category. -/
+constant rotl18 : m₀ ⟶ r₀
+
+/-- The result of `xor0` operation betwen `y₀` and `r₀` is an object of the `Type u` category. -/
+constant z₀ : Type u
+
+/-- The `xor0` operation return `z₀`. -/
+constant xor0 : (y₀y₁y₂y₃ ⟶ y₀) × r₀ ⟶ z₀
+
+/-- The result of a full `quarterround` operation. -/
+constant z₀z₁z₂z₃ : Type u
+
+/-- Convert an object of `TYpe u` into another object of `Type u`. -/
+constant quarterround : y₀y₁y₂y₃ ⟶ z₀z₁z₂z₃
+
 
 end quarterround
