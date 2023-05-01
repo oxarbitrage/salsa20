@@ -72,35 +72,37 @@ the `Type u` category. -/
 variable rotl13 : m₃ ⟶ r₃
 
 /-- The result of `xor3` operation betwen `y₃` and `r₃` is an object of the `Type u` category. -/
-constant z₃ : Type u
+variable z₃ : Type u
 
 /-- The `xor3` operation return `z₃`. -/
-constant xor3 : (y₀y₁y₂y₃ ⟶ y₃) × r₃ ⟶ z₃
+variable xor3 : (y₀y₁y₂y₃ ⟶ y₃) × r₃ ⟶ z₃
 
 /-- The response of the `mod0` operation as an object of the `Type u` category. -/
 constant m₀ : Type u
 
 /-- The `mod0` relation given `z₃` and `z₂` objects. -/
-constant mod0 : z₃ × z₂ ⟶ m₀
+variable mod0 : z₃ × z₂ ⟶ m₀
 
 /-- The response of a `rotl18` operation as an object of the `Type u` category. -/
-constant r₀ : Type u
+variable r₀ : Type u
 
 /-- The `rotl18` operation will get the result of `mod0` as an input and return an `r₀` object of 
 the `Type u` category. -/
-constant rotl18 : m₀ ⟶ r₀
+variable rotl18 : m₀ ⟶ r₀
 
 /-- The result of `xor0` operation betwen `y₀` and `r₀` is an object of the `Type u` category. -/
-constant z₀ : Type u
+variable z₀ : Type u
 
 /-- The `xor0` operation return `z₀`. -/
-constant xor0 : (y₀y₁y₂y₃ ⟶ y₀) × r₀ ⟶ z₀
+variable xor0 : (y₀y₁y₂y₃ ⟶ y₀) × r₀ ⟶ z₀
 
 /-- The result of a full `quarterround` operation. -/
-constant z₀z₁z₂z₃ : Type u
+variable z₀z₁z₂z₃ : Type u
 
-/-- Convert an object of `TYpe u` into another object of `Type u`. -/
+/-- Convert an object of `Type u` into another object of `Type u`. -/
 constant quarterround : y₀y₁y₂y₃ ⟶ z₀z₁z₂z₃
 
+/-- Quarterround is isomorphic. -/
+constant quarterround_iso : y₀y₁y₂y₃ ≅ z₀z₁z₂z₃
 
 end quarterround

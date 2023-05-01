@@ -1,105 +1,171 @@
-import quarterround
-
-import category_theory.category.basic
 import category_theory.core
-
-open quarterround
-
-open category_theory
-open_locale category_theory.Type
-
 
 namespace rowround
 
-variables [category (wordType)]
+universe u
 
 /-!
 # Rowround
 
-The `rowround` function takes a `matrixType` (4 by 4 matrix) and return a new `matrixType`
-after appliying the rowround diagram.
+
+We follow the flow of the rowround graph to define objects and relations.
 
 - [Rowround Diagram](https://oxarbitrage.github.io/salsa20-docs/diagrams/rowround.html)
 -/
 
-/-- There is a functor between `vecType` and `wordType`. -/
-variables (F1 : vecType ⥤ wordType)
+/-- Stand alone 16 objects that form a rowround input. -/ 
+variables y₀ y₁ y₂ y₃ y₄ y₅ y₆ y₇ y₈ y₉ y₁₀ y₁₁ y₁₂ y₁₃ y₁₄ : Type u
 
-/-- There is a functor between `matrixType` and `vecType`. -/
-variables (F2 : matrixType ⥤ vecType)
+/-- Represents a product of all rowround input objects. -/ 
+variable y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ : Type u
 
-local notation `ONE_WORD` := bitvec.one params.word_len 
-local notation `ONE_VEC` := (ONE_WORD, ONE_WORD, ONE_WORD, ONE_WORD) 
+/-!
+Rowround can be done in paralell. 
 
-/-- Get the first row of a `matrixType` and put it in on front of a new matrix, fill the rest of the matrix with ones and return it. -/
-def row1_f (input : matrixType) := (input.fst, ONE_VEC, ONE_VEC, ONE_VEC)
+First we define objects and morphisms that will split the input of 16 objects 
+into 4 sub products of 4 objects each. 
+-/
 
-/--  -/
-def row1 (input : matrixType) := F2.obj (row1_f input)
+/-- Represent the object formed by the first part of the input. -/
+variable y₀y₁y₂y₃ : Type u
 
-/-- Get the second row of a `matrixType` and put it in on front of a new matrix, fill the rest of the matrix with ones and return it. -/
-def row2_f (input : matrixType) := (input.snd.fst, ONE_VEC, ONE_VEC, ONE_VEC)
+/-- Given the full input as a product of 16, get the first 4 objects of it. -/
+variable first : y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ ⟶ y₀y₁y₂y₃
 
-/--  -/
-def row2 (input : matrixType) := F2.obj (row2_f input)
+/-- Represent the object formed by the second part of the input. -/
+variable y₄y₅y₆y₇ : Type u
 
-/-- Get the third row of a `matrixType` and put it in on front of a new matrix, fill the rest of the matrix with ones and return it. -/
-def row3_f (input : matrixType) := (input.snd.snd.fst, ONE_VEC, ONE_VEC, ONE_VEC)
+/-- Given the full input as a product of 16, get the second 4 objects of it. -/
+variable second : y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ ⟶ y₄y₅y₆y₇
 
-/--  -/
-def row3 (input : matrixType) := F2.obj (row3_f input)
+/-- Represent the object formed by the third part of the input. -/
+variable y₈y₉y₁₀y₁₁ : Type u
 
-/-- Return the fourth row of a `matrixType` -/
-def row4_f (input : matrixType) := (input.snd.snd.snd, ONE_VEC, ONE_VEC, ONE_VEC)
+/-- Given the full input as a product of 16, get the third 4 objects of it. -/
+variable third : y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ ⟶ y₈y₉y₁₀y₁₁
 
-/--  -/
-def row4 (input : matrixType) := F2.obj (row4_f input)
+/-- Represent the object formed by the fourth part of the input. -/
+variable y₁₂y₁₃y₁₄y₁₅ : Type u
+
+/-- Given the full input as a product of 16, get the third 4 objects of it. -/
+variable fourth : y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ ⟶ y₁₂y₁₃y₁₄y₁₅
+
+/-!
+Before we send the objects to `quarterround` we need to put them in specific orders.
+-/
+
+/-- Order the first product of objects in the needed position. 
+This is here for completness as the first product is already in the right order.  -/
+variable order1 : y₀y₁y₂y₃ ⟶ y₀y₁y₂y₃
+
+/-- The result of an `order2` operation. -/
+variable y₅y₆y₇y₄ : Type u
+
+/-- Order the second product of objects in the needed position. -/
+variable order2 : y₄y₅y₆y₇ ⟶ y₅y₆y₇y₄
+
+/-- The result of an `order3` operation. -/
+variable y₁₀y₁₁y₈y₉ : Type u
+
+/-- Order the third product of objects in the needed position. -/
+variable order3 : y₈y₉y₁₀y₁₁ ⟶ y₁₀y₁₁y₈y₉
+
+/-- The result of an `order4` operation. -/
+variable y₁₅y₁₂y₁₃y₁₄ : Type u
+
+/-- Order the fourth product objects in the needed position. -/
+variable order4 : y₁₂y₁₃y₁₄y₁₅ ⟶ y₁₅y₁₂y₁₃y₁₄
+
+/-!
+We now send ordered objects into `quarterround` operations and get the outputs.
+-/
+
+/-- The result of `quarterround1` operation. -/
+variable z₀z₁z₂z₃ : Type u
+
+/-- Apply `quarterround` to the first collection of object. -/
+variable quarterround1 : y₀y₁y₂y₃ ⟶ z₀z₁z₂z₃
+
+/-- Isomorphism between input and output `quarterround1` objects. -/
+variable quarterround1_is_iso : y₀y₁y₂y₃ ≅ z₀z₁z₂z₃
+
+/-- The result of `quarterround2` operation. -/
+variable z₅z₆z₇z₄ : Type u
+
+/-- Apply `quarterround` to the second collection of object. -/
+variable quarterround2 : y₅y₆y₇y₄ ⟶ z₅z₆z₇z₄
+
+/-- Isomorphism between input and output `quarterround2` objects. -/
+variable quarterround2_is_iso : y₅y₆y₇y₄ ≅ z₅z₆z₇z₄
+
+/-- The result of `quarterround3` operation. -/
+variable z₁₀z₁₁z₈z₉ : Type u
+
+/-- Apply `quarterround` to the third collection of object. -/
+variable quarterround3 : y₁₀y₁₁y₈y₉ ⟶ z₁₀z₁₁z₈z₉
+
+/-- Isomorphism between input and output `quarterround3` objects. -/
+variable quarterround3_is_iso : y₁₀y₁₁y₈y₉ ≅ z₁₀z₁₁z₈z₉
+
+/-- The result of `quarterround4` operation. -/
+variable z₁₅z₁₂z₁₃z₁₄ : Type u
+
+/-- Apply `quarterround` to the fourth collection of object. -/
+variable quarterround4 : y₁₅y₁₂y₁₃y₁₄ ⟶ z₁₅z₁₂z₁₃z₁₄
+
+/-- Isomorphism between input and output `quarterround4` objects. -/
+variable quarterround4_is_iso : z₁₅z₁₂z₁₃z₁₄ ≅ y₁₅y₁₂y₁₃y₁₄
+
+/-!
+  Inverses of the order operations.
+
+  After quarterround is applied we need to revert the positions modifictions we created in order functions.
+-/
 
 
-/-- Return `(y0, y1, y2, y3)` given `(y0, y1, y2, y3)`. This function is here
-for completness, there is no need to use it as the output of `row1` is already in order. -/
-def order1 : vecType → vecType 
-| input := input
+/-- `order1` and `order1⁻¹` outputs are isomrphic. -/
+variable order1_iso : z₀z₁z₂z₃ ≅ y₀y₁y₂y₃
 
-/-- Return `(y5, y6, y7, y4)` given `(y4, y5, y6, y7)`. -/
-def order2 : vecType → vecType
-| input := (input.snd.fst, input.snd.snd.fst, input.snd.snd.snd, input.fst)
+/-- The inverse of the `order1` operation given by the isomorphism. -/
+def order1_inv := order1_iso.inv
 
-/-- Return `(y10, y11, y8, y9)` given `(y8, y9, y10, y11)`. -/
-def order3 : vecType → vecType
-| input := (input.snd.snd.fst, input.snd.snd.snd, input.fst, input.snd.fst)
+/-- Output of `order2⁻¹` -/
+variable z₄z₅z₆z₇ : Type u
 
-/-- Return `(y15, y12, y13, y14)` given `(y12, y13, y14, y15)`. -/
-def order4 : vecType → vecType
-| input := (input.snd.snd.snd, input.fst, input.snd.fst, input.snd.snd.fst)
+/-- `order2` and `order2⁻¹` outputs are isomrphic. -/
+variable order2_iso : z₄z₅z₆z₇ ≅ y₄y₅y₆y₇
 
--- All order functions defined above have inverses.
-variables [is_iso( ↾ order1)] [is_iso( ↾ order2)] [is_iso( ↾ order3)] [is_iso( ↾ order4)]
+/-- The inverse of the `order2` operation given by the isomorphism. -/
+def order2_inv := order2_iso.inv
 
-/-- There is a functor between `vecType` and `wordType`. -/
-variables (F : vecType ⥤ wordType)
+/-- Output of `order3⁻¹` -/
+variable z₈z₉z₁₀z₁₁ : Type u
 
-/-- Given a `matrixType` input `Y` return an output `Z` of the same type applying the rowround diagram. -/
-noncomputable def rowround (input : matrixType) : matrixType := (
-  (↾ row1 F2 ≫ order1 ≫ quarterround F1 ≫ inv order1) input,
-  (↾ row2 F2 ≫ order2 ≫ quarterround F1 ≫ inv order2) input,
-  (↾ row3 F2 ≫ order3 ≫ quarterround F1 ≫ inv order3) input,
-  (↾ row4 F2 ≫ order4 ≫ quarterround F1 ≫ inv order4) input
-)
+/-- `order3` and `order3⁻¹` outputs are isomrphic. -/
+variable order3_iso : z₈z₉z₁₀z₁₁ ≅ y₈y₉y₁₀y₁₁
 
-/- `rowround` function has an inverse -/
-variables [is_iso (↾ rowround F1 F2)]
+/-- The inverse of the `order3` operation given by the isomorphism. -/
+def order3_inv := order3_iso.inv
 
-/- `rowround⁻¹` is the inverse given `rowround` is isomorphic. -/
-noncomputable def rowround_inv := inv ↾ rowround F1 F2
+/-- Output of `order4⁻¹` -/
+variable z₁₂z₁₃z₁₄z₁₅ : Type u
 
-local notation `rowround⁻¹` := rowround_inv
+/-- `order4` and `order4⁻¹` outputs are isomrphic. -/
+variable order4_iso : z₁₂z₁₃z₁₄z₁₅ ≅ y₁₂y₁₃y₁₄y₁₅
 
-/-- `rowround` and `rowround⁻¹` are isomorphic. -/
-variable I : rowround F1 F2 ≅ rowround⁻¹ F1 F2
+/-- The inverse of the `order4` operation given by the isomorphism. -/
+def order4_inv := order4_iso.inv
 
-/-- `rowround` followed by `rowround⁻¹` is the identity, so `rowround⁻¹` is the inverse. -/
-lemma is_inverse : I.hom ≫ I.inv = 𝟙 (rowround F1 F2) := by rw [iso.hom_inv_id]
+/-!
+Finally we join all the pieces together to form the 16 objects product that represent the output of
+the rowround system.
+-/
+
+/-- The rowround complete output as a product. -/
+variable z₀z₁z₂z₃z₄z₅z₆z₇z₈z₉z₁₀z₁₁z₁₂z₁₃z₁₄z₁₅ : Type u
+
+/-- Join the four paralell pieces together to form the rowround output. -/
+variable join : (z₀z₁z₂z₃ × z₄z₅z₆z₇ × z₈z₉z₁₀z₁₁ × z₁₂z₁₃z₁₄z₁₅) ⟶ z₀z₁z₂z₃z₄z₅z₆z₇z₈z₉z₁₀z₁₁z₁₂z₁₃z₁₄z₁₅
 
 
 end rowround
