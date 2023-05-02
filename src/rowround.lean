@@ -13,7 +13,7 @@ We follow the flow of the rowround graph to define objects and relations.
 - [Rowround Diagram](https://oxarbitrage.github.io/salsa20-docs/diagrams/rowround.html)
 -/
 
-/-- Stand alone 16 objects that form a rowround input. -/ 
+/-- Stand alone 16 objects that form a rowround input. -/
 variables y₀ y₁ y₂ y₃ y₄ y₅ y₆ y₇ y₈ y₉ y₁₀ y₁₁ y₁₂ y₁₃ y₁₄ : Type u
 
 /-- Represents a product of all rowround input objects. -/ 
@@ -23,98 +23,95 @@ variable y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y�
 Rowround can be done in paralell. 
 
 First we define objects and morphisms that will split the input of 16 objects 
-into 4 sub products of 4 objects each. 
+into 4 sub products of 4 objects each.
+
+The full input `y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅` is isomorphic with each of its 4 slices.
+This is because the inverse can be done by just putting the slice back in the input without doing
+anything else.
 -/
 
 /-- Represent the object formed by the first part of the input. -/
 variable y₀y₁y₂y₃ : Type u
 
-/-- Given the full input as a product of 16, get the first 4 objects of it. -/
-variable first : y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ ⟶ y₀y₁y₂y₃
+/-- Given the rowround input as a product of 16, get the first 4 objects from it. -/
+def first (I : y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ ≅ y₀y₁y₂y₃) := I.hom
 
 /-- Represent the object formed by the second part of the input. -/
 variable y₄y₅y₆y₇ : Type u
 
-/-- Given the full input as a product of 16, get the second 4 objects of it. -/
-variable second : y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ ⟶ y₄y₅y₆y₇
+/-- Given the rowround input as a product of 16, get the second 4 objects from it. -/
+def second (I : y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ ≅ y₄y₅y₆y₇) := I.hom
 
 /-- Represent the object formed by the third part of the input. -/
 variable y₈y₉y₁₀y₁₁ : Type u
 
-/-- Given the full input as a product of 16, get the third 4 objects of it. -/
-variable third : y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ ⟶ y₈y₉y₁₀y₁₁
+/-- Given the rowround input as a product of 16, get the third 4 objects from it. -/
+def third (I : y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ ≅ y₈y₉y₁₀y₁₁) := I.hom
 
 /-- Represent the object formed by the fourth part of the input. -/
 variable y₁₂y₁₃y₁₄y₁₅ : Type u
 
-/-- Given the full input as a product of 16, get the third 4 objects of it. -/
-variable fourth : y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ ⟶ y₁₂y₁₃y₁₄y₁₅
+/-- Given the rowround input as a product of 16, get the third 4 objects from it. -/
+def fourth (I : y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ ≅ y₁₂y₁₃y₁₄y₁₅) := I.hom
 
 /-!
 Before we send the objects to `quarterround` we need to put them in specific orders.
+
+Again here we define the order morphisms from the isomorphisms between the input 4 objects product and
+ordered output. 
 -/
 
 /-- Order the first product of objects in the needed position. 
 This is here for completness as the first product is already in the right order.  -/
-variable order1 : y₀y₁y₂y₃ ⟶ y₀y₁y₂y₃
+def order1 (I : y₀y₁y₂y₃ ≅ y₀y₁y₂y₃) := I.hom
 
 /-- The result of an `order2` operation. -/
 variable y₅y₆y₇y₄ : Type u
 
 /-- Order the second product of objects in the needed position. -/
-variable order2 : y₄y₅y₆y₇ ⟶ y₅y₆y₇y₄
+def order2 (I : y₄y₅y₆y₇ ≅ y₅y₆y₇y₄) := I.hom
 
 /-- The result of an `order3` operation. -/
 variable y₁₀y₁₁y₈y₉ : Type u
 
 /-- Order the third product of objects in the needed position. -/
-variable order3 : y₈y₉y₁₀y₁₁ ⟶ y₁₀y₁₁y₈y₉
+def order3 (I : y₈y₉y₁₀y₁₁ ≅ y₁₀y₁₁y₈y₉) := I.hom
 
 /-- The result of an `order4` operation. -/
 variable y₁₅y₁₂y₁₃y₁₄ : Type u
 
 /-- Order the fourth product objects in the needed position. -/
-variable order4 : y₁₂y₁₃y₁₄y₁₅ ⟶ y₁₅y₁₂y₁₃y₁₄
+def order4 (I : y₁₂y₁₃y₁₄y₁₅ ≅ y₁₅y₁₂y₁₃y₁₄) := I.hom
 
 /-!
 We now send ordered objects into `quarterround` operations and get the outputs.
+
+Here we use the isomrphic property of the `quarterround` operation assumed in `quarterround.lean`.
 -/
 
 /-- The result of `quarterround1` operation. -/
 variable z₀z₁z₂z₃ : Type u
 
 /-- Apply `quarterround` to the first collection of object. -/
-variable quarterround1 : y₀y₁y₂y₃ ⟶ z₀z₁z₂z₃
-
-/-- Isomorphism between input and output `quarterround1` objects. -/
-variable quarterround1_is_iso : y₀y₁y₂y₃ ≅ z₀z₁z₂z₃
+def quarterround1 (I : y₀y₁y₂y₃ ≅ z₀z₁z₂z₃) : y₀y₁y₂y₃ ⟶ z₀z₁z₂z₃ := I.hom
 
 /-- The result of `quarterround2` operation. -/
 variable z₅z₆z₇z₄ : Type u
 
 /-- Apply `quarterround` to the second collection of object. -/
-variable quarterround2 : y₅y₆y₇y₄ ⟶ z₅z₆z₇z₄
-
-/-- Isomorphism between input and output `quarterround2` objects. -/
-variable quarterround2_is_iso : y₅y₆y₇y₄ ≅ z₅z₆z₇z₄
+def quarterround2 (I : y₅y₆y₇y₄ ≅ z₅z₆z₇z₄) : y₅y₆y₇y₄ ⟶ z₅z₆z₇z₄ := I.hom
 
 /-- The result of `quarterround3` operation. -/
 variable z₁₀z₁₁z₈z₉ : Type u
 
 /-- Apply `quarterround` to the third collection of object. -/
-variable quarterround3 : y₁₀y₁₁y₈y₉ ⟶ z₁₀z₁₁z₈z₉
-
-/-- Isomorphism between input and output `quarterround3` objects. -/
-variable quarterround3_is_iso : y₁₀y₁₁y₈y₉ ≅ z₁₀z₁₁z₈z₉
+def quarterround3 (I : y₁₀y₁₁y₈y₉ ≅ z₁₀z₁₁z₈z₉) : y₁₀y₁₁y₈y₉ ⟶ z₁₀z₁₁z₈z₉ := I.hom
 
 /-- The result of `quarterround4` operation. -/
 variable z₁₅z₁₂z₁₃z₁₄ : Type u
 
 /-- Apply `quarterround` to the fourth collection of object. -/
-variable quarterround4 : y₁₅y₁₂y₁₃y₁₄ ⟶ z₁₅z₁₂z₁₃z₁₄
-
-/-- Isomorphism between input and output `quarterround4` objects. -/
-variable quarterround4_is_iso : z₁₅z₁₂z₁₃z₁₄ ≅ y₁₅y₁₂y₁₃y₁₄
+def quarterround4 (I : y₁₅y₁₂y₁₃y₁₄ ≅ z₁₅z₁₂z₁₃z₁₄) : y₁₅y₁₂y₁₃y₁₄ ⟶ z₁₅z₁₂z₁₃z₁₄ := I.hom
 
 /-!
   Inverses of the order operations.
@@ -122,39 +119,26 @@ variable quarterround4_is_iso : z₁₅z₁₂z₁₃z₁₄ ≅ y₁₅y₁₂y
   After quarterround is applied we need to revert the positions modifictions we created in order functions.
 -/
 
-
-/-- `order1` and `order1⁻¹` outputs are isomrphic. -/
-variable order1_iso : z₀z₁z₂z₃ ≅ y₀y₁y₂y₃
-
 /-- The inverse of the `order1` operation given by the isomorphism. -/
-def order1_inv := order1_iso.inv
+def order1_inv (I : z₀z₁z₂z₃ ≅ z₀z₁z₂z₃) := I.hom
 
 /-- Output of `order2⁻¹` -/
 variable z₄z₅z₆z₇ : Type u
 
-/-- `order2` and `order2⁻¹` outputs are isomrphic. -/
-variable order2_iso : z₄z₅z₆z₇ ≅ y₄y₅y₆y₇
-
 /-- The inverse of the `order2` operation given by the isomorphism. -/
-def order2_inv := order2_iso.inv
+def order2_inv (I : z₅z₆z₇z₄ ≅ z₄z₅z₆z₇) := I.hom
 
 /-- Output of `order3⁻¹` -/
 variable z₈z₉z₁₀z₁₁ : Type u
 
-/-- `order3` and `order3⁻¹` outputs are isomrphic. -/
-variable order3_iso : z₈z₉z₁₀z₁₁ ≅ y₈y₉y₁₀y₁₁
-
 /-- The inverse of the `order3` operation given by the isomorphism. -/
-def order3_inv := order3_iso.inv
+def order3_inv (I : z₁₀z₁₁z₈z₉ ≅ z₈z₉z₁₀z₁₁) := I.hom
 
 /-- Output of `order4⁻¹` -/
 variable z₁₂z₁₃z₁₄z₁₅ : Type u
 
-/-- `order4` and `order4⁻¹` outputs are isomrphic. -/
-variable order4_iso : z₁₂z₁₃z₁₄z₁₅ ≅ y₁₂y₁₃y₁₄y₁₅
-
 /-- The inverse of the `order4` operation given by the isomorphism. -/
-def order4_inv := order4_iso.inv
+def order4_inv (I : z₁₅z₁₂z₁₃z₁₄ ≅ z₁₂z₁₃z₁₄z₁₅) := I.hom
 
 /-!
 Finally we join all the pieces together to form the 16 objects product that represent the output of
@@ -165,7 +149,8 @@ the rowround system.
 variable z₀z₁z₂z₃z₄z₅z₆z₇z₈z₉z₁₀z₁₁z₁₂z₁₃z₁₄z₁₅ : Type u
 
 /-- Join the four paralell pieces together to form the rowround output. -/
-variable join : (z₀z₁z₂z₃ × z₄z₅z₆z₇ × z₈z₉z₁₀z₁₁ × z₁₂z₁₃z₁₄z₁₅) ⟶ z₀z₁z₂z₃z₄z₅z₆z₇z₈z₉z₁₀z₁₁z₁₂z₁₃z₁₄z₁₅
+def join (I : z₀z₁z₂z₃ × z₄z₅z₆z₇ × z₈z₉z₁₀z₁₁ × z₁₂z₁₃z₁₄z₁₅ ≅ z₀z₁z₂z₃z₄z₅z₆z₇z₈z₉z₁₀z₁₁z₁₂z₁₃z₁₄z₁₅) :=
+  I.hom
 
 
 end rowround
