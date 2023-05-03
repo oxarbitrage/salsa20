@@ -1,29 +1,10 @@
 import doubleround
 
-import category_theory.core
-import category_theory.monad.basic
-
 open doubleround
-open rowround
-open params
-open types
-
-open category_theory
-open_locale category_theory.Type
-open category_theory.monad
 
 namespace core
 
-variable [category (wordType)]
-
---
-variables [is_iso( ↾ order1)] [is_iso( ↾ order2)] [is_iso( ↾ order3)] [is_iso( ↾ order4)]
-
-/-- There is a functor between `vecType` and `wordType`. -/
-variables (F1 : vecType ⥤ wordType)
-
-/-- There is a functor between `matrixType` and `vecType`. -/
-variables (F2 : matrixType ⥤ vecType)
+universe u
 
 /-!
   # Core
@@ -33,57 +14,24 @@ variables (F2 : matrixType ⥤ vecType)
   - [Core Diagram](https://oxarbitrage.github.io/salsa20-docs/diagrams/core.html)
 -/
 
-/-- Apply double round 10 times to an input. -/
-noncomputable def doubleround10 (X : matrixType) :=
-  (↾ doubleround F1 F2 ≫ ↾ doubleround F1 F2 ≫ ↾ doubleround F1 F2 ≫ ↾ doubleround F1 F2 ≫ ↾ doubleround F1 F2 ≫ 
-  ↾ doubleround F1 F2 ≫ ↾ doubleround F1 F2 ≫ ↾ doubleround F1 F2 ≫ ↾ doubleround F1 F2 ≫ ↾ doubleround F1 F2) X
+/-- Input object. -/
+variable x₀x₁x₂x₃x₄x₅x₆x₇x₈x₉x₁₀x₁₁x₁₂x₁₃x₁₄x₁₅ : Type u
 
-variables [is_iso (↾ doubleround10 F1 F2)]
+/-- Middle state, after doubleround10 was applied but not modmatrix yet. -/
+variable y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ : Type u
 
-/- The inverse of `doubleround10`. -/
-noncomputable def doubleround10_inv := inv ↾ doubleround10 F1 F2
+/-- The mod_matrix output. -/
+variable z₀z₁z₂z₃z₄z₅z₆z₇z₈z₉z₁₀z₁₁z₁₂z₁₃z₁₄z₁₅ : Type u
 
-/- Just some notation for inverse. -/
-local notation `doubleround10⁻¹` := doubleround10_inv
+/-- Do modulo operation with the input and the doubleround10 output. -/
+def mod_matrix := (x₀x₁x₂x₃x₄x₅x₆x₇x₈x₉x₁₀x₁₁x₁₂x₁₃x₁₄x₁₅ × y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅) ⟶ 
+  z₀z₁z₂z₃z₄z₅z₆z₇z₈z₉z₁₀z₁₁z₁₂z₁₃z₁₄z₁₅
 
-/-- `doubleround` and `doubleround⁻¹` are isomorphic. -/
-variable I : doubleround10 F1 F2 ≅ doubleround10⁻¹ F1 F2
+#check mod_matrix x₀x₁x₂x₃x₄x₅x₆x₇x₈x₉x₁₀x₁₁x₁₂x₁₃x₁₄x₁₅ y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ z₀z₁z₂z₃z₄z₅z₆z₇z₈z₉z₁₀z₁₁z₁₂z₁₃z₁₄z₁₅
 
-/-- `doubleround10` followed by `doubleround10⁻¹` is the identity, so `doubleround10⁻¹` is the inverse. -/
-lemma is_inverse : I.hom ≫ I.inv = 𝟙 (doubleround10 F1 F2) := by rw [iso.hom_inv_id]
+/-- Core is actually just calling `mod_matrix`. -/
+def core := mod_matrix x₀x₁x₂x₃x₄x₅x₆x₇x₈x₉x₁₀x₁₁x₁₂x₁₃x₁₄x₁₅ y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ z₀z₁z₂z₃z₄z₅z₆z₇z₈z₉z₁₀z₁₁z₁₂z₁₃z₁₄z₁₅
 
-/-- Do modulo addition for each matrix item. -/
-def mod_matrix (X Y : matrixType) := (
-  (
-    operations.mod (X.fst.fst, Y.fst.fst),
-    operations.mod (X.fst.snd.fst, Y.fst.snd.fst),
-    operations.mod (X.fst.snd.snd.fst, Y.fst.snd.snd.fst),
-    operations.mod (X.fst.snd.snd.snd, Y.fst.snd.snd.snd)
-  ),
-  (
-    operations.mod (X.snd.fst.fst, Y.snd.fst.fst),
-    operations.mod (X.snd.fst.snd.fst, Y.snd.fst.snd.fst),
-    operations.mod (X.snd.fst.snd.snd.fst, Y.snd.fst.snd.snd.fst),
-    operations.mod (X.snd.fst.snd.snd.snd, Y.snd.fst.snd.snd.snd)
-  ),
-  (
-    operations.mod (X.snd.snd.fst.fst, Y.snd.snd.fst.fst),
-    operations.mod (X.snd.snd.fst.snd.fst, Y.snd.snd.fst.snd.fst),
-    operations.mod (X.snd.snd.fst.snd.snd.fst, Y.snd.snd.fst.snd.snd.fst),
-    operations.mod (X.snd.snd.fst.snd.snd.snd, Y.snd.snd.fst.snd.snd.snd)
-  ),
-  (
-    operations.mod (X.snd.snd.snd.fst, Y.snd.snd.snd.fst),
-    operations.mod (X.snd.snd.snd.snd.fst, Y.snd.snd.snd.snd.fst),
-    operations.mod (X.snd.snd.snd.snd.snd.fst, Y.snd.snd.snd.snd.snd.fst),
-    operations.mod (X.snd.snd.snd.snd.snd.snd, Y.snd.snd.snd.snd.snd.snd)
-  )
-)
-
--- TODO: `matrixType` with addition (`modmatrix`) form a monoid, monoids has no inverse. 
-
-/-- Do addition modulo 2³² between the input and the `doubleround10` of the input. -/
-noncomputable def core (X : matrixType) : matrixType := mod_matrix (doubleround10 F1 F2 X) X
-
+#check core x₀x₁x₂x₃x₄x₅x₆x₇x₈x₉x₁₀x₁₁x₁₂x₁₃x₁₄x₁₅ y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ z₀z₁z₂z₃z₄z₅z₆z₇z₈z₉z₁₀z₁₁z₁₂z₁₃z₁₄z₁₅
 
 end core
