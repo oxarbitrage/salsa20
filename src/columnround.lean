@@ -2,52 +2,40 @@ import rowround
 
 open rowround
 
-open category_theory
-open_locale category_theory.Type
-open_locale matrix
-
-
 namespace columnround
 
-variables [category (wordType)]
+universe u
 
 /-!
-# Column round
+# Columnround
 
-The `columnround` function takes a `matrixType` (tuple of 4 `vecType`s) and return a new `matrixType`
-after following the diagram.
+The `columnround` system using the equivalent formula.
 
 - [Columnround Diagram](https://oxarbitrage.github.io/salsa20-docs/diagrams/columnround.html)
+
 -/
 
+/-- Represents a product of all columnround input objects. -/
+variable x₀x₁x₂x₃x₄x₅x₆x₇x₈₉x₁₀x₁₁x₁₂x₁₃x₁₄x₁₅ : Type u
 
-/-- Transpose of the input matrix. TODO: implement. -/
-def transpose (input : matrixType) : matrixType := input 
+/-- The transpose of the input. -/
+variable x₀x₄x₈x₁₂x₁x₅x₉x₁₃x₂x₆x₁₀x₁₄x₃x₇x₁₁x₁₅ : Type u
 
---
-variables [is_iso( ↾ order1)] [is_iso( ↾ order2)] [is_iso( ↾ order3)] [is_iso( ↾ order4)]
+variable I1 : x₀x₁x₂x₃x₄x₅x₆x₇x₈₉x₁₀x₁₁x₁₂x₁₃x₁₄x₁₅ ≅ x₀x₄x₈x₁₂x₁x₅x₉x₁₃x₂x₆x₁₀x₁₄x₃x₇x₁₁x₁₅
 
-/-- There is a functor between `vecType` and `wordType`. -/
-variables (F1 : vecType ⥤ wordType)
+variable y₀y₄y₈y₁₂y₁y₅y₉y₁₃y₂y₆y₁₀y₁₄y₃y₇y₁₁y₁₅ : Type u
 
-/-- There is a functor between `matrixType` and `vecType`. -/
-variables (F2 : matrixType ⥤ vecType)
+variable I2 : x₀x₄x₈x₁₂x₁x₅x₉x₁₃x₂x₆x₁₀x₁₄x₃x₇x₁₁x₁₅ ≅ y₀y₄y₈y₁₂y₁y₅y₉y₁₃y₂y₆y₁₀y₁₄y₃y₇y₁₁y₁₅
 
-/-- `columnround` defined as a `rowround` of the transpose of the input. -/ 
-noncomputable def columnround (input: matrixType) := (rowround F1 F2) (transpose input) 
+/-- We use the equivalent formula from the spec and run `rowround` with a transposed input. 
+This will return the output unsorted.  -/
+def columnround_unsorted := rowround x₀x₄x₈x₁₂x₁x₅x₉x₁₃x₂x₆x₁₀x₁₄x₃x₇x₁₁x₁₅ y₀y₄y₈y₁₂y₁y₅y₉y₁₃y₂y₆y₁₀y₁₄y₃y₇y₁₁y₁₅
 
-variable [is_iso (↾ columnround F1 F2)]
+variable y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ : Type u
 
-/-- `columnround⁻¹` is just the inverse given `columnround` is isomorphic. -/
-noncomputable def columnround_inv := inv ↾ columnround F1 F2
+variable I3 : y₀y₄y₈y₁₂y₁y₅y₉y₁₃y₂y₆y₁₀y₁₄y₃y₇y₁₁y₁₅ ≅ y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅
 
-local notation `columnround⁻¹` := columnround_inv
-
-/-- `columnround` and `columnround⁻¹` are isomorphic. -/
-variable I : columnround F1 F2 ≅ columnround⁻¹ F1 F2
-
-/-- `columnround` followed by `columnround⁻¹` is the identity, so `columnround⁻¹` is the inverse. -/
-lemma is_inverse : I.hom ≫ I.inv = 𝟙 (columnround F1 F2) := by rw [iso.hom_inv_id]
-
+/-- There is an isomoprhism between the unsorted and the unsorted output. We use it to return the fianl columnround output. -/
+def columnround := columnround_unsorted x₀x₄x₈x₁₂x₁x₅x₉x₁₃x₂x₆x₁₀x₁₄x₃x₇x₁₁x₁₅ y₀y₄y₈y₁₂y₁y₅y₉y₁₃y₂y₆y₁₀y₁₄y₃y₇y₁₁y₁₅ I2 ≫ I3.hom
 
 end columnround

@@ -16,7 +16,7 @@ We follow the flow of the rowround graph to define objects and relations.
 /-- Stand alone 16 objects that form a rowround input. -/
 variables y₀ y₁ y₂ y₃ y₄ y₅ y₆ y₇ y₈ y₉ y₁₀ y₁₁ y₁₂ y₁₃ y₁₄ : Type u
 
-/-- Represents a product of all rowround input objects. -/ 
+/-- Represents a product of all rowround input objects. -/
 variable y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ : Type u
 
 /-!
@@ -35,6 +35,12 @@ variable y₀y₁y₂y₃ : Type u
 
 /-- Given the rowround input as a product of 16, get the first 4 objects from it. -/
 def first (I : y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ ≅ y₀y₁y₂y₃) := I.hom
+
+lemma first_is_invertible (I : y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ ≅ y₀y₁y₂y₃) : 
+  I.hom ≫ I.inv = 𝟙 y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ :=
+begin
+  simp only [category_theory.iso.hom_inv_id],
+end
 
 /-- Represent the object formed by the second part of the input. -/
 variable y₄y₅y₆y₇ : Type u
@@ -151,6 +157,12 @@ variable z₀z₁z₂z₃z₄z₅z₆z₇z₈z₉z₁₀z₁₁z₁₂z₁₃z�
 /-- Join the four paralell pieces together to form the rowround output. -/
 def join (I : z₀z₁z₂z₃ × z₄z₅z₆z₇ × z₈z₉z₁₀z₁₁ × z₁₂z₁₃z₁₄z₁₅ ≅ z₀z₁z₂z₃z₄z₅z₆z₇z₈z₉z₁₀z₁₁z₁₂z₁₃z₁₄z₁₅) :=
   I.hom
+
+def rowround (I : y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ ≅ z₀z₁z₂z₃z₄z₅z₆z₇z₈z₉z₁₀z₁₁z₁₂z₁₃z₁₄z₁₅) :=
+  I.hom
+
+def rowround_inv (I : y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ ≅ z₀z₁z₂z₃z₄z₅z₆z₇z₈z₉z₁₀z₁₁z₁₂z₁₃z₁₄z₁₅) :=
+  I.inv
 
 
 end rowround
