@@ -1,54 +1,44 @@
 import columnround
 
-import category_theory.core
-
-open params
-open rowround
 open columnround
-
-open category_theory
-open_locale category_theory.Type
-open_locale matrix
-
+open rowround
 
 namespace doubleround
 
-variables [category (wordType)]
+universe u
 
 /-!
-# Double round
+# Doubleround
 
 The `doubleround` function takes a `matrixType` and return a new `matrixType` applying the diagram.
 
 - [Doubleround Diagram](https://oxarbitrage.github.io/salsa20-docs/diagrams/doubleround.html)
-
 -/
 
--- 
-variables [is_iso( ↾ order1)] [is_iso( ↾ order2)] [is_iso( ↾ order3)] [is_iso( ↾ order4)]
+/-- Input object. -/
+variable x₀x₁x₂x₃x₄x₅x₆x₇x₈x₉x₁₀x₁₁x₁₂x₁₃x₁₄x₁₅ : Type u
 
+/-- Middle state, after columnround was applied but not rowround yet. -/
+variable y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ : Type u
 
-/-- There is a functor between `vecType` and `wordType`. -/
-variables (F1 : vecType ⥤ wordType)
+/-- The isomorphism between columnround input and output. -/
+variable I1 : x₀x₁x₂x₃x₄x₅x₆x₇x₈x₉x₁₀x₁₁x₁₂x₁₃x₁₄x₁₅ ≅ y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅
 
-/-- There is a functor between `matrixType` and `vecType`. -/
-variables (F2 : matrixType ⥤ vecType)
+/-- The isomorphism between columnround output and rowround input. -/
+variable I2 : y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ ≅ y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅
 
-/-- `doubleround` is `columnround` followed by `rowround`. -/
-noncomputable def doubleround := (↾ rowround F1 F2 ≫ ↾ columnround F1 F2)
+variable z₀z₁z₂z₃z₄z₅z₆z₇z₈z₉z₁₀z₁₁z₁₂z₁₃z₁₄z₁₅ : Type u
 
-variable [is_iso (↾ doubleround F1 F2)]
+/-- The isomorphism between the rowround output and the doubleround output. -/
+variable I3 : y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ ≅ z₀z₁z₂z₃z₄z₅z₆z₇z₈z₉z₁₀z₁₁z₁₂z₁₃z₁₄z₁₅
 
-/-- `doubleround⁻¹` is just the inverse given `doubleround` is isomorphic. -/
-noncomputable def doubleround_inv := inv ↾ doubleround F1 F2
+#check rowround y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ z₀z₁z₂z₃z₄z₅z₆z₇z₈z₉z₁₀z₁₁z₁₂z₁₃z₁₄z₁₅ I3
 
-local notation `doubleround⁻¹` := doubleround_inv
+/-- The doubleround is columnround followed by rowround. -/
+def doubleround := (columnround x₀x₁x₂x₃x₄x₅x₆x₇x₈x₉x₁₀x₁₁x₁₂x₁₃x₁₄x₁₅ y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ I1
+  y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ I2) ≫ (rowround y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ z₀z₁z₂z₃z₄z₅z₆z₇z₈z₉z₁₀z₁₁z₁₂z₁₃z₁₄z₁₅ I3)
 
-/-- `doubleround` and `doubleround⁻¹` are isomorphic. -/
-variable I : doubleround F1 F2 ≅ doubleround⁻¹ F1 F2
-
-/-- `doubleround` followed by `doubleround⁻¹` is the identity, so `doubleround⁻¹` is the inverse. -/
-lemma is_inverse : I.hom ≫ I.inv = 𝟙 (doubleround F1 F2) := by rw [iso.hom_inv_id]
+#check doubleround x₀x₁x₂x₃x₄x₅x₆x₇x₈x₉x₁₀x₁₁x₁₂x₁₃x₁₄x₁₅ y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ I1 I2 z₀z₁z₂z₃z₄z₅z₆z₇z₈z₉z₁₀z₁₁z₁₂z₁₃z₁₄z₁₅ I3
 
 
 end doubleround
