@@ -50,8 +50,13 @@ def rotl7 (I : m₁ ≅ r₁) := I.hom
 /-- The result of `xor1` operation betwen `y₁` and `r₁` is an object of the `Type u` category. -/
 variable z₁ : Type u
 
-/-- The `xor1` operation return `z₁`. -/
-def xor1 (I0 : y₀y₁y₂y₃ ≅ y₁) := z₁
+def xor1_input := (I₁.hom, r₁)
+
+/-- The `xor1` operation takes `y1` and `r₁` to return `z₁`. -/
+variable xor1 : y₁ × r₁ ⟶ z₁
+
+variable R₁ : r₁
+def xor1_output : z₁ := xor1 ((xor1_input y₁ y₀y₁y₂y₃ I₁ r₁).fst A, R₁)
 
 /-- The response of the `mod2` operation as an object of the `Type u` category. -/
 constant m₂ : Type u
@@ -76,8 +81,14 @@ noncomputable def rotl9 (I : m₂ ≅ r₂) := I.hom
 /-- The result of `xor2` operation betwen `y₁` and `r₂` is an object of the `Type u` category. -/
 constant z₂ : Type u
 
+def xor2_input := (I₂.hom, r₂)
+
+/-- The `xor2` operation takes `y₂` and `r₂` to return `z₂`. -/
+variable xor2 : y₂ × r₂ ⟶ z₂
+
+variable R₂ : r₂
 /-- The `xor2` operation return `z₂`. -/
-def xor2 (I : y₀y₁y₂y₃ ≅ y₂) := z₂
+def xor2_output : z₂ := xor2 ((xor2_input y₂ y₀y₁y₂y₃ I₂ r₂).fst A, R₂)
 
 /-- The response of the `mod3` operation as an object of the `Type u` category. -/
 constant m₃ : Type u
@@ -100,8 +111,14 @@ noncomputable def rotl13 (I : m₃ ≅ r₃) := I.hom
 /-- The result of `xor3` operation betwen `y₃` and `r₃` is an object of the `Type u` category. -/
 variable z₃ : Type u
 
+def xor3_input := (I₃.hom, r₃)
+
+/-- The `xor3` operation takes `y₃` and `r₃` to return `z₃`. -/
+variable xor3 : y₃ × r₃ ⟶ z₃
+
+variable R₃ : r₃
 /-- The `xor3` operation return `z₃`. -/
-def xor3 (I : y₀y₁y₂y₃ ≅ y₃) := z₃
+def xor3_output : z₃ := xor3 ((xor3_input y₃ y₀y₁y₂y₃ I₃ r₃).fst A, R₃)
 
 /-- The response of the `mod0` operation as an object of the `Type u` category. -/
 constant m₀ : Type u
@@ -124,8 +141,14 @@ noncomputable def rotl18 (I : m₀ ≅ r₀) := I.hom
 /-- The result of `xor0` operation betwen `y₀` and `r₀` is an object of the `Type u` category. -/
 variable z₀ : Type u
 
+def xor0_input := (I₀.hom, r₀)
+
+/-- The `xor3` operation takes `y₀` and `r₀` to return `z₀`. -/
+variable xor0 : y₀ × r₀ ⟶ z₀
+
+variable R₀ : r₀
 /-- The `xor0` operation return `z₀`. -/
-def xor0 (I : y₀y₁y₂y₃ ⟶ y₀) := z₀ 
+def xor0_output : z₀ := xor0 ((xor0_input y₀ y₀y₁y₂y₃ I₀ r₀).fst A, R₀)
 
 /-- The result of a full `quarterround` operation. -/
 variable z₀z₁z₂z₃ : Type u
