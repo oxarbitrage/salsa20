@@ -13,11 +13,10 @@ We follow the flow of the rowround graph to define objects and relations.
 - [Rowround Diagram](https://oxarbitrage.github.io/salsa20-docs/diagrams/rowround.html)
 -/
 
-/-- Stand alone 16 objects that form a rowround input. -/
-variables y₀ y₁ y₂ y₃ y₄ y₅ y₆ y₇ y₈ y₉ y₁₀ y₁₁ y₁₂ y₁₃ y₁₄ : Type u
-
 /-- Represents a product of all rowround input objects. -/
 variable y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅ : Type u
+
+variable A : y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅
 
 /-!
 Rowround can be done in paralell. 

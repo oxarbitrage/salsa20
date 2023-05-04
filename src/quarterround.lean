@@ -21,20 +21,34 @@ variables y₀ y₁ y₂ y₃ : Type u
 variable y₀y₁y₂y₃ : Type u
 
 /-- The response of the `mod1` operation as an object of the `Type u` category. -/
-constant m₁ : Type u
+variable m₁ : Type u
 
-/-- The `mod1` relation given `y₀` and `y₃` objects. -/
-def mod1 (I0 : y₀y₁y₂y₃ ≅ y₀) (I3 : y₀y₁y₂y₃ ≅ y₃) := m₁
+variables (I₀ : y₀y₁y₂y₃ ≅ y₀) (I₁ : y₀y₁y₂y₃ ≅ y₁) (I₂ : y₀y₁y₂y₃ ≅ y₂) (I₃ : y₀y₁y₂y₃ ≅ y₃)
+
+/-- Create an object of type input. -/
+variable A : y₀y₁y₂y₃
+
+/-- The `mod1` input is formed from morphisms of two given isomorphisms. -/
+def mod1_input := (I₀.hom A, I₃.hom A)
+
+/-- The signture of the mod1 operation. -/
+variable mod1 : y₀ × y₃ ⟶ m₁
+
+def mod1_output : m₁ := mod1 (mod1_input y₀ y₃ y₀y₁y₂y₃ I₀ I₃ A)
+
+#check mod1_output y₀ y₃ y₀y₁y₂y₃
+
+#check mod1_output y₀ y₃ y₀y₁y₂y₃ m₁ I₀ I₃ A
 
 /-- The response of a `rotl7` operation as an object of the `Type u` category. -/
 variable r₁ : Type u
 
 /-- The `rotl7` operation will get the result of `mod1` as an input and return an `r₁` object of 
 the `Type u` category. -/
-noncomputable def rotl7 (I : m₁ ≅ r₁) := I.hom
+def rotl7 (I : m₁ ≅ r₁) := I.hom
 
 /-- The result of `xor1` operation betwen `y₁` and `r₁` is an object of the `Type u` category. -/
-constant z₁ : Type u
+variable z₁ : Type u
 
 /-- The `xor1` operation return `z₁`. -/
 def xor1 (I0 : y₀y₁y₂y₃ ≅ y₁) := z₁
@@ -42,8 +56,15 @@ def xor1 (I0 : y₀y₁y₂y₃ ≅ y₁) := z₁
 /-- The response of the `mod2` operation as an object of the `Type u` category. -/
 constant m₂ : Type u
 
-/-- The `mod2` relation given `z₁` and `y₀` objects. -/
-def mod2 (I : y₀y₁y₂y₃ ≅ y₀) := m₂
+/-- The `mod2` input is formed from morphism of two given isomorphisms. -/
+def mod2_input := (z₁, I₀.hom A)
+
+/-- TODO : this should be z₁ × y₀ -/
+variable mod2 : Type u × y₀ ⟶ m₂
+
+def mod2_output : m₂ := mod2 (mod2_input y₀ y₀y₁y₂y₃ I₀ A z₁)
+
+#check mod2_input y₀ y₀y₁y₂y₃ I₀ A z₁
 
 /-- The response of a `rotl9` operation as an object of the `Type u` category. -/
 variable r₂ : Type u
@@ -61,8 +82,13 @@ def xor2 (I : y₀y₁y₂y₃ ≅ y₂) := z₂
 /-- The response of the `mod3` operation as an object of the `Type u` category. -/
 constant m₃ : Type u
 
-/-- The `mod3` relation given `z₂` and `z₁` objects. -/
-noncomputable def mod3 := m₃
+/-- The `mod2` input is formed from morphism of two given isomorphisms. -/
+noncomputable def mod3_input := (z₂, z₁)
+
+/-- TODO : this should be z₂ × z₁ -/
+variable mod3 : Type u × Type u ⟶ m₃
+
+noncomputable def mod3_output : m₃ := mod3 (mod3_input y₀y₁y₂y₃)
 
 /-- The response of a `rotl13` operation as an object of the `Type u` category. -/
 variable r₃ : Type u
@@ -80,8 +106,13 @@ def xor3 (I : y₀y₁y₂y₃ ≅ y₃) := z₃
 /-- The response of the `mod0` operation as an object of the `Type u` category. -/
 constant m₀ : Type u
 
-/-- The `mod0` relation given `z₃` and `z₂` objects. -/
-noncomputable def mod0 := m₀
+/-- The `mod2` input is formed from morphism of two given isomorphisms. -/
+noncomputable def mod0_input := (z₂, z₁)
+
+/-- TODO : this should be z₃ × z₂ -/
+variable mod0 : Type u × Type u ⟶ m₀
+
+noncomputable def mod0_output : m₀ := mod0 (mod0_input z₂)
 
 /-- The response of a `rotl18` operation as an object of the `Type u` category. -/
 variable r₀ : Type u
