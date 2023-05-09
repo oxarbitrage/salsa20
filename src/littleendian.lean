@@ -1,16 +1,10 @@
-import params
-
 import category_theory.core
 import data.nat.digits
-
-open params
 
 open category_theory
 open nat
 
 namespace littleendian
-
-variables [category (bitvec word_len)]
 
 /-!
   # Littleendian
