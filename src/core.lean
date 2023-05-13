@@ -28,7 +28,7 @@ variable X : x₀x₁x₂x₃x₄x₅x₆x₇x₈x₉x₁₀x₁₁x₁₂x₁�
 /-- Create the doubleround10 input object. -/
 variable Y : y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅
 
-/-- Matri mod operation signature. -/
+/-- Matrix mod operation signature. -/
 variable mod_matrix : (x₀x₁x₂x₃x₄x₅x₆x₇x₈x₉x₁₀x₁₁x₁₂x₁₃x₁₄x₁₅ × y₀y₁y₂y₃y₄y₅y₆y₇y₈y₉y₁₀y₁₁y₁₂y₁₃y₁₄y₁₅) ⟶ 
   z₀z₁z₂z₃z₄z₅z₆z₇z₈z₉z₁₀z₁₁z₁₂z₁₃z₁₄z₁₅
 
