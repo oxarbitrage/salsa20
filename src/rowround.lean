@@ -68,12 +68,12 @@ variable I : y₀ × y₁ × y₂ × y₃ × y₄ × y₅ × y₆ × y₇ × y�
 
 /-- A rowround input. -/
 variable input : y₀ × y₁ × y₂ × y₃ × y₄ × y₅ × y₆ × y₇ × y₈ × y₉ × y₁₀ × y₁₁ × y₁₂ × y₁₃ × y₁₄ × y₁₅
-/-- The quarterround function shortcut. -/
+/-- The rowround function shortcut. -/
 def rowround := I.hom input
 
 /-- A rowround output. -/
 variable output : z₀ × z₁ × z₂ × z₃ × z₄ × z₅ × z₆ × z₇ × z₈ × z₉ × z₁₀ × z₁₁ × z₁₂ × z₁₃ × z₁₄ × z₁₅
-/-- The quarterround⁻¹ function shortcut.-/
+/-- The rowround⁻¹ function shortcut.-/
 def quarterround_inv := I.inv output
 
 
