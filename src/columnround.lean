@@ -10,8 +10,7 @@ universe u
 # Columnround
 
 The `columnround` system using the equivalent formula.
-
-- [Columnround Diagram](https://oxarbitrage.github.io/salsa20-docs/diagrams/columnround.html)
+[Columnround Diagram](https://oxarbitrage.github.io/salsa20-docs/diagrams/columnround.html)
 TODO: fix the above diagram to transpose before and after.
 -/
 
@@ -27,7 +26,11 @@ local notation `Yᵀ` := y₀ × y₄ × y₈ × y₁₂ × y₁ × y₅ × y₉
 local notation `Y` := y₀ × y₁ × y₂ × y₃ × y₄ × y₅ × y₆ × y₇ × y₈ × y₉ × y₁₀ × y₁₁ × y₁₂ × y₁₃ × y₁₄ × y₁₅
 
 local notation `typeColumnRound` := X ⟶ Xᵀ ⟶ Yᵀ ⟶ Y
-
+/-- Given a full 16 words input as a matrix ∃ :
+A morphism from the input to its transpose. This is `transpose`. 
+A morphism from the transpose to the tranposed results. This is `rowround` in the diagram.
+A morphism from the tranposed results to results. This is done doing `transpose` again.
+-/
 variable ColumnRound : typeColumnRound
 
 #check ColumnRound
